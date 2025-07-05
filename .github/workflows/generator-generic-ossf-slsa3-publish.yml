@@ -1,6 +1,7 @@
 # It seems like you've shared a URL to a GitHub Actions workflow badge for a specific event (`create`) in your repository, `Sazwanismail/codespaces-react`. This badge likely shows the status (e.g., passing or failing) of the workflow defined in `generator-generic-ossf-slsa3-publish.yml`.
 
 If you'd like assistance with:
+
 1. Understanding what the workflow does,
 2. Troubleshooting issues in the workflow,
 3. Modifying the workflow,
