@@ -1,0 +1,86 @@
+It looks like you are interested in using Firebase Web v9 (modular syntax, often referred to as "web9") authentication with a custom domain, specifically for Android and iOS platforms (possibly in a webview or PWA context).
+
+Here’s how you can approach this for Android and iOS web apps using Firebase v9:
+
+---
+
+## 1. Initialize Firebase Auth with a Custom Domain
+
+You already have the basic snippet:
+
+```javascript
+import { initializeApp } from "firebase/app";
+
+const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "[YOUR_CUSTOM_DOMAIN]", // e.g. auth.yoursite.com
+  // ...other config
+};
+const app = initializeApp(firebaseConfig);
+```
+
+Replace `[YOUR_CUSTOM_DOMAIN]` with the domain you configured in the Firebase Console.
+
+---
+
+## 2. Use Firebase Auth in Your Web App
+
+For both Android and iOS web (webview or PWA), you can use Firebase Auth like this:
+
+```javascript
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
+const auth = getAuth(app);
+
+signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // User signed in
+    const user = userCredential.user;
+  })
+  .catch((error) => {
+    // Handle error
+  });
+```
+
+---
+
+## 3. For Android/iOS Webview Integration
+
+If you want to use Firebase Auth inside a WebView, there are special considerations:
+
+- **Redirects**: OAuth providers (Google, Facebook, etc.) may not work as expected in WebViews due to popup blockers or lack of browser features.
+- **Custom Tabs / SFSafariViewController**: For the best experience, use "signInWithRedirect" and ensure your app opens the redirect in a browser or use in-app browser tabs (Custom Tabs on Android, SFSafariViewController on iOS).
+
+**Example:**
+```javascript
+import { getAuth, signInWithRedirect, GoogleAuthProvider } from "firebase/auth";
+
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+signInWithRedirect(auth, provider);
+```
+- After redirect, call `getRedirectResult(auth)` to handle the sign-in result.
+
+---
+
+## 4. For PWAs on Android/iOS
+
+You can use Firebase Auth as you would in any web app, as long as your custom domain is set up and your OAuth redirect URIs are configured in the Firebase Console.
+
+---
+
+## 5. Additional Tips
+
+- Make sure your custom domain is [configured in the Firebase Console](https://firebase.google.com/docs/auth/custom-domains).
+- In the Firebase Console, add your custom domain (e.g., `auth.yoursite.com`) under **Authentication > Sign-in method > Authorized domains**.
+- For OAuth providers, add your custom domain as an OAuth redirect URI.
+
+---
+
+**References:**
+- [Firebase Auth with Custom Domains](https://firebase.google.com/docs/auth/web/custom-auth-domain)
+- [Firebase Web v9 Modular Docs](https://firebase.google.com/docs/auth/web/start)
+- [OAuth on iOS/Android WebViews and custom tabs](https://firebase.google.com/docs/auth/web/cordova)
+
+If you need a specific code sample for Android/iOS web integrations (e.g., Cordova, Capacitor, React Native WebView), let me know your framework and I can provide a tailored example!
