@@ -1,0 +1,457 @@
+# Panduan Lengkap Membina Laman Web Peribadi di GitHub Pages
+
+GitHub Pages adalah perkhidmatan percuma yang membolehkan anda menerbitkan laman web terus dari repositori GitHub. Ia sesuai untuk laman peribadi, portfolio, dokumentasi projek, atau blog ringkas. Panduan ini akan membawa anda langkah demi langkah untuk membina laman web anda sendiri.
+
+## 📌 **Apa yang Anda Perlu Tahu**
+- **Asas HTML/CSS** – Anda akan menulis sendiri atau mengubah suai contoh yang diberikan.
+- **Akaun GitHub** – Jika belum ada, daftar di [github.com](https://github.com).
+- **Git (pilihan)** – Untuk mengurus repositori secara setempat, tetapi anda juga boleh gunakan antara muka web GitHub.
+
+---
+
+## 🚀 **Langkah 1: Cipta Repositori Khas**
+1. Log masuk ke GitHub.
+2. Klik butang **New repository** (atau pergi ke [https://github.com/new](https://github.com/new)).
+3. **Nama repositori** mesti mengikut format:  
+   `namapengguna.github.io`  
+   *Gantikan `namapengguna` dengan nama pengguna GitHub anda (contoh: `sazwan96.github.io`).*
+4. Pilih **Public** (awam) supaya laman boleh diakses semua orang.
+5. Tandakan **Add a README file** (pilihan, tapi disyorkan).
+6. Klik **Create repository**.
+
+---
+
+## 📝 **Langkah 2: Sediakan Fail Index**
+Anda boleh mencipta fail `index.html` terus di GitHub atau secara setempat dan kemudian muat naik.
+
+### **Cara 1: Melalui Antara Muka Web**
+1. Dalam repositori baru, klik **Add file** > **Create new file**.
+2. Namakan fail `index.html`.
+3. Salin kod HTML ringkas di bawah dan tampal.
+4. Klik **Commit new file** (simpan).
+
+### **Cara 2: Secara Setempat (Gunakan Git)**
+```bash
+git clone https://github.com/namapengguna/namapengguna.github.io
+cd namapengguna.github.io
+echo "<html><body><h1>Hello World</h1></body></html>" > index.html
+git add index.html
+git commit -m "Laman pertama"
+git push
+```
+
+---
+
+## 🎨 **Langkah 3: Tulis Kandungan Laman Web**
+Berikut adalah contoh HTML asas yang boleh anda ubah suai mengikut keperluan. Simpan sebagai `index.html`.
+
+```html
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nama Anda</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .company {
+            font-weight: bold;
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Muhamad Sazwan Bin Ismail</h1>
+        <p><strong>Pengasas Teknologi & Usahawan Digital</strong></p>
+        <p>Email: sazwan96@gmail.com | GitHub: @sazwan96</p>
+
+        <div class="section">
+            <h2>Pemilikan Syarikat</h2>
+            <ul>
+                <li><span class="company">Sazwan Solutions</span> – AI, Blockchain, Automasi (2019–kini)</li>
+                <li><span class="company">Sazwan Hobby Shop</span> – E-dagang & NFT (2023–kini)</li>
+                <li><span class="company">End AI Global</span> – Inisiatif AI Sumber Terbuka (2024–kini)</li>
+                <li><span class="company">Fairbase</span> – Keselamatan & Pengurusan Data (2024–kini)</li>
+                <li><span class="company">Sazwan Digital</span> – Perkhidmatan Digital (2024–kini)</li>
+                <li><span class="company">Muhamad Sazwan Bin Ismail Enterprise</span> – Konsultansi Digital (2023–2024)</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Projek Utama</h2>
+            <ul>
+                <li>🤖 AI Engine untuk Automasi Industri</li>
+                <li>🖼️ Sistem NFT & Blockchain Kolektibel</li>
+                <li>🌐 End AI Global – Model AI Etikal</li>
+                <li>🔐 SHA-256 Hash Simulation (GitHub)</li>
+                <li>⚡ Smart Power Grid Monitoring</li>
+                <li>📄 Digital Resume Generator (Giblub)</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Kemahiran Teknikal</h2>
+            <p>Python, JavaScript, Solidity, Rust, TensorFlow, PyTorch, Docker, Kubernetes, GCP, AWS, Azure, dan banyak lagi.</p>
+        </div>
+
+        <div class="section">
+            <h2>Rakan Industri</h2>
+            <p>Microsoft, Google, Meta, Salesforce, HubSpot, SAP, TNB, Petronas, ByteDance, Alipay, dan lain-lain.</p>
+        </div>
+
+        <div class="section">
+            <h2>Pengesahan Identiti Digital</h2>
+            <p><strong>SHA-256:</strong> 32D8A53CC4C299E60424CD0DE96D3B06575D51...</p>
+            <p><strong>Laman Web:</strong> <a href="https://sazwan96.github.io">https://sazwan96.github.io</a></p>
+        </div>
+
+        <footer>
+            <p>© 2025 Muhamad Sazwan Bin Ismail. Hak Cipta Terpelihara.</p>
+        </footer>
+    </div>
+</body>
+</html>
+```
+
+---
+
+## 🌐 **Langkah 4: Lihat Laman Web Anda**
+Setelah fail `index.html` disimpan di repositori, GitHub Pages akan menerbitkannya secara automatik. Laman boleh diakses di:
+
+```
+https://namapengguna.github.io
+```
+
+*Contoh: https://sazwan96.github.io*
+
+Mungkin mengambil masa 1–2 minit untuk pertama kali. Jika laman tidak muncul, periksa semula nama repositori dan pastikan fail `index.html` berada di root (bukan dalam folder).
+
+---
+
+## 🎨 **Langkah 5: Peribadikan dengan Tema / Framework**
+Untuk reka bentuk yang lebih menarik, anda boleh gunakan rangka kerja CSS seperti **Bootstrap** atau **Tailwind CSS**. Contoh menggunakan Bootstrap:
+
+1. Tambah pautan Bootstrap dalam bahagian `<head>`:
+   ```html
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+   ```
+2. Guna kelas Bootstrap dalam elemen HTML untuk mempercepatkan reka bentuk.
+
+---
+
+## 🔧 **Langkah 6: Gunakan Domain Sendiri (Pilihan)**
+Jika anda mempunyai domain sendiri (contoh: `sazwan.com`), anda boleh mengarahkannya ke GitHub Pages.
+
+1. Dalam repositori, pergi ke **Settings** > **Pages**.
+2. Di bawah **Custom domain**, masukkan nama domain anda (cth: `sazwan.com`).
+3. Di laman pendaftar domain, tambah rekod:
+   - **A record** pointing to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153` (IP GitHub Pages).
+   - Atau **CNAME record** untuk subdomain seperti `www.sazwan.com` pointing ke `namapengguna.github.io`.
+4. GitHub Pages akan mengendalikan sijil SSL secara automatik.
+
+---
+
+## 📝 **Langkah 7: Menggunakan Jekyll untuk Blog / Dokumentasi**
+GitHub Pages menyokong **Jekyll** – penjana laman statik. Dengan Jekyll anda boleh:
+- Menulis pos blog dalam format Markdown.
+- Menggunakan tema siap pakai dari [GitHub Pages Themes](https://pages.github.com/themes/).
+
+Untuk mulakan:
+1. Tambah fail `_config.yml` di root repositori dengan konfigurasi tema:
+   ```yaml
+   theme: minima
+   ```
+2. Cipta folder `_posts` dan letak fail Markdown dengan format `YYYY-MM-DD-tajuk.md`.
+
+---
+
+## ❓ **Penyelesaian Masalah Biasa**
+| Masalah | Penyelesaian |
+|--------|-------------|
+| Laman tidak muncul selepas 10 minit | Pastikan repositori dinamakan tepat `namapengguna.github.io`. |
+| Ralat 404 | Semak sama ada fail `index.html` wujud di root. |
+| CSS tidak berfungsi | Periksa laluan pautan CSS – gunakan laluan relatif atau mutlak. |
+| Domain kustom tidak aktif | Mungkin mengambil masa 24–48 jam untuk DNS tersebar. |
+
+---
+
+## 🧩 **Sumber Tambahan**
+- [Dokumentasi Rasmi GitHub Pages](https://docs.github.com/en/pages)
+- [GitHub Pages Themes](https://pages.github.com/themes/)
+- [Belajar HTML & CSS](https://www.w3schools.com)
+
+Selamat membina laman web peribadi anda! Jika ada soalan, jangan segan untuk bertanya.
+I have updated the print statement from `'Hello'` to `'Goodbye'` as requested. Here's an example of the change in a simple Python script:
+
+```python
+# Before
+print("Hello")
+
+# After
+print("Goodbye")
+```
+
+If you need the update in a specific code snippet from our previous conversation, please let me know which one, and I'll provide the exact modified version.# Panduan Lengkap Membina Laman Web Peribadi di GitHub Pages
+
+**Oleh: Muhamad Sazwan Bin Ismail**  
+GitHub: [@sazwan96](https://github.com/sazwan96)
+
+Laman web peribadi adalah platform terbaik untuk mempamerkan profil profesional, portfolio, projek, dan pencapaian anda. GitHub Pages menawarkan perkhidmatan hosting percuma yang mudah dan pantas. Dengan mengikuti panduan ini, anda akan dapat melancarkan laman web anda sendiri di `https://sazwan96.github.io` dalam masa kurang daripada 30 minit.
+
+---
+
+## 📌 **Apa Itu GitHub Pages?**
+
+GitHub Pages adalah perkhidmatan hosting statik yang disediakan oleh GitHub. Ia membolehkan anda menerbitkan laman web terus dari repositori GitHub. Laman web ini boleh menjadi:
+- Laman peribadi (satu repositori khas dengan nama `username.github.io`)
+- Laman projek (untuk setiap repositori projek)
+
+Kelebihan utama:
+- **Percuma** – tiada kos hosting.
+- **Integrasi Git** – kemas kini dilakukan dengan git push.
+- **Sokongan domain kustom** – boleh gunakan domain sendiri.
+- **SSL percuma** – HTTPS diaktifkan secara automatik.
+
+---
+
+## 🚀 **Langkah 1: Cipta Repositori Khas**
+
+1. Log masuk ke akaun GitHub anda.
+2. Klik butang **New repository** (atau pergi ke [https://github.com/new](https://github.com/new)).
+3. **Nama repositori** mesti mengikut format:  
+   `namapengguna.github.io`  
+   Gantikan `namapengguna` dengan nama pengguna GitHub anda. Contoh untuk `sazwan96`, repositori mesti dinamakan `sazwan96.github.io`.
+4. Pilih **Public** (awam) supaya laman boleh diakses semua orang. (Repositori private juga boleh, tetapi memerlukan GitHub Pro).
+5. Tandakan **Add a README file** (pilihan, tapi disyorkan untuk dokumentasi).
+6. Klik **Create repository**.
+
+---
+
+## 📝 **Langkah 2: Sediakan Fail Index**
+
+Fail `index.html` adalah halaman utama laman web anda. Anda boleh menciptanya terus di GitHub atau secara setempat.
+
+### **Cara 1: Melalui Antara Muka Web GitHub**
+1. Dalam repositori baru, klik **Add file** > **Create new file**.
+2. Namakan fail `index.html`.
+3. Tulis atau tampal kod HTML asas. Contoh:
+
+   ```html
+   <!DOCTYPE html>
+   <html lang="ms">
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Muhamad Sazwan Ismail</title>
+       <style>
+           body { font-family: Arial; text-align: center; padding: 50px; }
+           h1 { color: #333; }
+       </style>
+   </head>
+   <body>
+       <h1>Muhamad Sazwan Bin Ismail</h1>
+       <p>Pengasas Teknologi & Usahawan Digital</p>
+       <p>Laman web sedang dalam pembinaan. Sila datang lagi!</p>
+   </body>
+   </html>
+   ```
+
+4. Di bahagian bawah, masukkan mesej commit seperti "Create index.html".
+5. Klik **Commit new file**.
+
+### **Cara 2: Secara Setempat (Gunakan Git)**
+Jika anda lebih selesa dengan Git, lakukan langkah berikut di terminal:
+
+```bash
+git clone https://github.com/sazwan96/sazwan96.github.io
+cd sazwan96.github.io
+echo "<html><body><h1>Hello World</h1></body></html>" > index.html
+git add index.html
+git commit -m "Laman pertama"
+git push
+```
+
+---
+
+## 🌐 **Langkah 3: Lihat Laman Web Anda**
+
+Selepas fail `index.html` disimpan, GitHub Pages akan menerbitkannya secara automatik. Laman boleh diakses di:
+
+```
+https://sazwan96.github.io
+```
+
+Mungkin mengambil masa 1–2 minit untuk pertama kali. Jika laman tidak muncul, periksa semula nama repositori dan pastikan fail `index.html` berada di root (bukan dalam folder).
+
+---
+
+## 🎨 **Langkah 4: Peribadikan dengan Tema / Framework**
+
+Untuk reka bentuk yang lebih menarik, anda boleh gunakan rangka kerja CSS seperti **Bootstrap** atau **Tailwind CSS**.
+
+### **Contoh Menggunakan Bootstrap**
+1. Tambah pautan Bootstrap dalam bahagian `<head>` fail `index.html`:
+
+   ```html
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+   ```
+
+2. Guna kelas Bootstrap untuk mempercepatkan reka bentuk. Contoh:
+
+   ```html
+   <div class="container mt-5">
+       <div class="jumbotron">
+           <h1 class="display-4">Muhamad Sazwan Ismail</h1>
+           <p class="lead">Pengasas Teknologi & Usahawan Digital</p>
+           <hr class="my-4">
+           <p>Selamat datang ke laman web peribadi saya.</p>
+       </div>
+   </div>
+   ```
+
+### **Contoh Lengkap dengan Bootstrap**
+Simpan kod berikut sebagai `index.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muhamad Sazwan Ismail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; }
+        .profile-img { width: 150px; border-radius: 50%; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Sazwan</a>
+        </div>
+    </nav>
+    <div class="container mt-5 text-center">
+        <img src="https://via.placeholder.com/150" alt="Profile" class="profile-img">
+        <h1 class="display-4">Muhamad Sazwan Bin Ismail</h1>
+        <p class="lead">Pengasas Teknologi & Usahawan Digital</p>
+        <hr class="my-4">
+        <p>AI · Blockchain · Automasi</p>
+        <p>Email: sazwan96@gmail.com | GitHub: @sazwan96</p>
+    </div>
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p>© 2025 Muhamad Sazwan Ismail. Hak Cipta Terpelihara.</p>
+    </footer>
+</body>
+</html>
+```
+
+---
+
+## 🔧 **Langkah 5: Tambah Halaman Tambahan (Pilihan)**
+
+Anda boleh menambah lebih banyak halaman seperti portfolio, blog, atau hubungan. Caranya:
+
+1. Cipta fail HTML lain, contohnya `portfolio.html` atau `blog.html`.
+2. Pautkan halaman tersebut menggunakan pautan biasa `<a href="portfolio.html">Portfolio</a>`.
+3. Untuk memudahkan navigasi, anda boleh gunakan menu navbar.
+
+---
+
+## 🌍 **Langkah 6: Gunakan Domain Sendiri (Pilihan)**
+
+Jika anda mempunyai domain sendiri (contoh: `sazwan.com`), anda boleh mengarahkannya ke GitHub Pages.
+
+1. **Dalam repositori**, pergi ke **Settings** > **Pages**.
+2. Di bawah **Custom domain**, masukkan nama domain anda (cth: `sazwan.com`).
+3. Klik **Save**.
+4. **Di laman pendaftar domain**, tambah rekod DNS:
+   - Untuk domain akar (apex), tambah **A records** pointing ke IP GitHub Pages berikut:
+     ```
+     185.199.108.153
+     185.199.109.153
+     185.199.110.153
+     185.199.111.153
+     ```
+   - Untuk subdomain seperti `www.sazwan.com`, tambah **CNAME record** pointing ke `sazwan96.github.io`.
+5. GitHub Pages akan mengeluarkan sijil SSL secara automatik selepas beberapa minit.
+
+---
+
+## 📝 **Langkah 7: Menggunakan Jekyll untuk Blog / Dokumentasi (Pilihan)**
+
+GitHub Pages menyokong **Jekyll** – penjana laman statik yang membolehkan anda menulis kandungan dalam format Markdown. Dengan Jekyll, anda boleh:
+
+- Menulis pos blog dalam fail `.md`.
+- Menggunakan tema siap pakai dari [GitHub Pages Themes](https://pages.github.com/themes/).
+
+Untuk mulakan:
+1. Tambah fail `_config.yml` di root repositori dengan konfigurasi tema. Contoh:
+   ```yaml
+   theme: minima
+   ```
+2. Cipta folder `_posts` dan letak fail Markdown dengan format `YYYY-MM-DD-tajuk.md`.
+3. Jekyll akan menjana laman secara automatik setiap kali anda push.
+
+---
+
+## ❓ **Penyelesaian Masalah Biasa**
+
+| Masalah | Penyelesaian |
+|--------|-------------|
+| Laman tidak muncul selepas 10 minit | Pastikan repositori dinamakan tepat `sazwan96.github.io`. Periksa bahawa fail `index.html` wujud di root. |
+| Ralat 404 | Kemungkinan fail tidak berada di root atau nama fail salah. |
+| CSS tidak berfungsi | Periksa laluan pautan CSS – gunakan laluan relatif atau mutlak. |
+| Domain kustom tidak aktif | Mungkin mengambil masa 24–48 jam untuk DNS tersebar. Pastikan rekod DNS betul. |
+| Laman tidak dikemas kini | Tunggu 1-2 minit, kemudian refresh dengan cache cleared (Ctrl+F5). |
+
+---
+
+## 🧩 **Sumber Tambahan**
+
+- [Dokumentasi Rasmi GitHub Pages](https://docs.github.com/en/pages)
+- [GitHub Pages Themes](https://pages.github.com/themes/)
+- [Belajar HTML & CSS](https://www.w3schools.com)
+- [Bootstrap Documentation](https://getbootstrap.com/docs/5.3/getting-started/introduction/)
+
+---
+
+## 🎉 **Kesimpulan**
+
+Anda kini mempunyai laman web peribadi yang aktif di GitHub Pages! Dengan kemudahan ini, anda boleh mempamerkan profil profesional, projek, blog, dan banyak lagi. Jangan lupa untuk mengemas kini laman anda secara berkala dengan projek dan pencapaian terkini.
+
+Jika anda memerlukan bantuan lanjut atau ingin menambah ciri seperti borang hubungan, integrasi media sosial, atau analitik, sila rujuk kepada dokumentasi di atas atau hubungi saya melalui email.
+
+**Selamat membina laman web anda!**
