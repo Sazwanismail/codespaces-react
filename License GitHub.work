@@ -1,0 +1,170 @@
+To add an MIT License to your repository, you can either create a new file named `LICENSE` or `LICENSE.md` and paste the standard MIT text. GitHub also provides a built‑in license picker when creating a new file.
+
+## 📄 MIT License Text
+
+Copy and paste the following into your `LICENSE` file, replacing `[year]` and `[fullname]` with your details:
+
+```
+MIT License
+
+Copyright (c) 2026 Muhamad Sazwan Bin Ismail
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+If the copyright holder is "GitHub", you can adjust accordingly. For example, if you are contributing to a project owned by GitHub, you might use:
+
+```
+Copyright (c) 2026 GitHub, Inc.
+```
+
+## 🛠️ How to Add the License via GitHub UI
+
+1. Go to your repository on GitHub.
+2. Click **Add file** → **Create new file**.
+3. Name the file `LICENSE` (or `LICENSE.md`).
+4. Paste the license text above.
+5. At the bottom, enter a commit message like `📄 Add MIT License`.
+6. Choose the branch and click **Commit new file**.
+
+## ✅ Verify the License
+
+After adding, the license will appear on your repository's homepage, and GitHub will display a license badge if it detects the file. You can also check the "Insights" → "Community" page to see license compliance.
+
+If you need help customising the license (e.g., for a company or different year), just let me know!
+Here is the MIT License template again, followed by comprehensive information about Microsoft Security licensing. The Microsoft licensing information covers both open-source options and commercial licensing structures relevant to security products.
+
+## MIT License
+
+```text
+MIT License
+
+Copyright (c) 2026 Muhamad Sazwan Bin Ismail
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## Microsoft Security Licensing Overview
+
+### Open-Source and Shared Source Licenses from Microsoft
+
+Microsoft participates in open-source software through its **Shared Source Initiative (SSI)** , launched in May 2001 . This initiative includes several license types that may be relevant when using Microsoft security-related code or contributing to Microsoft open-source projects.
+
+| License | Type | Key Characteristics |
+|---------|------|---------------------|
+| **Microsoft Public License (Ms-PL)** | Open-source (OSI approved) | Most permissive Microsoft license; allows commercial use, modification, and distribution  |
+| **Microsoft Reciprocal License (Ms-RL)** | Open-source (OSI approved) | Modified source files must retain license; similar to CDDL or EPL  |
+| **Microsoft Limited Public License (Ms-LPL)** | Restricted | Windows platform-specific; not open-source  |
+| **Microsoft Reference Source License (Ms-RSL)** | Reference only | Viewing source for debugging/reference; no modification or distribution  |
+
+The **Ms-PL** and **Ms-RL** are approved by the Open Source Initiative (OSI) and considered free software licenses by the Free Software Foundation, though they are not compatible with the GNU GPL .
+
+### Microsoft Security Product Licensing (Commercial)
+
+For commercial use of Microsoft security products, licensing is typically handled through Microsoft's Volume Licensing programs. Here are key security offerings and their licensing structures:
+
+#### Microsoft 365 E5 Security (Now Microsoft Defender Suite)
+As of October 1, 2025, **Microsoft 365 E5 Security** and all related offers were rebranded to **Microsoft Defender Suite** . This suite includes:
+- Microsoft Defender for Endpoint
+- Microsoft Defender for Identity
+- Microsoft Defender for Office 365
+- Microsoft Entra ID Protection
+- Microsoft Cloud App Security
+
+**Licensing Options:**
+- Available through 3-Year CSP SKUs starting July 1, 2025 
+- Can be purchased as standalone suite or included with Microsoft 365 E5
+- Per-user pricing model with multi-year commitment options
+
+#### Microsoft 365 E5 Compliance (Now Microsoft Purview Suite)
+Effective October 1, 2025, **Microsoft 365 E5 Compliance** was rebranded to **Microsoft Purview Suite** . This covers:
+- Information protection
+- Data loss prevention
+- Records management
+- Compliance management
+- eDiscovery
+
+#### Microsoft 365 E5 (with Security Copilot)
+Starting January 1, 2026, **Security Copilot is now included with Microsoft 365 E5** subscriptions, along with a monthly allocation of Security Compute Units .
+
+#### CSP 3-Year SKU Availability
+
+| Product | Availability Date | Notes |
+|---------|-------------------|-------|
+| Microsoft 365 E5 Security (Defender Suite) | July 1, 2025 | 3-year CSP term option  |
+| Microsoft 365 E5 Compliance (Purview Suite) | July 1, 2025 | 3-year CSP term option  |
+| Microsoft 365 E5 (with/without Teams) | June 1, 2025 | Available for existing and new clients  |
+
+### Key Licensing Considerations for Security Products
+
+1. **Multi-Year Commitments**: Microsoft now offers 3-year CSP subscriptions for security products, providing price stability and predictable budgeting .
+
+2. **Billing Flexibility**:
+   - Triennial/Triennial: Full payment upfront for entire 3-year period
+   - Triennial/Annual: Distributed annual payments over three years 
+
+3. **Promotional Discounts**: New-to-offer clients may receive a 10% discount on 3-year SKUs (promotional periods apply) .
+
+4. **Mix-and-Match**: CSP allows combining different subscription terms (monthly, annual, and 3-year) within the same tenant .
+
+5. **Security Copilot Integration**: Security Copilot is now bundled with Microsoft 365 E5, providing AI-powered security assistance .
+
+### Microsoft Product Terms Updates
+
+Microsoft regularly updates licensing terms through the **Microsoft Product Terms** page, which publishes changes monthly . Key recent updates for security products include:
+
+- **October 2025**: Rebranding of E5 Security to Microsoft Defender Suite and E5 Compliance to Microsoft Purview Suite 
+- **January 2026**: Security Copilot included with Microsoft 365 E5 
+- **July 2025**: Launch of 3-year CSP SKUs for security products 
+
+### Resources for Microsoft Licensing
+
+- **Official Microsoft Product Terms**: [https://www.microsoft.com/licensing/terms/product/changes/All](https://www.microsoft.com/licensing/terms/product/changes/All) 
+- **Microsoft Security Response Center (MSRC)**: For reporting security vulnerabilities 
+- **Extended Security Updates (ESU)**: Available for products like Exchange Server and Windows Server beyond end-of-support dates 
+
+### Summary Table
+
+| License/Product Type | Best For | Availability |
+|---------------------|----------|--------------|
+| MIT License | Open-source projects | Free, immediate |
+| Ms-PL / Ms-RL | Microsoft open-source contributions | Free, OSI approved |
+| Microsoft Defender Suite | Enterprise security | CSP, EA, MCA programs |
+| Microsoft Purview Suite | Compliance and data governance | CSP, EA, MCA programs |
+| Security Copilot | AI-powered security assistance | Included with M365 E5 (Jan 2026) |
+
+---
+
+This information should help you understand both the MIT License for your own projects and the Microsoft Security licensing landscape. If you need specific details about a particular Microsoft security product or licensing program, please let me know!
