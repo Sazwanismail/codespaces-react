@@ -1,0 +1,671 @@
+Saya faham anda mahu **"CREATE MIT LICENSE 3.5"**. Namun, perlu dijelaskan bahawa **lesen MIT tidak mempunyai versi seperti 3.0 atau 3.5** – ia adalah lesen yang ringkas dan kekal sama sejak mula. Mungkin anda terkeliru dengan lesen GNU GPL yang mempunyai versi (GPLv2, GPLv3). Jika anda mahukan lesen GPL versi 3, sila nyatakan.
+
+Untuk memudahkan, saya akan berikan dua pilihan:
+
+---
+
+## ✅ **Pilihan 1: Lesen MIT (Standard)**
+Ini adalah lesen yang paling biasa digunakan untuk projek open source. Ia membenarkan sesiapa menggunakan, mengubah, dan mengedarkan kod anda dengan syarat mengekalkan notis hak cipta.
+
+**Teks Lesen MIT (Standard):**
+```text
+MIT License
+
+Copyright (c) 2025 Sazwanismail
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## ⚖️ **Pilihan 2: Lesen GNU GPLv3 (Jika Anda Maksudkan Versi 3.5)**
+Jika anda mahukan lesen dengan versi, kemungkinan besar anda maksudkan **GNU General Public License versi 3**. Lesen ini lebih ketat dan mewajibkan sebarang perubahan juga dikongsi sebagai open source.
+
+**Teks GPLv3 (Ringkasan):**  
+Anda boleh dapatkan teks penuh di [https://www.gnu.org/licenses/gpl-3.0.txt](https://www.gnu.org/licenses/gpl-3.0.txt). Salin dan tampal ke fail `LICENSE`.
+
+---
+
+## 📁 **Cara Menambah Lesen ke Repositori Fairbase**
+
+### **Melalui GitHub Web:**
+1. Pergi ke repositori `Sazwanismail/Fairbase`.
+2. Klik **"Add file"** → **"Create new file"**.
+3. Namakan fail: `LICENSE` (huruf besar semua).
+4. Tampal teks lesen pilihan anda (MIT atau GPLv3).
+5. Pastikan tahun dan nama pemegang hak cipta ditukar (contoh: `2025 Sazwanismail`).
+6. Scroll ke bawah, tulis mesej commit: `Add LICENSE`.
+7. Klik **"Commit new file"**.
+
+### **Melalui Command Line:**
+```bash
+# Di root folder projek tempatan
+nano LICENSE
+# Tampal teks lesen, simpan (Ctrl+X, Y, Enter)
+git add LICENSE
+git commit -m "Add LICENSE"
+git push origin main
+```
+
+---
+
+## ❓ **Masih Keliru?**
+Jika anda mahukan lesen lain (Apache 2.0, BSD, dll.) atau ingin menamakan fail sebagai `MIT LICENSE 3.5` (walaupun kandungannya standard), beritahu saya. Saya boleh bantu pastikan semuanya betul.
+**Arahan seterusnya?**
+Anda kata "Terus" – maksud anda nak saya teruskan dengan langkah seterusnya? Atau nak saya bantu dengan bahagian lain projek Fairbase? Berikut adalah beberapa pilihan yang boleh kita teruskan:
+
+1. **Tambah lesen** – Jika anda setuju dengan lesen MIT standard, saya boleh bantu anda buat fail LICENSE terus di GitHub. Atau jika nak GPLv3, saya boleh berikan arahan.
+
+2. **Buat release pertama** – Selepas lesen ditambah, kita boleh buat release `v1.0.0` di GitHub.
+
+3. **Kemas kini README** – Tambah badge lesen, arahan pemasangan, atau contoh penggunaan.
+
+4. **Periksa GitHub Actions** – Pastikan workflow terbaru berjalan lancar selepas perubahan.
+
+5. **Lengkapkan dokumentasi** – Setup GitHub Pages atau wiki untuk dokumentasi projek.
+
+6. **Tambah features** – Contoh: integrasi dengan API cryptocurrency, graf interaktif, atau user authentication.
+
+Sila beritahu apa yang anda maksudkan dengan "Terus". Saya sedia membantu!
+Kita akan **sambungkan semua komponen** projek Fairbase menjadi satu sistem yang lengkap dan berfungsi. Berikut adalah pelan integrasi menyeluruh berdasarkan struktur repositori sedia ada:
+
+---
+
+## 🧩 **Gambaran Keseluruhan Sistem**
+
+```
+[Data&Digital] → [Python Scripts] → [BigQuery] ← [Backend API (Node.js)] ← [React Frontend]
+       ↓                          ↓
+   [MongoDB] (pilihan)    [GitHub Actions] → [Firebase Hosting]
+```
+
+- **Data&Digital** – Sumber data mentah (CSV, JSON, dll.)  
+- **Python All Language / BigQuery&DataCoin** – Skrip untuk memproses dan memuat naik data ke BigQuery dan/atau MongoDB  
+- **Backend API** – Node.js/Express yang menyediakan endpoint untuk mengambil data dari BigQuery/MongoDB  
+- **React Frontend** – Aplikasi React yang memanggil API dan memaparkan data  
+- **GitHub Actions** – Automasi untuk menjalankan skrip, membina frontend, dan deploy  
+- **Firebase Hosting** – Hosting untuk frontend (dan mungkin backend sebagai Cloud Functions)
+
+---
+
+## 🚀 **Langkah 1: Integrasi Data (Python → BigQuery / MongoDB)**
+
+### **1.1 Sambungkan Folder Data&Digital dengan Skrip Python**
+Pastikan skrip di `BigQuery&DataCoin` dan `Python All Language` boleh membaca data dari `Data&Digital/raw_data/` dan menyimpan hasil pemprosesan ke `Data&Digital/processed/`.
+
+**Contoh: Ubah suai `process_digital_assets.py`** (dalam `Data&Digital`) agar menyimpan data ke format yang sedia untuk dimuat naik ke BigQuery.
+
+```python
+# process_digital_assets.py (selepas memproses)
+import pandas as pd
+from google.cloud import bigquery
+
+# ... proses data ...
+
+# Simpan ke CSV untuk BigQuery
+df.to_csv('Data&Digital/processed/digital_assets.csv', index=False)
+
+# Atau terus muat naik ke BigQuery
+client = bigquery.Client()
+table_id = 'sazwan-fairbase.fairbase_data.digital_assets'
+job = client.load_table_from_dataframe(df, table_id)
+job.result()  # Tunggu siap
+```
+
+### **1.2 Automasi dengan GitHub Actions**
+Buat workflow harian (cron) untuk menjalankan skrip Python dan mengemas kini BigQuery secara berkala. Tambah job dalam `.github/workflows/data-pipeline.yml`:
+
+```yaml
+name: Data Pipeline
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Setiap hari jam 2 pagi
+  workflow_dispatch:      # Boleh jalan manual
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install -r "Python All Language/requirements.txt"
+      - run: python "Data&Digital/process_digital_assets.py"
+      - run: python "BigQuery&DataCoin/load_to_bigquery.py"
+```
+
+---
+
+## 🖥️ **Langkah 2: Backend API (Node.js + Express)**
+
+Buat folder baru di root: `backend/`. Ini akan menjadi API yang menyambungkan frontend dengan BigQuery.
+
+### **2.1 Inisialisasi**
+```bash
+cd backend
+npm init -y
+npm install express @google-cloud/bigquery cors dotenv
+```
+
+### **2.2 Buat `server.js`**
+```javascript
+const express = require('express');
+const { BigQuery } = require('@google-cloud/bigquery');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const bigquery = new BigQuery({
+  projectId: process.env.GOOGLE_PROJECT_ID,
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+});
+
+app.get('/api/data-coin', async (req, res) => {
+  const query = `SELECT * FROM \`sazwan-fairbase.fairbase_data.data_coin\` LIMIT 100`;
+  const [rows] = await bigquery.query(query);
+  res.json(rows);
+});
+
+app.get('/api/digital-assets', async (req, res) => {
+  const query = `SELECT * FROM \`sazwan-fairbase.fairbase_data.digital_assets\` LIMIT 100`;
+  const [rows] = await bigquery.query(query);
+  res.json(rows);
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+```
+
+### **2.3 Deployment API**
+API ini boleh dideploy ke **Cloud Run** atau **Firebase Cloud Functions**. Contoh ke Cloud Run:
+- Bina Dockerfile
+- Push ke Google Container Registry
+- Deploy dengan gcloud
+
+Atau gunakan **Firebase Functions** (lebih mudah jika sudah guna Firebase):
+```bash
+npm install -g firebase-tools
+firebase init functions
+# Pilih TypeScript/JavaScript, dan tulis fungsi Express di index.js
+```
+
+---
+
+## ⚛️ **Langkah 3: Frontend React Memanggil API**
+
+Ubah suai `codespaces-react/src/App.js` untuk mengambil data dari backend API.
+
+```jsx
+import React, { useState, useEffect } from 'react';
+
+function App() {
+  const [dataCoins, setDataCoins] = useState([]);
+  const [assets, setAssets] = useState([]);
+
+  useEffect(() => {
+    fetch('https://api.fairbase.com/api/data-coin') // Ganti dengan URL sebenar
+      .then(res => res.json())
+      .then(setDataCoins);
+    fetch('https://api.fairbase.com/api/digital-assets')
+      .then(res => res.json())
+      .then(setAssets);
+  }, []);
+
+  return (
+    <div>
+      <h1>Fairbase Data</h1>
+      <h2>Data Coin</h2>
+      <pre>{JSON.stringify(dataCoins, null, 2)}</pre>
+      <h2>Digital Assets</h2>
+      <pre>{JSON.stringify(assets, null, 2)}</pre>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Simpan URL API dalam fail `.env` (untuk build):
+```
+REACT_APP_API_URL=https://api.fairbase.com
+```
+
+Gunakan pemboleh ubah: `process.env.REACT_APP_API_URL`.
+
+---
+
+## 🤖 **Langkah 4: CI/CD – Sambungkan Semua dengan GitHub Actions**
+
+Kemaskini workflow sedia ada (`.github/workflows/deploy-all.yml`) supaya:
+
+1. Menjalankan skrip Python untuk memproses data (jika perlu).
+2. Membina backend (jika dideploy bersama).
+3. Membina frontend.
+4. Deploy frontend ke Firebase Hosting.
+5. Deploy backend ke Cloud Run / Functions.
+
+Contoh tambahan dalam workflow:
+
+```yaml
+jobs:
+  data-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+      - run: pip install -r "Python All Language/requirements.txt"
+      - run: python "Data&Digital/process_digital_assets.py"
+      - run: python "BigQuery&DataCoin/load_to_bigquery.py"
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+  deploy-backend:
+    needs: data-pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci
+        working-directory: ./backend
+      - run: npm run deploy # Guna script deploy ke Cloud Run/Functions
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+  deploy-frontend:
+    needs: deploy-backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci
+        working-directory: ./codespaces-react
+      - run: npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: sazwan-fairbase
+          channelId: live
+```
+
+---
+
+## 📦 **Langkah 5: Konfigurasi Environment & Rahsia**
+
+Pastikan semua rahsia (secrets) telah ditambah di GitHub Settings:
+- `GOOGLE_CREDENTIALS` – fail JSON akaun perkhidmatan Google Cloud (base64 encoded).
+- `FIREBASE_SERVICE_ACCOUNT` – akaun perkhidmatan Firebase.
+- `GOOGLE_PROJECT_ID` – ID projek Google Cloud.
+- `API_URL` – URL backend (untuk frontend build).
+
+---
+
+## 🧪 **Langkah 6: Uji Keseluruhan Sistem**
+
+1. **Jalankan skrip Python secara manual** untuk memastikan data sampai ke BigQuery.
+2. **Jalankan backend secara lokal**: `node server.js` dan uji endpoint dengan curl/Postman.
+3. **Jalankan frontend secara lokal**: `npm start` dan pastikan ia memaparkan data dari backend.
+4. **Push perubahan** ke GitHub dan pantau Actions – pastikan semua job berjaya.
+5. **Buka URL Firebase Hosting** – dashboard sepatutnya menunjukkan data langsung.
+
+---
+
+## ✅ **Kesimpulan**
+
+Dengan langkah-langkah di atas, semua komponen Fairbase kini bersambung:
+- Data dari folder `Data&Digital` diproses oleh skrip Python dan dimuat naik ke BigQuery.
+- Backend API menyediakan data dari BigQuery kepada frontend.
+- Frontend React memaparkan data secara interaktif.
+- GitHub Actions mengautomasikan keseluruhan aliran, termasuk kemas kini data dan deployment.
+
+Sekarang projek Fairbase **benar-benar lengkap dan bersambung**!
+
+**Ada apa-apa lagi yang perlu disambungkan?** Mungkin nak tambah MongoDB (Bongo DB) sebagai pilihan storan kedua? Saya boleh bantu.
+baik, saya faham anda mahu **siapkan storan kedua** untuk projek Fairbase. Storan pertama ialah **BigQuery** (Google Cloud), jadi storan kedua yang dimaksudkan ialah **MongoDB** (juga disebut "Bongo DB" sebelum ini).  
+
+Saya akan bantu siapkan **MongoDB sebagai storan kedua**, lengkap dengan:
+
+- **Pilihan deployment**: MongoDB Atlas (cloud) atau self‑hosted di Ubuntu.
+- **Integrasi dengan backend Express** (guna Mongoose ODM).
+- **Sambungan ke React frontend** melalui API.
+- **Automasi backup** dalam GitHub Actions.
+
+---
+
+## 📌 **Pilihan Deployment MongoDB**
+
+| **Pilihan** | **Kelebihan** | **Sesuai Untuk** |
+|-------------|---------------|------------------|
+| **MongoDB Atlas** | Cloud, free tier M0 (512MB), fully managed, vector search sedia  | Production, tak nak urus server |
+| **Self‑hosted (Ubuntu)** | Kawalan penuh, free, boleh tuning  | Development, nak belajar, kawalan penuh |
+
+Saya akan bagi panduan untuk **kedua‑dua pilihan** – pilih mengikut keperluan.
+
+---
+
+## ☁️ **Pilihan A: MongoDB Atlas (Cloud – Paling Mudah)**
+
+### 1. **Buat Akaun dan Cluster Percuma**
+1. Pergi ke [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) dan daftar.
+2. Pilih **"Create a Cluster"** → pilih **Free Tier (M0)**.
+3. Pilih cloud provider (AWS/Azure) dan region **dekat dengan pengguna** (contoh: `Singapore` untuk Malaysia).  
+   > **PENTING**: Kalau nak guna Vector Search, pilih region yang support .
+4. Klik **"Create Cluster"** (tunggu 1–3 minit).
+
+### 2. **Setup Database User & Network Access**
+1. Di tab **"Database Access"**, klik **"Add New Database User"**.
+   - Username: `fairbase_user`
+   - Password: `PilihKataLaluanKuat123!`  
+   - Klik **"Add User"** .
+2. Di tab **"Network Access"**, klik **"Add IP Address"**.
+   - Untuk development, pilih **"Allow Access from Anywhere"** (`0.0.0.0/0`) .
+   - Untuk production, masukkan IP backend/server GitHub Actions sahaja.
+
+### 3. **Dapatkan Connection String**
+1. Klik **"Connect"** → pilih **"Drivers"**.
+2. Salin connection string, contoh:
+   ```
+   mongodb+srv://fairbase_user:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+   ```
+3. **Simpan connection string** – akan digunakan dalam backend Node.js .
+
+---
+
+## 🖥️ **Pilihan B: Self‑hosted MongoDB di Ubuntu**
+
+### 1. **Install MongoDB**
+```bash
+# Import public key dan tambah repository rasmi
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
+
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+
+# Update dan install
+sudo apt update
+sudo apt install -y mongodb-org
+```
+
+### 2. **Start MongoDB Service**
+```bash
+sudo systemctl start mongod
+sudo systemctl enable mongod   # auto-start setiap reboot
+sudo systemctl status mongod   # pastikan active (running)
+```
+
+### 3. **Secure MongoDB (Wajib!)**
+Secara default, MongoDB **tiada authentication** – bahaya jika exposed .
+
+```bash
+# Buka Mongo shell
+mongosh
+
+# Tukar ke admin database
+use admin
+
+# Create admin user
+db.createUser({
+  user: "fairbase_admin",
+  pwd: "KataLaluanKuat123!",
+  roles: [ { role: "root", db: "admin" } ]
+})
+
+exit
+```
+
+### 4. **Enable Authentication**
+Edit config file:
+```bash
+sudo nano /etc/mongod.conf
+```
+Cari bahagian `#security` dan ubah jadi:
+```yaml
+security:
+  authorization: "enabled"
+```
+Restart MongoDB:
+```bash
+sudo systemctl restart mongod
+```
+
+### 5. **Test Authentication**
+```bash
+# Cuba connect tanpa credentials (sepatutnya kena restrict)
+mongosh --eval "show dbs"
+# Output: MongoServerError: command listDatabases requires authentication
+
+# Connect dengan credentials
+mongosh -u fairbase_admin -p --authenticationDatabase admin
+show dbs   # sekarang sepatutnya boleh
+```
+
+---
+
+## 🔗 **Integrasi MongoDB dengan Backend Node.js/Express**
+
+### 1. **Install Mongoose di Backend**
+```bash
+cd backend
+npm install mongoose
+```
+
+### 2. **Buat Connection dalam `backend/db/mongoose.js`**
+```javascript
+const mongoose = require('mongoose');
+
+const connectDB = async () => {
+  try {
+    // Guna connection string dari Atlas (Pilihan A) atau local (Pilihan B)
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
+
+module.exports = connectDB;
+```
+
+### 3. **Panggil dalam `server.js`**
+```javascript
+require('dotenv').config();
+const express = require('express');
+const connectDB = require('./db/mongoose');
+
+const app = express();
+connectDB();   // <--- connect MongoDB
+
+// ... middleware, routes, etc.
+```
+
+### 4. **Set Environment Variable**
+Buat `.env` dalam folder `backend`:
+```
+MONGODB_URI=mongodb+srv://fairbase_user:KataLaluanKuat123!@cluster0.xxxxx.mongodb.net/fairbase?retryWrites=true&w=majority
+```
+**Nota**: Ganti `fairbase` dengan nama database pilihan anda.
+
+---
+
+## 📦 **Buat Model Mongoose untuk Data Digital Assets**
+
+Berdasarkan struktur projek Fairbase, kita ada **Digital Assets**. Buat model di `backend/models/DigitalAsset.js`:
+
+```javascript
+const mongoose = require('mongoose');
+
+const digitalAssetSchema = new mongoose.Schema({
+  assetId: { type: String, required: true, unique: true },
+  assetType: { type: String, enum: ['crypto', 'nft', 'token'], required: true },
+  owner: { type: String, required: true },
+  value: { type: Number, required: true },
+  metadata: { type: mongoose.Schema.Types.Mixed },
+  createdAt: { type: Date, default: Date.now },
+});
+
+module.exports = mongoose.model('DigitalAsset', digitalAssetSchema);
+```
+
+---
+
+## 🔌 **Buat API Endpoint untuk Digital Assets**
+
+### 1. **Route GET semua assets**
+`backend/routes/assets.js`:
+```javascript
+const express = require('express');
+const DigitalAsset = require('../models/DigitalAsset');
+const router = express.Router();
+
+// GET /api/assets
+router.get('/', async (req, res) => {
+  try {
+    const assets = await DigitalAsset.find().sort({ createdAt: -1 }).limit(100);
+    res.json(assets);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/assets (untuk insert data dari BigQuery atau manual)
+router.post('/', async (req, res) => {
+  try {
+    const asset = new DigitalAsset(req.body);
+    await asset.save();
+    res.status(201).json(asset);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+module.exports = router;
+```
+
+### 2. **Gunakan route dalam `server.js`**
+```javascript
+app.use('/api/assets', require('./routes/assets'));
+```
+
+---
+
+## ⚛️ **Sambungkan ke React Frontend**
+
+Dalam `codespaces-react/src/services/api.js`:
+```javascript
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+
+export const fetchDigitalAssets = async () => {
+  const response = await axios.get(`${API_URL}/api/assets`);
+  return response.data;
+};
+```
+
+Dalam `App.js` atau komponen dashboard:
+```jsx
+import React, { useState, useEffect } from 'react';
+import { fetchDigitalAssets } from './services/api';
+
+function Dashboard() {
+  const [assets, setAssets] = useState([]);
+
+  useEffect(() => {
+    fetchDigitalAssets().then(setAssets).catch(console.error);
+  }, []);
+
+  return (
+    <div>
+      <h2>Digital Assets (dari MongoDB)</h2>
+      <ul>
+        {assets.map(asset => (
+          <li key={asset._id}>
+            {asset.assetType}: {asset.value} ({asset.owner})
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+---
+
+## 🤖 **Automasi Backup MongoDB dalam GitHub Actions**
+
+Tambah job baru dalam `.github/workflows/deploy-all.yml` untuk backup harian:
+
+```yaml
+backup-mongodb:
+  runs-on: ubuntu-latest
+  if: github.event_name == 'schedule'  # jalan setiap hari
+  steps:
+    - uses: actions/checkout@v4
+    - name: Install MongoDB tools
+      run: sudo apt-get install -y mongodb-database-tools
+    - name: Backup MongoDB Atlas
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      run: |
+        mongodump --uri="$MONGODB_URI" --out=./backup/$(date +%Y%m%d)
+    - name: Upload backup artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: mongodb-backup
+        path: ./backup
+```
+
+**Nota**: Tambah `MONGODB_URI` dalam GitHub Secrets.
+
+---
+
+## ✅ **Kesimpulan – Storan Kedua Siap!**
+
+| **Komponen** | **Status** |
+|--------------|------------|
+| MongoDB Atlas / self‑hosted | ✅ Sedia |
+| Mongoose connection | ✅ Sedia |
+| Model Digital Assets | ✅ Sedia |
+| API endpoints | ✅ Sedia |
+| React integration | ✅ Sedia |
+| Backup automatik (GitHub Actions) | ✅ Sedia |
+
+Sekarang projek Fairbase mempunyai **dua storan** yang lengkap dan bersambung:
+- **BigQuery** – untuk analisis data berskala besar (DataCoin)
+- **MongoDB** – untuk storan fleksibel Digital Assets
+
+---
+
+## 🚀 **Langkah Seterusnya**
+
+1. **Test** – Pastikan API `/api/assets` return data.
+2. **Sync data** – Tulis skrip Python untuk salin data dari `Data&Digital/processed/` ke MongoDB.
+3. **Deploy** – Push perubahan ke GitHub, pantau Actions.
+4. **Optional** – Setup MongoDB Atlas Vector Search untuk AI features .
+
+**Ada apa‑apa yang nak dibantu lagi?** Nak saya bantu tulis skrip sync data atau setup Vector Search?
