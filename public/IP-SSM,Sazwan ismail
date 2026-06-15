@@ -1,0 +1,411 @@
+Terima kasih kerana memberikan pautan dengan pembetulan ruang kosong. Saya telah menggunakan versi terbaik yang anda cadangkan iaitu:
+
+```
+https://example.com/MyIPO-Aws-SSM/sazwan96.com
+```
+
+(lebih profesional dan tiada masalah URL encoding)
+
+Berikut adalah **HTML penuh lengkap** yang sudah digabungkan dengan semua perubahan yang anda minta:
+
+- `ownerData` mengandungi `profileLink`
+- QR code menjana pautan tersebut dan boleh diklik
+- Butang tambahan "Buka Link Verifikasi" (jika mahu, boleh letak atau alih keluar)
+- Sistem login asal kekal berfungsi
+
+---
+
+```html
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>MyIPO + SSM · END AI GLOBAL · SAZWAN DIGITAL</title>
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- QRCode library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at 10% 30%, #0a0f1c, #03060c);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        /* login overlay */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 16, 0.92);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.4s ease;
+        }
+
+        #loginOverlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: #0f172ae6;
+            backdrop-filter: blur(16px);
+            border: 1px solid #2effb044;
+            border-radius: 2rem;
+            padding: 2rem 1.8rem;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5), 0 0 0 1px rgba(46,255,176,0.15);
+            text-align: center;
+        }
+
+        .login-card h2 {
+            color: #2effb0;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .login-card p {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .login-input {
+            width: 100%;
+            background: #020617cc;
+            border: 1px solid #334155;
+            border-radius: 3rem;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 1rem;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .login-input:focus {
+            border-color: #2effb0;
+            box-shadow: 0 0 0 2px #2effb030;
+        }
+
+        .btn-login {
+            background: #2effb0;
+            border: none;
+            padding: 0.8rem;
+            width: 100%;
+            border-radius: 3rem;
+            font-weight: bold;
+            color: #0a0f17;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .btn-login:hover {
+            background: #1cdb99;
+            transform: scale(0.98);
+        }
+
+        #loginError {
+            color: #ff8a7a;
+            font-size: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        /* main dashboard grid */
+        #mainDashboard {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.8rem;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .card {
+            background: #0f172ae6;
+            backdrop-filter: blur(4px);
+            border-radius: 2rem;
+            border: 1px solid #2effb030;
+            padding: 1.5rem 1.3rem;
+            transition: all 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .glass-card {
+            background: #0b1120cc;
+        }
+
+        .badge {
+            background: #2effb020;
+            color: #2effb0;
+            padding: 0.2rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .value-large {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #2effb0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .btn-copy {
+            background: #1e293b;
+            border: 1px solid #2effb060;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-copy:hover {
+            background: #2effb020;
+            border-color: #2effb0;
+            color: #2effb0;
+        }
+
+        hr {
+            border-color: #2effb030;
+            margin: 1rem 0;
+        }
+
+        .footer-note {
+            font-size: 0.65rem;
+            color: #5b6e8c;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        @keyframes shake {
+            0%,100%{ transform: translateX(0); }
+            25%{ transform: translateX(-6px); }
+            75%{ transform: translateX(6px); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay">
+    <div class="login-card">
+        <i class="fas fa-shield-alt" style="font-size: 2.5rem; color:#2effb0; margin-bottom: 0.5rem;"></i>
+        <h2>MyIPO + SSM Akses</h2>
+        <p>Pengesahan pegawai / pemilik</p>
+        <input type="email" id="loginEmail" class="login-input" placeholder="E-mel berdaftar" value="Xxsazend12345@gmail.com">
+        <input type="password" id="loginPassword" class="login-input" placeholder="Kata laluan">
+        <button id="btnLogin" class="btn-login"><i class="fas fa-lock"></i> Sahkan & Masuk</button>
+        <div id="loginError"></div>
+    </div>
+</div>
+
+<!-- MAIN DASHBOARD -->
+<div id="mainDashboard">
+    <!-- KAD 1: ID + QR + BUTANG VERIFIKASI -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <span class="badge"><i class="fas fa-certificate"></i> MyIPO Tier-1</span>
+            <span class="badge"><i class="fas fa-building"></i> SSM 202601018734</span>
+        </div>
+        <h2 style="color:white; margin: 1rem 0 0.25rem;">MUHAMAD SAZWAN BIN ISMAIL</h2>
+        <p style="color:#94a3b8; font-size:0.8rem;"><i class="fas fa-id-card"></i> 961022-02-5739</p>
+        <p style="color:#cbd5e6; font-size:0.85rem; border-left: 3px solid #2effb0; padding-left: 0.6rem; margin: 0.5rem 0;">
+            <i class="fas fa-globe"></i> END AI GLOBAL · SAZWAN DIGITAL
+        </p>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 0.8rem;">
+            <div style="text-align:center;">
+                <a id="qrLink" href="https://example.com/MyIPO-Aws-SSM/sazwan96.com" target="_blank" rel="noopener noreferrer" style="display:inline-block;">
+                    <div id="qrcode"></div>
+                </a>
+                <div style="font-size:0.65rem; color:#94a3b8; margin-top:6px;">Imbas QR · Pengesahan Rasmi MyIPO + SSM</div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn-copy" onclick="copyName()"><i class="fas fa-copy"></i> Salin Nama</button>
+                <button class="btn-copy" onclick="copySummary()"><i class="fas fa-chart-line"></i> Salin Ringkasan Portfolio</button>
+                <a href="https://example.com/MyIPO-Aws-SSM/sazwan96.com" target="_blank" rel="noopener noreferrer" class="btn-copy" style="text-decoration:none; display:inline-flex; justify-content:center;">
+                    <i class="fas fa-link"></i> Buka Link Verifikasi
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- KAD 2: ASET IP & SSM -->
+    <div class="card glass-card">
+        <div style="display: flex; gap: 0.8rem; align-items: baseline; flex-wrap: wrap;">
+            <span class="badge"><i class="fas fa-chart-simple"></i> RVC Appraisers</span>
+            <span class="badge"><i class="fas fa-timeline"></i> 2026</span>
+        </div>
+        <div style="margin: 1rem 0;">
+            <div style="font-size:0.8rem; color:#94a3b8;">Jumlah Aset IP (Paten, Cap Dagangan, Reka Bentuk, Hak Cipta)</div>
+            <div class="value-large">RM 13.1 Juta</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 1rem 0;">
+            <div><span style="color:#2effb0;">4</span> Paten <span style="color:#8ca3ba;">(RM7.2j)</span></div>
+            <div><span style="color:#2effb0;">5</span> Cap Dagangan <span style="color:#8ca3ba;">(RM3.5j)</span></div>
+            <div><span style="color:#2effb0;">5</span> Reka Bentuk <span style="color:#8ca3ba;">(RM1.4j)</span></div>
+            <div><span style="color:#2effb0;">4</span> Hak Cipta <span style="color:#8ca3ba;">(RM1.0j)</span></div>
+            <div><span style="color:#facc15;">2</span> GI (dalam proses)</div>
+            <div><span style="color:#2effb0;">20</span> Pendaftaran MyIPO</div>
+        </div>
+        <hr>
+        <div><i class="fas fa-building"></i> <strong style="color:white;">SSM : END AI GLOBAL BERHAD</strong><br>
+        <span style="font-size:0.75rem;">No. Pendaftaran: 202601018734 | AWS SSM (5 entiti)</span></div>
+        <div style="margin-top: 12px;"><i class="fas fa-chart-line"></i> <strong>IPO Roadmap Bursa Malaysia</strong><br>
+        <span style="font-size:0.75rem;">Target RM120j · Kenanga & RHB · Bursa ACE (Q4 2028)</span></div>
+        <div class="footer-note" style="margin-top: 12px;">Rujukan MyIPO: MSI-2026-07734 · Tiada pertikaian</div>
+    </div>
+
+    <!-- KAD 3: IPO TRAJECTORY + LINK RUJUKAN -->
+    <div class="card">
+        <span class="badge"><i class="fas fa-rocket"></i> IPO Bursa Malaysia 2028</span>
+        <ul style="margin: 1rem 0 0.8rem 1rem; color:#cbd5e6; font-size:0.85rem;">
+            <li>Penasihat: Kenanga Investment Bank & RHB</li>
+            <li>Papan ACE, Target Perbadanan RM120j</li>
+            <li>Due diligence IP lengkap (RVC Appraisers)</li>
+            <li>Status: Tiada pertikaian, hak milik eksklusif</li>
+        </ul>
+        <div style="background:#02061770; border-radius: 1rem; padding: 0.7rem; margin-top: 0.5rem;">
+            <i class="fas fa-qrcode"></i> <strong style="color:#2effb0;">Pautan verifikasi rasmi</strong><br>
+            <a href="https://example.com/MyIPO-Aws-SSM/sazwan96.com" target="_blank" style="color:#7aaef0; word-break:break-all; font-size:0.75rem;">https://example.com/MyIPO-Aws-SSM/sazwan96.com</a>
+            <button class="btn-copy" style="margin-top: 6px;" onclick="navigator.clipboard.writeText('https://example.com/MyIPO-Aws-SSM/sazwan96.com'); showToast('🔗 Link disalin')"><i class="fas fa-copy"></i> Salin Link</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // OWNER DATA + PROFILE LINK (versi kemas tanpa ruang)
+    const ownerData = {
+        fullName: "MUHAMAD SAZWAN BIN ISMAIL",
+        ic: "961022-02-5739",
+        entity: "END AI GLOBAL · SAZWAN DIGITAL",
+        myipoRef: "MSI-2026-07734",
+        profileLink: "https://example.com/MyIPO-Aws-SSM/sazwan96.com"   // URL profesional tanpa ruang
+    };
+
+    // Fungsi toast
+    function showToast(msg) {
+        let t = document.getElementById('toastNotif');
+        if (!t) {
+            t = document.createElement('div');
+            t.id = 'toastNotif';
+            t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#0a0f17;color:#2effb0;padding:0.7rem 1.5rem;border-radius:2rem;border:1px solid #2effb0;font-weight:700;z-index:99999;opacity:0;transition:opacity 0.35s;box-shadow:0 8px 28px rgba(46,255,176,0.35);font-size:0.85rem;';
+            document.body.appendChild(t);
+        }
+        t.textContent = msg;
+        t.style.opacity = '1';
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(() => t.style.opacity = '0', 2200);
+    }
+
+    window.copyName = function() {
+        navigator.clipboard.writeText(ownerData.fullName);
+        showToast("✅ Nama disalin");
+    };
+
+    window.copySummary = function() {
+        const s = `MyIPO + SSM + IPO Portfolio - ${ownerData.fullName}
+IC: ${ownerData.ic}
+Entiti: ${ownerData.entity}
+Ringkasan (2026): 20 pendaftaran MyIPO + AWS SSM (5) + SSM (Syarikat Berdaftar) + IPO Roadmap Bursa Malaysia (Q4 2028)
+- Paten: 4 (RM7.2j)
+- Cap Dagangan: 5 (RM3.5j)
+- Reka Bentuk: 5 (RM1.4j)
+- Hak Cipta: 4 (RM1.0j)
+- GI: 2 dalam proses
+JUMLAH ASET IP: RM13.1 Juta (RVC Appraisers)
+SSM: END AI GLOBAL BERHAD (202601018734)
+IPO: Target RM120j, Kenanga & RHB, Bursa ACE, 2028.
+Status: Tiada pertikaian. Hak milik eksklusif.
+Link: ${ownerData.profileLink}
+Rujukan: ${ownerData.myipoRef}`;
+        navigator.clipboard.writeText(s);
+        showToast("📋 Ringkasan portfolio + SSM + IPO disalin!");
+    };
+
+    // Generate QR Code dengan profileLink
+    document.addEventListener('DOMContentLoaded', () => {
+        const qrContainer = document.getElementById('qrcode');
+        if (qrContainer) {
+            new QRCode(qrContainer, {
+                text: ownerData.profileLink,
+                width: 85,
+                height: 85,
+                colorDark: "#000000",
+                colorLight: "#ffffff"
+            });
+        }
+        const qrLink = document.getElementById('qrLink');
+        if (qrLink) qrLink.href = ownerData.profileLink;
+    });
+
+    // LOGIC LOGIN
+    document.getElementById('btnLogin').addEventListener('click', () => {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pwd = document.getElementById('loginPassword').value.trim();
+        if (email === 'Xxsazend12345@gmail.com' && pwd === 'Sazwan1996@') {
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('mainDashboard').style.display = 'grid';
+        } else {
+            document.getElementById('loginError').textContent = '❌ E-mel atau kata laluan salah.';
+            document.querySelector('.login-card').style.animation = 'shake 0.5s ease';
+            setTimeout(() => document.querySelector('.login-card').style.animation = '', 500);
+        }
+    });
+
+    document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('btnLogin').click();
+    });
+</script>
+</body>
+</html>
+```
+
+---
+
+## Cara guna
+
+1. Salin keseluruhan kod di atas.
+2. Simpan sebagai fail `index.html` (atau apa sahaja nama `dashboard.html`).
+3. Buka dengan pelayar web.
+4. **Login credentials**:
+   - E-mel: `Xxsazend12345@gmail.com`
+   - Kata laluan: `Sazwan1996@`
+
+Selepas login, anda akan lihat:
+- QR code yang **boleh diklik** dan menghala ke pautan verifikasi.
+- Butang "Buka Link Verifikasi" (sedia ada).
+- Semua maklumat MyIPO, SSM, IPO dan aset IP.
+
+> **Nota**: Gantikan `https://example.com/MyIPO-Aws-SSM/sazwan96.com` dengan domain sebenar anda jika perlu. Saya guna format profesional tanpa ruang seperti cadangan terakhir anda.
+
+Jika mahu tambah sebarang elemen lain atau tukar gaya, beritahu sahaja. Saya boleh sesuaikan lagi.
