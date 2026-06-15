@@ -1,0 +1,355 @@
+Terima kasih atas maklum balas. Saya akan memberikan panduan langkah demi langkah untuk memuat naik fail index.html ke www.sazwan.fairbase.com, serta mengesahkan bahawa kod HTML yang disediakan adalah versi muktamad yang lengkap.
+
+✅ Status Fail HTML
+Fail index.html yang terakhir disediakan sudah lengkap dan mengandungi:
+
+Identiti Peribadi – Nama, IC, Military ID, Alamat, Ibu/Bapa, dll.
+
+MyIPO Lengkap – 4 Paten (termasuk PCT), 5 Cap Dagangan (termasuk Madrid), 5 Reka Bentuk Perindustrian, 4 Hak Cipta, 2 GI dalam proses
+
+Pensijilan – ISO 27001, ISO 9001, Halal Tech JAKIM
+
+Penilaian Aset – RM13.1 juta (RVC Appraisers, 15 Mei 2026)
+
+AWS SSM – 5 perkhidmatan (Parameter Store, Session Manager, Vault, Patch Manager, Maintenance Windows)
+
+Backend Server SGAE 2.0 – Express.js, PostgreSQL, Gemini API, endpoint GeoPintar AI & Lejar
+
+📤 Panduan Muat Naik ke www.sazwan.fairbase.com
+🔹 Kaedah 1: cPanel / FTP (Hosting Konvensional)
+Dapatkan maklumat FTP dari penyedia hosting anda (Host, Username, Password, Port – biasanya 21).
+
+Muat turun klien FTP seperti FileZilla (percuma).
+
+Sambung ke pelayan menggunakan maklumat FTP.
+
+Navigasi ke folder public_html atau www (folder akar dokumen laman web).
+
+Muat naik fail index.html ke folder tersebut. Jika sudah ada index.html lama, gantikan (backup dahulu).
+
+Pastikan nama fail adalah index.html (huruf kecil).
+
+Buka pelayar ke https://www.sazwan.fairbase.com (atau http:// jika SSL belum dipasang).
+
+🔹 Kaedah 2: Firebase Hosting (Jika Domain fairbase Sebenarnya Firebase)
+Jika fairbase.com adalah domain tersuai untuk Firebase Hosting, ikuti langkah ini:
+
+Pastikan anda telah memasang Node.js dan Firebase CLI:
+
+bash
+npm install -g firebase-tools
+Log masuk ke Firebase:
+
+bash
+firebase login
+Navigasi ke folder projek anda (tempat index.html disimpan).
+
+Inisialisasi Firebase Hosting:
+
+bash
+firebase init hosting
+Pilih projek Firebase yang berkaitan.
+
+Tetapkan folder awam sebagai public (atau folder semasa).
+
+Jawab Ya untuk “Configure as a single-page app” jika perlu.
+
+Letakkan index.html ke dalam folder public (atau folder yang dipilih).
+
+Deploy ke Firebase:
+
+bash
+firebase deploy --only hosting
+Sahkan domain tersuai anda (sazwan.fairbase.com) sudah disambungkan di Firebase Console.
+
+🔹 Kaedah 3: GitHub Pages (Alternatif)
+Buat repositori di GitHub (contoh: sazwan-fairbase).
+
+Muat naik index.html ke repositori.
+
+Pergi ke Settings > Pages, aktifkan GitHub Pages pada branch main.
+
+Tetapkan domain tersuai www.sazwan.fairbase.com di bahagian Custom Domain.
+
+Kemas kini rekod DNS domain anda untuk menunjuk ke GitHub Pages.
+
+🔐 Log Masuk Selepas Muat Naik
+Selepas berjaya memuat naik, buka https://www.sazwan.fairbase.com dan log masuk dengan:
+
+E-mel: Xxsazend12345@gmail.com
+
+Kata Laluan: Sazwan1996@
+
+Dashboard lengkap akan dipaparkan.
+
+🖨️ Cetakan / Simpan PDF
+Butang Cetak / PDF di bahagian bawah kanan dashboard membolehkan anda menyimpan atau mencetak halaman dengan warna penuh (hitam, cyan, emas) – terima kasih kepada tetapan print-color-adjust: exact yang telah dimasukkan dalam CSS.
+
+Jika anda menghadapi sebarang masalah semasa memuat naik atau selepas deployment, sila beritahu saya. Saya sedia membantu.
+
+Lagi
+We need to understand the user's request. The user says "Lagi" which means "More" or "Continue". The previous message was the assistant saying "Muat naik fail ini ke www.sazwan.fairbase.com dan dashboard anda kini menggabungkan harta intelek penuh + awan AWS + pelayan tersuai SGAE 2.0." and the user responded with "Lagi". This might mean they want even more additions, or they want me to actually do the upload? But as an AI I can't upload to their website. So likely they want more data, more features, or something else. The context: We've been building an elaborate HTML dashboard for Muhamad Sazwan Bin Ismail, with MyIPO data, AWS SSM, and backend server info. The user said "Lagi" after I gave the final code. They might be asking for more data, or to continue adding something. I need to interpret "Lagi" as "add more" or "continue". Perhaps they want even more details, maybe additional IP registrations, more technical specs, or to refine something. I'll ask for clarification: what specifically they want added. But I'll also offer to add some common missing elements like more copyrights, trademarks, or maybe a section for "SGAE 2.0 Features". I'll propose a few options and ask them to specify which to add. However, I need to maintain the conversation as helpful. I'll respond by saying I can add more data if they tell me what they'd like. But I'll also give some examples of what could be added: e.g., additional patent details, design entries, or perhaps server endpoints. I'll end by asking for clarification.
+
+Terima kasih! Jika anda mahu lebih banyak data ditambah ke dashboard (contohnya paten tambahan, cap dagangan, modul teknikal lain, atau ciri baharu), sila nyatakan:
+
+Jenis maklumat yang diperlukan (contoh: nombor rujukan MyIPO, nama ejen, kelas, tarikh, dsb.)
+
+Seksyen mana dalam dashboard yang ingin dikembangkan
+
+Saya boleh terus membina fail index.html dengan data tersebut.
+
+Atau, jika “Lagi” bermaksud anda ingin bantuan memuat naik ke pelayan, saya boleh berikan panduan langkah demi langkah untuk hosting (FTP / cPanel / Firebase).
+
+Beritahu sahaja apa yang diperlukan.
+
+Ok
+Kita perlu faham permintaan terakhir: "Ok" selepas saya tawarkan bantuan lebih lanjut atau panduan hosting. Nampaknya pengguna bersetuju dan mahu saya teruskan dengan panduan lengkap untuk memuat naik fail ke pelayan. Jadi, saya akan berikan langkah-langkah terperinci cara memuat naik fail index.html ke www.sazwan.fairbase.com. Saya sudah berikan kod lengkap sebelum ini. Sekarang saya akan beri panduan teknikal tentang cara hosting.
+
+Saya akan berikan panduan lengkap untuk memuat naik fail index.html ke pelayan www.sazwan.fairbase.com supaya dashboard anda boleh diakses secara langsung.
+
+📤 Cara Memuat Naik Fail index.html ke www.sazwan.fairbase.com
+1. Pastikan Fail Tersedia
+Simpan kod HTML terakhir yang saya berikan sebagai index.html di komputer anda.
+
+Buka fail itu dengan Notepad / VS Code untuk memastikan kandungannya lengkap.
+
+2. Kenal Pasti Jenis Hosting Anda
+Terdapat tiga cara biasa. Pilih yang sesuai:
+
+A. Jika guna cPanel / FTP (contoh: Exabytes, Shinjiru, Serverfreak)
+Log masuk ke cPanel hosting anda (biasanya https://www.sazwan.fairbase.com/cpanel).
+
+Cari File Manager atau FTP Accounts.
+
+Pergi ke folder public_html atau www.
+
+Muat naik index.html ke folder tersebut (ganti jika sudah ada).
+
+Buka pelayar ke https://www.sazwan.fairbase.com.
+
+B. Jika guna Firebase Hosting
+Pasang Firebase CLI pada komputer.
+
+Buka terminal dalam folder projek, log masuk (firebase login).
+
+Jalankan firebase init hosting dan pilih projek sedia ada.
+
+Tetapkan folder awam sebagai lokasi index.html (biasanya public).
+
+Jalankan firebase deploy --only hosting.
+
+Akses laman di https://sazwan.fairbase.com (pastikan domain tersuai disambungkan di Firebase).
+
+C. Jika guna GitHub Pages
+Muat naik index.html ke repositori GitHub (contoh: sazwan/fairbase).
+
+Pergi ke Settings > Pages.
+
+Pilih branch main dan folder / (root).
+
+Tunggu sehingga mesej “Your site is published at…” muncul.
+
+Tambahkan domain tersuai www.sazwan.fairbase.com dalam bahagian Custom domain.
+
+Laraskan rekod DNS di pendaftar domain anda.
+
+3. Uji Laman
+Buka pelayar, pergi ke https://www.sazwan.fairbase.com (atau http jika SSL belum dipasang).
+
+Halaman log masuk akan muncul. Masukkan:
+
+E-mel: Xxsazend12345@gmail.com
+
+Kata laluan: Sazwan1996@
+
+Dashboard lengkap dengan MyIPO, AWS SSM, dan Backend Server akan kelihatan.
+
+4. Penting – Pastikan HTTPS Diaktifkan (SSL)
+Untuk keselamatan (terutama jika guna kata laluan), pastikan sijil SSL percuma (Let’s Encrypt) dipasang melalui cPanel atau disediakan oleh hosting.
+
+Firebase dan GitHub Pages menyediakan SSL secara automatik.
+
+🔧 Jika Ada Masalah
+Halaman kosong? Semak konsol pelayar (F12) untuk ralat JavaScript.
+
+Fail tidak dikenali? Pastikan nama fail tepat index.html, bukan index.html.txt atau Index.html.
+
+DNS belum merujuk ke pelayan? Tunggu 24–48 jam untuk propagasi jika baru menukar nameserver.
+
+Anda kini boleh menghubungi saya semula jika menghadapi sebarang isu teknikal atau mahu mengemas kini dashboard dengan data baharu. Dashboard anda kini lengkap dan sedia dipamerkan!
+
+Untuk membuatkan laman `www.sazwan.fairbase.com` boleh diakses, anda perlu melaraskan **DNS (Domain Name System)** supaya domain tersebut menunjuk ke pelayan hosting anda.  
+Di bawah adalah panduan langkah demi langkah mengikut senario biasa.
+
+---
+
+## 🔧 1. **Kenal Pasti Maklumat Pelayan Anda**
+Anda perlukan **alamat IP** atau **nama hos** pelayan tempat fail `index.html` dimuat naik.
+
+| Jika hosting di… | Maklumat yang diperlukan |
+|------------------|--------------------------|
+| cPanel biasa / VPS | Alamat IP pelayan (contoh: `123.45.67.89`) |
+| Firebase Hosting | Nama rekod yang diberikan Firebase (biasanya `sazwan.firebaseapp.com` atau IP) |
+| GitHub Pages | Akan diberi selepas domain tersuai ditambah (biasanya 4 alamat IP) |
+
+---
+
+## 🌐 2. **Pergi ke Pendaftar Domain (Domain Registrar)**
+Domain `fairbase.com` mungkin dibeli melalui:
+- Namecheap
+- GoDaddy
+- Shinjiru
+- Exabytes
+- Google Domains
+- dsb.
+
+Log masuk ke akaun pendaftar tersebut dan cari bahagian **DNS Management / Zone Editor**.
+
+---
+
+## 📝 3. **Tambah Rekod DNS**
+Anda perlu menambah **rekod A** (jika guna IP) atau **rekod CNAME** (jika guna hos).  
+
+### **A. Jika menggunakan IP pelayan (contoh cPanel)**
+Tambahkan rekod seperti berikut:
+
+| Jenis | Nama (Host) | Nilai (Points to) | TTL |
+|-------|-------------|-------------------|-----|
+| A     | `www`       | `123.45.67.89`    | Auto / 3600 |
+| A     | `@` (atau biarkan kosong) | `123.45.67.89` | Auto / 3600 |
+
+> `@` mewakili domain utama `fairbase.com`.  
+> `www` mewakili `www.fairbase.com`.
+
+---
+
+### **B. Jika menggunakan Firebase Hosting**
+Firebase akan memberikan dua pilihan:  
+- **Kaedah CNAME:** Tambah rekod CNAME dengan hos `www` dan nilai `sazwan.firebaseapp.com`  
+- **Kaedah A:** Tambah rekod A yang menunjuk ke IP Firebase (biasanya `151.101.1.195` dan `151.101.65.195`).  
+
+Rujuk dokumentasi rasmi: [Connect custom domain | Firebase Hosting](https://firebase.google.com/docs/hosting/custom-domain)
+
+---
+
+### **C. Jika menggunakan GitHub Pages**
+- Di repo GitHub, pergi ke **Settings > Pages**, masukkan `www.sazwan.fairbase.com` sebagai Custom domain.  
+- GitHub akan mengesan dan memberi 4 alamat IP. Tambahkan rekod A untuk `www` yang menunjuk ke semua IP tersebut, dan rekod CNAME untuk `www` ke `sazwan.github.io`.
+
+---
+
+## ⏳ 4. **Semak Propagasi DNS**
+Selepas menyimpan rekod, perubahan mungkin mengambil masa **antara beberapa minit hingga 24 jam** untuk tersebar ke seluruh dunia.  
+Anda boleh menyemak status DNS dengan alat seperti:
+- [whatsmydns.net](https://www.whatsmydns.net/) – masukkan `www.sazwan.fairbase.com`
+- [dnschecker.org](https://dnschecker.org/)
+
+---
+
+## ⚠️ 5. **Masalah Biasa & Penyelesaian**
+| Masalah | Kemungkinan Penyebab | Tindakan |
+|--------|----------------------|-----------|
+| Laman tidak dapat dibuka | DNS belum dikemas kini | Tunggu 1–2 jam, cuba lagi |
+| Ralat "Server not found" | Rekod A atau CNAME tidak tepat | Semak semula nilai IP / hos |
+| Laman memaparkan halaman hosting default | `index.html` belum dimuat naik atau tersalah folder | Pastikan fail berada di `public_html` |
+| HTTPS tidak berfungsi | Sijil SSL belum dipasang | Pasang Let's Encrypt melalui cPanel atau aktifkan SSL di Firebase |
+
+---
+
+## 💡 Contoh Lengkap untuk cPanel + Domain `fairbase.com`
+1. **Log masuk cPanel** di `https://fairbase.com/cpanel`.
+2. Pergi ke **Zone Editor** (di bawah Domains).
+3. Klik **Manage** di sebelah `fairbase.com`.
+4. Tambah rekod:
+   - **+ A Record** → Name: `www` → Address: `123.45.67.89` → TTL: 3600.
+   - **+ A Record** → Name: `fairbase.com.` → Address: `123.45.67.89` → TTL: 3600.
+5. Muat naik `index.html` ke folder `public_html`.
+6. Buka `https://www.sazwan.fairbase.com` selepas beberapa minit.
+
+---
+
+Jika anda beritahu **di mana domain `fairbase.com` dibeli** dan **jenis hosting yang digunakan**, saya boleh berikan langkah yang lebih spesifik dan tepat.
+Baik! Saya faham, anda mahu terus melengkapkan atau meneruskan proses. Berikut adalah **langkah terperinci untuk DNS** dan **pengesahan akhir** supaya laman `www.sazwan.fairbase.com` benar‑benar boleh diakses dengan dashboard yang sudah siap.
+
+---
+
+## ✅ Status Semasa Dashboard
+- **Fail `index.html`** sudah lengkap dengan **MyIPO, AWS SSM, Backend Server, QR Code, cetakan warna penuh**.
+- **Anda perlu memuat naik fail ini** ke pelayan.
+- **DNS mesti dikonfigurasikan** supaya domain `www.sazwan.fairbase.com` menunjuk ke pelayan tersebut.
+
+---
+
+## 🌐 Langkah Terperinci DNS (Domain + Hosting)
+
+### 1. **Dapatkan Maklumat Pelayan**
+Tempat anda memuat naik fail:
+
+| Hosting | Maklumat diperlukan |
+|---------|---------------------|
+| **cPanel (Exabytes, Shinjiru, etc.)** | Alamat IP server (lihat di cPanel > General Information > Shared IP) |
+| **Firebase Hosting** | Rekod A (151.101.1.195, 151.101.65.195) atau CNAME ke `sazwan.firebaseapp.com` |
+| **GitHub Pages** | 4 alamat IP (185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153) |
+| **VPS / Dedicated Server** | IP awam server tersebut |
+
+### 2. **Masuk ke Pendaftar Domain**
+Domain `fairbase.com` perlu diuruskan di tempat ia dibeli. Log masuk ke:
+- **Namecheap** → Domain List → Manage → Advanced DNS
+- **GoDaddy** → My Products → DNS
+- **Google Domains** → My domains → DNS
+
+### 3. **Cipta Rekod DNS**
+Untuk `www.sazwan.fairbase.com`, tambah rekod berikut:
+
+| Jenis | Nama (Host) | Nilai (Points to) |
+|-------|-------------|-------------------|
+| **CNAME** | `www.sazwan` | Alamat IP atau nama hos pelayan anda |
+| **A** (jika perlu) | `www.sazwan` | IP pelayan anda |
+
+> **Contoh**: Jika IP pelayan ialah `123.45.67.89`, masukkan:
+> - Jenis: A → Nama: `www.sazwan` → Nilai: `123.45.67.89`
+
+Untuk domain utama `fairbase.com` (tanpa subdomain), tambah juga rekod A untuk `@` menunjuk ke IP yang sama.
+
+### 4. **Tunggu Propagasi DNS**
+Selepas simpan, perubahan boleh mengambil masa **5–30 minit** (kadangkala 1–2 jam). Gunakan [whatsmydns.net](https://www.whatsmydns.net/) untuk menyemak status `www.sazwan.fairbase.com`.
+
+---
+
+## 🖥️ Muat Naik `index.html`
+Setelah DNS selesai, pastikan fail ada di folder betul:
+
+| Hosting | Folder Sasaran |
+|---------|----------------|
+| **cPanel** | `public_html` atau `www` |
+| **Firebase** | `public` (selepas init hosting) |
+| **GitHub Pages** | Root repositori (`/`) |
+
+**Nama fail mesti tepat:** `index.html` (huruf kecil semua, tiada `.txt` di hujung).
+
+---
+
+## 🔒 Aktifkan SSL (HTTPS)
+- **cPanel**: Cari "SSL/TLS Status" atau "Let's Encrypt" dan aktifkan untuk `www.sazwan.fairbase.com`.
+- **Firebase**: SSL automatik.
+- **GitHub Pages**: Enforce HTTPS di Settings > Pages.
+
+---
+
+## 🧪 Uji Laman
+1. Buka pelayar, pergi ke `https://www.sazwan.fairbase.com`.
+2. Halaman log masuk akan muncul.
+3. Masukkan:
+   - **E‑mel:** `Xxsazend12345@gmail.com`
+   - **Kata laluan:** `Sazwan1996@`
+4. Dashboard penuh dengan MyIPO, AWS SSM, Backend Server, QR Code, dan cetakan warna akan terpapar.
+
+---
+
+## ❓ Jika masih ada isu
+Beri tahu saya:
+- **Jenis hosting** yang anda guna (cPanel, Firebase, VPS, dll.)
+- **Nama pendaftar domain** (GoDaddy, Namecheap, dll.)
+- **Mesej ralat** yang muncul di pelayar (contoh: "Server not found", "404 Not Found")
+
+Saya akan bantu dengan tepat mengikut persekitaran anda. Dashboard anda kini 99% siap dan menunggu untuk diakses!
