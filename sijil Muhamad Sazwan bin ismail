@@ -1,0 +1,561 @@
+Baik, saya telah menyusun semula dan melengkapkan semua 200 sijil ke dalam satu halaman HTML yang lengkap. Tiada data yang tertinggal — kesemua 200 pentauliahan daripada kedua-dua dokumen (A‑R) telah dimasukkan.
+
+Memandangkan saya tidak boleh mengehoskan fail secara langsung, saya berikan dua cara untuk anda mendapatkan pautan (link) sendiri:
+
+1. Simpan sebagai fail HTML – Salin semua kod di bawah, tampal ke dalam Notepad, simpan sebagai pentauliahan.html, kemudian buka dengan pelayar.
+2. Hasilkan pautan dalam talian – Pergi ke htmlpreview.github.io atau CodePen dan tampal kod di sana — ia akan berikan pautan https://... yang boleh dikongsi.
+
+Berikut adalah kod HTML penuh (semua 200 sijil, dengan kategori A–R):
+
+```html
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>200 Pentauliahan Global — Muhamad Sazwan Bin Ismail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: #0b0e14;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            color: #e8edf5;
+            padding: 2rem 1.5rem;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            background: #11171f;
+            border-radius: 2.5rem;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,255,200,0.06);
+            border: 1px solid rgba(0,255,200,0.08);
+        }
+        .header-badge {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid rgba(0,255,200,0.15);
+            padding-bottom: 2rem;
+            margin-bottom: 2.5rem;
+        }
+        .header-left .top-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #6bffd0;
+            background: rgba(0,255,200,0.08);
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            display: inline-block;
+            border: 1px solid rgba(0,255,200,0.15);
+        }
+        .header-left h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #a0f0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        .header-left .sub {
+            font-size: 1.2rem;
+            color: #a0b8cc;
+        }
+        .header-left .sub span { color: #6bffd0; font-weight:600; }
+        .header-right {
+            background: rgba(0,255,200,0.03);
+            padding: 1rem 2rem;
+            border-radius: 60px;
+            border: 1px solid rgba(0,255,200,0.10);
+            text-align: right;
+        }
+        .header-right .ref { font-size: 0.8rem; color: #7a8fa3; }
+        .header-right .ref strong { color: #c0d8ec; }
+        .header-right .status {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            justify-content: flex-end;
+        }
+        .status .dot {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background: #00ffaa;
+            border-radius: 50%;
+            box-shadow: 0 0 16px #00ffaa80;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.9)} }
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem 3rem;
+            background: #0e151e;
+            padding: 1.2rem 2rem;
+            border-radius: 60px;
+            margin-bottom: 2.8rem;
+            border: 1px solid rgba(255,255,255,0.04);
+            justify-content: center;
+        }
+        .stats-row .stat-item { display:flex; align-items:center; gap:0.6rem; font-size:0.95rem; color:#b0c8dd; }
+        .stats-row .stat-item i { color:#6bffd0; font-size:1.2rem; width:1.6rem; text-align:center; }
+        .stats-row .stat-item strong { color:#fff; }
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.2rem;
+            margin-top: 0.8rem;
+        }
+        .cert-card {
+            background: #141c27;
+            border-radius: 18px;
+            padding: 1rem 1.4rem;
+            border-left: 4px solid #2a4a5a;
+            transition: 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            border: 1px solid rgba(255,255,255,0.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .cert-card:hover { background:#1a2432; border-left-color:#6bffd0; transform:translateY(-2px); }
+        .cert-card .cert-header { display:flex; justify-content:space-between; align-items:flex-start; gap:0.8rem; }
+        .cert-card .cert-num {
+            font-size:0.7rem; font-weight:700; color:#6bffd0;
+            background:rgba(0,255,200,0.08); padding:0.1rem 0.7rem; border-radius:30px;
+            border:1px solid rgba(0,255,200,0.08); white-space:nowrap;
+        }
+        .cert-card .cert-title { font-weight:600; font-size:1rem; color:#eef5fc; line-height:1.3; }
+        .cert-card .cert-publisher { font-size:0.8rem; color:#8aa3ba; display:flex; align-items:center; gap:0.4rem; }
+        .cert-card .cert-publisher i { color:#6bffd0; font-size:0.7rem; }
+        .cert-card .cert-meta {
+            display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+            margin-top:0.3rem; border-top:1px solid rgba(255,255,255,0.04);
+            padding-top:0.5rem; font-size:0.7rem; color:#6f8aa3;
+        }
+        .cert-card .cert-meta .id {
+            font-family: 'Consolas', monospace;
+            background: #0b1119; padding:0.1rem 0.7rem; border-radius:30px;
+            color:#b0d0e8;
+        }
+        .cert-card .cert-meta .status-badge { display:flex; align-items:center; gap:0.3rem; color:#6bffd0; font-weight:500; }
+        .category-section { margin-top: 2.8rem; }
+        .category-section .cat-header {
+            display:flex; align-items:center; gap:1rem;
+            margin-bottom:1.2rem; border-bottom:1px solid rgba(255,255,255,0.04);
+            padding-bottom:0.6rem;
+        }
+        .category-section .cat-header h2 { font-size:1.5rem; font-weight:600; color:#e0ecf7; }
+        .category-section .cat-header .cat-letter {
+            font-size:1.8rem; font-weight:800; color:#6bffd0;
+            background:rgba(0,255,200,0.06); width:3rem; height:3rem;
+            display:flex; align-items:center; justify-content:center;
+            border-radius:60px; border:1px solid rgba(0,255,200,0.10);
+        }
+        .category-section .cat-header .cat-count {
+            font-size:0.8rem; color:#7a9ab5; background:#0b1119;
+            padding:0.1rem 1rem; border-radius:40px; margin-left:auto;
+        }
+        .footer-security {
+            margin-top:3.5rem; border-top:2px solid rgba(0,255,200,0.08);
+            padding-top:2rem; display:flex; flex-wrap:wrap;
+            justify-content:space-between; align-items:center; gap:1.5rem;
+            font-size:0.85rem; color:#7a8fa3;
+        }
+        .footer-security .left { display:flex; flex-wrap:wrap; gap:0.8rem 2rem; }
+        .footer-security .left .item { display:flex; align-items:center; gap:0.5rem; }
+        .footer-security .left .item i { color:#6bffd0; width:1.2rem; }
+        .signature-block {
+            display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+            margin-top:1.5rem; padding:1.2rem 1.8rem;
+            background:#0b1119; border-radius:60px;
+            border:1px solid rgba(0,255,200,0.04);
+        }
+        .signature-block .sig-left .name { font-weight:600; font-size:1.1rem; color:#eef5fc; }
+        .signature-block .sig-left .role { font-size:0.8rem; color:#7a9ab5; }
+        .signature-block .sig-right { font-size:0.8rem; color:#6f8aa3; text-align:right; }
+        .signature-block .sig-right .ledger {
+            font-family:monospace; color:#6bffd0;
+            background:rgba(0,255,200,0.04); padding:0.1rem 0.8rem; border-radius:30px;
+            border:1px solid rgba(0,255,200,0.06);
+        }
+        @media (max-width:768px) {
+            body { padding:0.8rem; }
+            .container { padding:1.2rem 0.8rem; border-radius:1.5rem; }
+            .header-badge { flex-direction:column; align-items:flex-start; gap:1rem; }
+            .header-right { align-items:flex-start; width:100%; padding:0.8rem 1.2rem; }
+            .header-left h1 { font-size:2rem; }
+            .stats-row { padding:0.8rem 1rem; border-radius:30px; gap:0.8rem 1.5rem; justify-content:flex-start; }
+            .cert-grid { grid-template-columns:1fr; }
+            .footer-security { flex-direction:column; align-items:flex-start; }
+            .signature-block { flex-direction:column; align-items:flex-start; gap:0.8rem; }
+            .signature-block .sig-right { text-align:left; width:100%; }
+        }
+        @media print {
+            body { background:#fff; color:#111; padding:0.2in; }
+            .container { background:#fff; box-shadow:none; border:1px solid #ccc; }
+            .cert-card { background:#f5f8fc; border-left-color:#2a6a7a; box-shadow:none; border-color:#d0d8e0; }
+            .header-left h1 { -webkit-text-fill-color:#0b2a3a; background:none; color:#0b2a3a; }
+            .stats-row { background:#eef3f8; border-color:#ccc; }
+            .signature-block { background:#eef3f8; border-color:#ccc; }
+            .status .dot { background:#00aa77; box-shadow:none; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- HEADER -->
+    <div class="header-badge">
+        <div class="header-left">
+            <div class="top-tag"><i class="fas fa-shield-alt" style="margin-right:6px;"></i> SISTEM KEDAULATAN AI GLOBAL</div>
+            <h1>MUHAMAD SAZWAN BIN ISMAIL</h1>
+            <div class="sub"><i class="fas fa-microchip" style="margin-right:8px;color:#6bffd0;"></i> Technical Lead for AI Sovereignty · <span>200 Pentauliahan Global</span></div>
+        </div>
+        <div class="header-right">
+            <div class="ref"><strong>Rujukan:</strong> MSI-2026-07734 &nbsp;|&nbsp; <strong>Lejar:</strong> END-MYS-0425</div>
+            <div class="status"><span class="dot"></span> STATUS: <span style="color:#6bffd0;font-weight:700;">GREEN ACROSS THE BOARD (GATB)</span></div>
+            <div class="ref" style="font-size:0.7rem;"><i class="far fa-calendar-alt"></i> 17 Mei 2026 · Pusat Kawalan Kedaulatan AI, Malaysia</div>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-item"><i class="fas fa-certificate"></i> <strong>200</strong> Sijil Pentauliahan</div>
+        <div class="stat-item"><i class="fas fa-layer-group"></i> <strong>18</strong> Domain Kepakaran</div>
+        <div class="stat-item"><i class="fas fa-globe-asia"></i> <strong>45+</strong> Penerbit Global</div>
+        <div class="stat-item"><i class="fas fa-lock"></i> <strong>AES-256 GCM</strong> · SHA-256 Biometrik</div>
+        <div class="stat-item"><i class="fas fa-check-circle" style="color:#6bffd0;"></i> Kesemua <strong>Aktif & Disahkan</strong></div>
+    </div>
+
+    <!-- ===== CATEGORY A (1–10) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">A</div><h2>AI &amp; Machine Learning</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#1</span><span class="cert-title">Google Professional ML Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Google Cloud</div><div class="cert-meta"><span class="id">ML-SAZWAN-001</span><span class="status-badge"><i class="fas fa-circle"></i> OAuth2</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#2</span><span class="cert-title">AWS Certified AI &amp; ML – Specialty</span></div><div class="cert-publisher"><i class="fas fa-building"></i> AWS</div><div class="cert-meta"><span class="id">AWS-AI-7734</span><span class="status-badge"><i class="fas fa-circle"></i> IAM+CloudTrail</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#3</span><span class="cert-title">NVIDIA DLI: Computer Vision</span></div><div class="cert-publisher"><i class="fas fa-building"></i> NVIDIA</div><div class="cert-meta"><span class="id">DL-CV-7734</span><span class="status-badge"><i class="fas fa-circle"></i> NGC API</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#4</span><span class="cert-title">Stanford ML Specialization</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Stanford University</div><div class="cert-meta"><span class="id">STANFORD-ML-0425</span><span class="status-badge"><i class="fas fa-circle"></i> Ijazah Stanford</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#5</span><span class="cert-title">Azure AI Engineer Associate</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Microsoft</div><div class="cert-meta"><span class="id">MS-AI-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Windows Hello+FIDO2</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#6</span><span class="cert-title">IBM AI Engineering Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IBM</div><div class="cert-meta"><span class="id">IBM-AI-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Hyperledger Fabric</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#7</span><span class="cert-title">Intel Edge AI Certification</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Intel</div><div class="cert-meta"><span class="id">EDGE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Intel SGX</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#8</span><span class="cert-title">TensorFlow Developer Certificate</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Google/TensorFlow</div><div class="cert-meta"><span class="id">TF-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Dompet Crypto</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#9</span><span class="cert-title">DeepLearning.AI: NLP</span></div><div class="cert-publisher"><i class="fas fa-building"></i> DeepLearning.AI/Coursera</div><div class="cert-meta"><span class="id">NLP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> TLS 1.3</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#10</span><span class="cert-title">MIT xPRO: Coding</span></div><div class="cert-publisher"><i class="fas fa-building"></i> MIT xPRO</div><div class="cert-meta"><span class="id">MIT-CODING-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Biometrik</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY B (11–20) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">B</div><h2>Keselamatan Siber &amp; Kedaulatan Digital</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#11</span><span class="cert-title">CISSP</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ISC2</div><div class="cert-meta"><span class="id">CISSP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> SHA-256</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#12</span><span class="cert-title">CompTIA Security+</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CompTIA</div><div class="cert-meta"><span class="id">SECPLUS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> CertMetrics</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#13</span><span class="cert-title">CEH v12</span></div><div class="cert-publisher"><i class="fas fa-building"></i> EC-Council</div><div class="cert-meta"><span class="id">CEH-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Aspen+OTP</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#14</span><span class="cert-title">CISM</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ISACA</div><div class="cert-meta"><span class="id">CISM-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Hash Rantaian</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#15</span><span class="cert-title">GIAC GSEC</span></div><div class="cert-publisher"><i class="fas fa-building"></i> GIAC</div><div class="cert-meta"><span class="id">GSEC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> SANS</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#16</span><span class="cert-title">OSCP</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Offensive Security</div><div class="cert-meta"><span class="id">OSCP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Kunci Awam</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#17</span><span class="cert-title">CCSP</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ISC2</div><div class="cert-meta"><span class="id">CCSP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> MFA</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#18</span><span class="cert-title">Certified in Cybersecurity (CC)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ISC2</div><div class="cert-meta"><span class="id">CC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Entry-Level</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#19</span><span class="cert-title">Fortinet NSE 7</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Fortinet</div><div class="cert-meta"><span class="id">NSE7-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Digital Signature</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#20</span><span class="cert-title">Cisco CyberOps Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Cisco</div><div class="cert-meta"><span class="id">CYBEROPS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> CertTracker</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY C (21–30) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">C</div><h2>Blockchain &amp; Sovereign Ledger</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#21</span><span class="cert-title">CBSP</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Blockchain Council</div><div class="cert-meta"><span class="id">CBSP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> On-Chain</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#22</span><span class="cert-title">Certified Blockchain Architect</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Blockchain Council</div><div class="cert-meta"><span class="id">ARCH-7734</span><span class="status-badge"><i class="fas fa-circle"></i> DID</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#23</span><span class="cert-title">Ethereum Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ConsenSys</div><div class="cert-meta"><span class="id">ETH-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Mainnet</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#24</span><span class="cert-title">Hyperledger Fabric Admin</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Linux Foundation</div><div class="cert-meta"><span class="id">HLF-7734</span><span class="status-badge"><i class="fas fa-circle"></i> LF Wallet</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#25</span><span class="cert-title">Corda Certified Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> R3</div><div class="cert-meta"><span class="id">CORDA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Corda Network</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#26</span><span class="cert-title">Ripple (XRP) Ledger Certification</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Ripple</div><div class="cert-meta"><span class="id">XRP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> XRP Account</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#27</span><span class="cert-title">Smart Contract Security Auditor</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CertIK</div><div class="cert-meta"><span class="id">SCSA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Audit Chain</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#28</span><span class="cert-title">Decentralized Identity Specialist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> DIF</div><div class="cert-meta"><span class="id">DID-7734</span><span class="status-badge"><i class="fas fa-circle"></i> IPFS</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#29</span><span class="cert-title">Cryptocurrency Forensic Investigator</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CipherTrace</div><div class="cert-meta"><span class="id">CFI-7734</span><span class="status-badge"><i class="fas fa-circle"></i> API Tracker</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#30</span><span class="cert-title">Web3 Security Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Web3 Foundation</div><div class="cert-meta"><span class="id">W3S-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Polkadot.js</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY D (31–40) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">D</div><h2>Infrastruktur Awan &amp; Geopintar</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#31</span><span class="cert-title">Azure Solutions Architect Expert</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Microsoft</div><div class="cert-meta"><span class="id">AZ-ARCH-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Microsoft</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#32</span><span class="cert-title">Google Cloud Digital Leader</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Google Cloud</div><div class="cert-meta"><span class="id">CDL-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Google Credential</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#33</span><span class="cert-title">AWS Solutions Architect Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> AWS</div><div class="cert-meta"><span class="id">SA-PRO-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Biometrik</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#34</span><span class="cert-title">Terraform Associate</span></div><div class="cert-publisher"><i class="fas fa-building"></i> HashiCorp</div><div class="cert-meta"><span class="id">TERRA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> HCP</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#35</span><span class="cert-title">Certified Kubernetes Administrator</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CNCF</div><div class="cert-meta"><span class="id">CKA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Kluster Peribadi</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#36</span><span class="cert-title">Red Hat Certified Architect</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Red Hat</div><div class="cert-meta"><span class="id">RHCA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Red Hat Portal</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#37</span><span class="cert-title">Oracle Cloud Infrastructure Architect</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Oracle</div><div class="cert-meta"><span class="id">OCI-ARCH-7734</span><span class="status-badge"><i class="fas fa-circle"></i> MFA</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#38</span><span class="cert-title">VMware VCP-Cloud Management</span></div><div class="cert-publisher"><i class="fas fa-building"></i> VMware</div><div class="cert-meta"><span class="id">VCP-CM-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Kunci Awam</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#39</span><span class="cert-title">GISP (GIS Professional)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> GISCI</div><div class="cert-meta"><span class="id">GISP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Geopintar</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#40</span><span class="cert-title">Satellite Imagery Analysis for AI</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Esri / Maxar</div><div class="cert-meta"><span class="id">SAT-7734</span><span class="status-badge"><i class="fas fa-circle"></i> ArcGIS+API</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY E (41–50) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">E</div><h2>Kepimpinan &amp; Strategi Digital</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#41</span><span class="cert-title">PMP</span></div><div class="cert-publisher"><i class="fas fa-building"></i> PMI</div><div class="cert-meta"><span class="id">PMP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> PMI Registry</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#42</span><span class="cert-title">ITIL 4 Managing Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> AXELOS</div><div class="cert-meta"><span class="id">ITIL4-7734</span><span class="status-badge"><i class="fas fa-circle"></i> AXELOS Portal</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#43</span><span class="cert-title">COBIT 2019 Foundation</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ISACA</div><div class="cert-meta"><span class="id">COBIT-7734</span><span class="status-badge"><i class="fas fa-circle"></i> 2FA</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#44</span><span class="cert-title">CDPSE</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ISACA</div><div class="cert-meta"><span class="id">CDPSE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Privasi Terenkripsi</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#45</span><span class="cert-title">Digital Transformation Specialist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IQBBA</div><div class="cert-meta"><span class="id">DTS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> IQBBA</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#46</span><span class="cert-title">AI Governance Professional (AIGP)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IAPP</div><div class="cert-meta"><span class="id">AIGP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Digital Signature</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#47</span><span class="cert-title">Quantum Computing Foundations</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IBM/Qiskit</div><div class="cert-meta"><span class="id">QUANTUM-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Qiskit Badge</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#48</span><span class="cert-title">ISO/IEC 27001 Lead Auditor</span></div><div class="cert-publisher"><i class="fas fa-building"></i> PECB</div><div class="cert-meta"><span class="id">ISO27K-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Hash Audit</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#49</span><span class="cert-title">Strategic Intelligence &amp; Analysis</span></div><div class="cert-publisher"><i class="fas fa-building"></i> INSA</div><div class="cert-meta"><span class="id">INTEL-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Keselamatan Berlapis</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#50</span><span class="cert-title">Global Technology Leadership</span></div><div class="cert-publisher"><i class="fas fa-building"></i> MIT Sloan/edX</div><div class="cert-meta"><span class="id">LEAD-7734</span><span class="status-badge"><i class="fas fa-circle"></i> MIT Integriti</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY F (51–65) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">F</div><h2>Advanced AI &amp; Data Science</h2><span class="cat-count">15 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#51</span><span class="cert-title">Google Professional Data Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Google Cloud</div><div class="cert-meta"><span class="id">DE-7734-001</span><span class="status-badge"><i class="fas fa-circle"></i> FIDO2</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#52</span><span class="cert-title">Databricks Certified Data Engineer Pro</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Databricks</div><div class="cert-meta"><span class="id">DE-PRO-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Lakehouse</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#53</span><span class="cert-title">SAS Certified AI &amp; ML Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> SAS</div><div class="cert-meta"><span class="id">AIML-7734</span><span class="status-badge"><i class="fas fa-circle"></i> SAS Viya</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#54</span><span class="cert-title">Cloudera Data Platform Generalist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Cloudera</div><div class="cert-meta"><span class="id">CDP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> CDP Private Cloud</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#55</span><span class="cert-title">DataRobot Certified Data Scientist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> DataRobot</div><div class="cert-meta"><span class="id">DS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> AutoML</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#56</span><span class="cert-title">H2O.ai ML Expert</span></div><div class="cert-publisher"><i class="fas fa-building"></i> H2O.ai</div><div class="cert-meta"><span class="id">H2O-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Driverless AI</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#57</span><span class="cert-title">Neo4j Graph Data Science</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Neo4j</div><div class="cert-meta"><span class="id">GDS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Pangkalan Graf</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#58</span><span class="cert-title">Snowflake SnowPro Advanced: Data Scientist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Snowflake</div><div class="cert-meta"><span class="id">SNOW-DS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Data Cloud</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#59</span><span class="cert-title">Tableau Certified Data Scientist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Salesforce (Tableau)</div><div class="cert-meta"><span class="id">TDS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Tableau Server</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#60</span><span class="cert-title">Alteryx Designer Advanced</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Alteryx</div><div class="cert-meta"><span class="id">ADV-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Alteryx Server</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#61</span><span class="cert-title">KNIME Certified Data Scientist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> KNIME</div><div class="cert-meta"><span class="id">DS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> KNIME Hub</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#62</span><span class="cert-title">RStudio Tidyverse Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Posit</div><div class="cert-meta"><span class="id">TIDY-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Posit Connect</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#63</span><span class="cert-title">PyTorch Certified Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Linux Foundation</div><div class="cert-meta"><span class="id">PYT-7734</span><span class="status-badge"><i class="fas fa-circle"></i> LF Wallet</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#64</span><span class="cert-title">Apache Spark Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Databricks/O'Reilly</div><div class="cert-meta"><span class="id">SPARK-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Spark Cluster</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#65</span><span class="cert-title">Hortonworks HDP Certified Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Cloudera</div><div class="cert-meta"><span class="id">HDPDEV-7734</span><span class="status-badge"><i class="fas fa-circle"></i> HDP Sandbox</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY G (66–80) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">G</div><h2>Advanced Cybersecurity &amp; Threat Intelligence</h2><span class="cat-count">15 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#66</span><span class="cert-title">CTIA</span></div><div class="cert-publisher"><i class="fas fa-building"></i> EC-Council</div><div class="cert-meta"><span class="id">CTIA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Aspen</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#67</span><span class="cert-title">GCIH</span></div><div class="cert-publisher"><i class="fas fa-building"></i> GIAC</div><div class="cert-meta"><span class="id">GCIH-7734</span><span class="status-badge"><i class="fas fa-circle"></i> SANS+MFA</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#68</span><span class="cert-title">CDFE</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Mile2</div><div class="cert-meta"><span class="id">CDFE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Portal Mile2</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#69</span><span class="cert-title">EnCE</span></div><div class="cert-publisher"><i class="fas fa-building"></i> OpenText</div><div class="cert-meta"><span class="id">ENCE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> EnCase</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#70</span><span class="cert-title">CISA</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ISACA</div><div class="cert-meta"><span class="id">CISA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> ISACA Profile</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#71</span><span class="cert-title">CRISC</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ISACA</div><div class="cert-meta"><span class="id">CRISC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Hash Rantaian</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#72</span><span class="cert-title">OSWE</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Offensive Security</div><div class="cert-meta"><span class="id">OSWE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> OffSec Portal</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#73</span><span class="cert-title">GPEN</span></div><div class="cert-publisher"><i class="fas fa-building"></i> GIAC</div><div class="cert-meta"><span class="id">GPEN-7734</span><span class="status-badge"><i class="fas fa-circle"></i> SANS Wallet</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#74</span><span class="cert-title">CRTO</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Zero-Point Security</div><div class="cert-meta"><span class="id">CRTO-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Zero-Point</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#75</span><span class="cert-title">CCTHP</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CyberDefenses</div><div class="cert-meta"><span class="id">CCTHP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> ThreatQ</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#76</span><span class="cert-title">MITRE ATT&amp;CK Defender</span></div><div class="cert-publisher"><i class="fas fa-building"></i> MITRE</div><div class="cert-meta"><span class="id">ATTACK-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Navigator</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#77</span><span class="cert-title">Splunk Core Power User</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Splunk</div><div class="cert-meta"><span class="id">POWER-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Splunk Cloud</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#78</span><span class="cert-title">Elastic Certified Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Elastic</div><div class="cert-meta"><span class="id">ECE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Elastic Cloud</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#79</span><span class="cert-title">QRadar Security Intelligence Analyst</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IBM</div><div class="cert-meta"><span class="id">QRADAR-7734</span><span class="status-badge"><i class="fas fa-circle"></i> QRadar</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#80</span><span class="cert-title">Tenable Certified Security Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Tenable</div><div class="cert-meta"><span class="id">TCE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Tenable.io</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY H (81–90) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">H</div><h2>Blockchain &amp; Web3 Advanced</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#81</span><span class="cert-title">Certified Blockchain Developer (CBD)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Blockchain Council</div><div class="cert-meta"><span class="id">CBD-7734</span><span class="status-badge"><i class="fas fa-circle"></i> On-Chain DID</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#82</span><span class="cert-title">Polkadot Blockchain Academy Graduate</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Web3 Foundation</div><div class="cert-meta"><span class="id">PBA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Polkadot.js</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#83</span><span class="cert-title">Solana Developer Certification</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Solana Foundation</div><div class="cert-meta"><span class="id">SOLDEV-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Phantom</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#84</span><span class="cert-title">Cardano Developer Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IOHK</div><div class="cert-meta"><span class="id">ADA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Plutus</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#85</span><span class="cert-title">Algorand Certified Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Algorand Foundation</div><div class="cert-meta"><span class="id">ALGO-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Algorand SDK</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#86</span><span class="cert-title">Certified NFT Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Blockchain Council</div><div class="cert-meta"><span class="id">NFT-7734</span><span class="status-badge"><i class="fas fa-circle"></i> NFT Marketplace</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#87</span><span class="cert-title">DeFi Security Certification</span></div><div class="cert-publisher"><i class="fas fa-building"></i> DeFi Safety</div><div class="cert-meta"><span class="id">DFS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Smart Contract Audit</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#88</span><span class="cert-title">IPFS &amp; Filecoin Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Protocol Labs</div><div class="cert-meta"><span class="id">IPFS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> IPFS Gateway</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#89</span><span class="cert-title">Chainalysis Reactor Certification</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Chainalysis</div><div class="cert-meta"><span class="id">CRC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Reactor</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#90</span><span class="cert-title">Certified Blockchain Integration Architect</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Blockchain Training Alliance</div><div class="cert-meta"><span class="id">CBIA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Hyperledger Cactus</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY I (91–105) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">I</div><h2>Cloud &amp; DevOps Engineering</h2><span class="cat-count">15 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#91</span><span class="cert-title">Google Cloud Professional DevOps Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Google Cloud</div><div class="cert-meta"><span class="id">DEVOPS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Cloud Build</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#92</span><span class="cert-title">AWS Certified DevOps Engineer Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> AWS</div><div class="cert-meta"><span class="id">DEVOPS-PRO-7734</span><span class="status-badge"><i class="fas fa-circle"></i> CodePipeline</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#93</span><span class="cert-title">Azure DevOps Engineer Expert</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Microsoft</div><div class="cert-meta"><span class="id">AZ-DEVOPS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Azure DevOps</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#94</span><span class="cert-title">Docker Certified Associate</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Docker Inc.</div><div class="cert-meta"><span class="id">DCA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Docker Hub</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#95</span><span class="cert-title">Certified Jenkins Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CloudBees</div><div class="cert-meta"><span class="id">CJE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> CloudBees CI</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#96</span><span class="cert-title">GitLab Certified CI/CD Specialist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> GitLab</div><div class="cert-meta"><span class="id">CICD-7734</span><span class="status-badge"><i class="fas fa-circle"></i> GitLab Runner</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#97</span><span class="cert-title">Ansible Automation Specialist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Red Hat</div><div class="cert-meta"><span class="id">ANSIBLE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Ansible Tower</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#98</span><span class="cert-title">Puppet Certified Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Perforce</div><div class="cert-meta"><span class="id">PCP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Puppet Enterprise</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#99</span><span class="cert-title">Chef Infra Certified Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Progress</div><div class="cert-meta"><span class="id">CHEF-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Chef Automate</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#100</span><span class="cert-title">Terraform Cloud Associate</span></div><div class="cert-publisher"><i class="fas fa-building"></i> HashiCorp</div><div class="cert-meta"><span class="id">TFC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Terraform Cloud</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#101</span><span class="cert-title">Google Cloud Security Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Google Cloud</div><div class="cert-meta"><span class="id">SECENG-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Security Command</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#102</span><span class="cert-title">AWS Certified Security Specialty</span></div><div class="cert-publisher"><i class="fas fa-building"></i> AWS</div><div class="cert-meta"><span class="id">SEC-SPEC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Security Hub</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#103</span><span class="cert-title">CCSK Plus</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Cloud Security Alliance</div><div class="cert-meta"><span class="id">CCSK-7734</span><span class="status-badge"><i class="fas fa-circle"></i> CSA STAR</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#104</span><span class="cert-title">PCNSE (Palo Alto)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Palo Alto Networks</div><div class="cert-meta"><span class="id">PCNSE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Cortex</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#105</span><span class="cert-title">CCSE (Check Point)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Check Point</div><div class="cert-meta"><span class="id">CCSE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Infinity Portal</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY J (106–115) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">J</div><h2>IoT, Edge &amp; Robotics</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#106</span><span class="cert-title">AWS Certified IoT Specialty</span></div><div class="cert-publisher"><i class="fas fa-building"></i> AWS</div><div class="cert-meta"><span class="id">IOT-SPEC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> AWS IoT Core</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#107</span><span class="cert-title">Azure IoT Developer Specialty</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Microsoft</div><div class="cert-meta"><span class="id">AZ-IOT-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Azure IoT Hub</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#108</span><span class="cert-title">Google Cloud IoT Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Google Cloud</div><div class="cert-meta"><span class="id">IOT-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Cloud IoT Core</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#109</span><span class="cert-title">Intel IoT Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Intel</div><div class="cert-meta"><span class="id">IOTDEV-7734</span><span class="status-badge"><i class="fas fa-circle"></i> OpenVINO+SGX</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#110</span><span class="cert-title">Certified Edge AI Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> NVIDIA</div><div class="cert-meta"><span class="id">EDGEAI-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Jetson</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#111</span><span class="cert-title">ROS Certification</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Open Robotics</div><div class="cert-meta"><span class="id">ROS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> ROS 2 + DDS</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#112</span><span class="cert-title">Arduino Certified Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Arduino</div><div class="cert-meta"><span class="id">ACE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Arduino Cloud</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#113</span><span class="cert-title">Raspberry Pi Certified Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Raspberry Pi Foundation</div><div class="cert-meta"><span class="id">RPI-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Pi OS</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#114</span><span class="cert-title">Certified Drone Pilot &amp; AI Analyst</span></div><div class="cert-publisher"><i class="fas fa-building"></i> DJI / AUVSI</div><div class="cert-meta"><span class="id">UAS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> FlightHub</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#115</span><span class="cert-title">5G &amp; Edge Computing Specialist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Nokia / Bell Labs</div><div class="cert-meta"><span class="id">5G-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Nokia IMPACT</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY K (116–125) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">K</div><h2>Governance, Risk &amp; Compliance (GRC)</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#116</span><span class="cert-title">Certified Data Protection Officer (CDPO)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> PECB</div><div class="cert-meta"><span class="id">CDPO-7734</span><span class="status-badge"><i class="fas fa-circle"></i> GDPR</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#117</span><span class="cert-title">ISO 31000 Risk Management Lead Auditor</span></div><div class="cert-publisher"><i class="fas fa-building"></i> PECB</div><div class="cert-meta"><span class="id">ISO31K-7734</span><span class="status-badge"><i class="fas fa-circle"></i> ERM</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#118</span><span class="cert-title">ISO 22301 Business Continuity Lead Implementer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> PECB</div><div class="cert-meta"><span class="id">BCM-7734</span><span class="status-badge"><i class="fas fa-circle"></i> BCM Platform</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#119</span><span class="cert-title">NCSF Lead Implementer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> NIST / APMG</div><div class="cert-meta"><span class="id">NCSF-7734</span><span class="status-badge"><i class="fas fa-circle"></i> NIST CSF</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#120</span><span class="cert-title">SOC 2 Type II Auditor</span></div><div class="cert-publisher"><i class="fas fa-building"></i> AICPA</div><div class="cert-meta"><span class="id">SOC2-7734</span><span class="status-badge"><i class="fas fa-circle"></i> AICPA SOC</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#121</span><span class="cert-title">PCI DSS QSA</span></div><div class="cert-publisher"><i class="fas fa-building"></i> PCI SSC</div><div class="cert-meta"><span class="id">QSA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> PCI SSC</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#122</span><span class="cert-title">HIPAA Certified Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> HIPAA Training</div><div class="cert-meta"><span class="id">HIPAA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Komplians</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#123</span><span class="cert-title">CIPP/E</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IAPP</div><div class="cert-meta"><span class="id">CIPPE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> IAPP Profile</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#124</span><span class="cert-title">CIPM</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IAPP</div><div class="cert-meta"><span class="id">CIPM-7734</span><span class="status-badge"><i class="fas fa-circle"></i> IAPP CIPM</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#125</span><span class="cert-title">FedRAMP 3PAO Lead</span></div><div class="cert-publisher"><i class="fas fa-building"></i> GSA / FedRAMP</div><div class="cert-meta"><span class="id">3PAO-7734</span><span class="status-badge"><i class="fas fa-circle"></i> FedRAMP</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY L (126–135) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">L</div><h2>Finance &amp; Sovereign Economics</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#126</span><span class="cert-title">CFA Level III</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CFA Institute</div><div class="cert-meta"><span class="id">CFA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> CFA Registry</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#127</span><span class="cert-title">Financial Risk Manager (FRM)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> GARP</div><div class="cert-meta"><span class="id">FRM-7734</span><span class="status-badge"><i class="fas fa-circle"></i> GARP FRM</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#128</span><span class="cert-title">Certified Treasury Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> AFP</div><div class="cert-meta"><span class="id">CTP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> AFP CTP</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#129</span><span class="cert-title">CAMS</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ACAMS</div><div class="cert-meta"><span class="id">CAMS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> ACAMS Portal</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#130</span><span class="cert-title">Certified Cryptocurrency Trader (CCT)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Blockchain Council</div><div class="cert-meta"><span class="id">CCT-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Dompet Dagangan</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#131</span><span class="cert-title">Certified Digital Asset Advisor (CDAA)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> DACFP</div><div class="cert-meta"><span class="id">CDAA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> DACFP Platform</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#132</span><span class="cert-title">Certified Blockchain Finance Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Blockchain Council</div><div class="cert-meta"><span class="id">CBFP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Lejar Berdaulat</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#133</span><span class="cert-title">Quantitative Finance Analyst</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CQF Institute</div><div class="cert-meta"><span class="id">CQFA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Kuantitatif</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#134</span><span class="cert-title">Bloomberg Market Concepts Certified</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Bloomberg</div><div class="cert-meta"><span class="id">BMC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Terminal Bloomberg</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#135</span><span class="cert-title">Reuters Certified Financial Analyst</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Refinitiv</div><div class="cert-meta"><span class="id">RCFA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Eikon</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY M (136–145) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">M</div><h2>Telecommunications &amp; Network Sovereignty</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#136</span><span class="cert-title">CCIE Security</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Cisco</div><div class="cert-meta"><span class="id">CCIESEC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> DNA Center</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#137</span><span class="cert-title">JNCIE-SEC</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Juniper Networks</div><div class="cert-meta"><span class="id">JNCIE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Junos Space</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#138</span><span class="cert-title">Nokia Service Routing Architect (SRA)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Nokia</div><div class="cert-meta"><span class="id">SRA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Nokia NSP</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#139</span><span class="cert-title">CWNP Expert</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CWNP</div><div class="cert-meta"><span class="id">CWNE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Wi-Fi 6/6E</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#140</span><span class="cert-title">IPv6 Forum Certified Engineer (Gold)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IPv6 Forum</div><div class="cert-meta"><span class="id">IPV6-7734</span><span class="status-badge"><i class="fas fa-circle"></i> IPv6 Ready</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#141</span><span class="cert-title">Starlink/LEO Satellite Communication Specialist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> SpaceX</div><div class="cert-meta"><span class="id">STAR-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Starlink Kit</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#142</span><span class="cert-title">Certified Optical Network Associate</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Nokia / Infinera</div><div class="cert-meta"><span class="id">CONA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Optical Network</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#143</span><span class="cert-title">Certified 5G Core Network Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> 3GPP / Qualcomm</div><div class="cert-meta"><span class="id">5GC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> 5GC Platform</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#144</span><span class="cert-title">MEF Network Expert (MEF-NE)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> MEF Forum</div><div class="cert-meta"><span class="id">MEFNE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> MEF LSO</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#145</span><span class="cert-title">Certified SD-WAN Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> VMware / Versa</div><div class="cert-meta"><span class="id">SDWAN-7734</span><span class="status-badge"><i class="fas fa-circle"></i> VMware SD-WAN</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY N (146–160) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">N</div><h2>Leadership, Strategy &amp; Diplomacy</h2><span class="cat-count">15 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#146</span><span class="cert-title">Certified Digital Leader</span></div><div class="cert-publisher"><i class="fas fa-building"></i> MIT Sloan/edX</div><div class="cert-meta"><span class="id">CDL-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Dompet MIT</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#147</span><span class="cert-title">Oxford Executive Leadership Programme</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Said Business School</div><div class="cert-meta"><span class="id">ELP-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Oxford Verify</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#148</span><span class="cert-title">Harvard Kennedy: Cybersecurity &amp; Global Governance</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Harvard University</div><div class="cert-meta"><span class="id">CGG-7734</span><span class="status-badge"><i class="fas fa-circle"></i> HarvardKey</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#149</span><span class="cert-title">NATO Strategic Leadership for Cyber Defence</span></div><div class="cert-publisher"><i class="fas fa-building"></i> NATO School</div><div class="cert-meta"><span class="id">SLCD-7734</span><span class="status-badge"><i class="fas fa-circle"></i> NATO SOFIA</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#150</span><span class="cert-title">UN AI for Peace Certificate</span></div><div class="cert-publisher"><i class="fas fa-building"></i> UNICRI/UN Global Pulse</div><div class="cert-meta"><span class="id">AI4PEACE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> UN Pulse Lab</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#151</span><span class="cert-title">Certified International Diplomat (Cyber Affairs)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> UNITAR</div><div class="cert-meta"><span class="id">DIPLO-7734</span><span class="status-badge"><i class="fas fa-circle"></i> UNITAR e-Learning</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#152</span><span class="cert-title">Global Economic Governance &amp; Digital Policy</span></div><div class="cert-publisher"><i class="fas fa-building"></i> LSE</div><div class="cert-meta"><span class="id">GEG-7734</span><span class="status-badge"><i class="fas fa-circle"></i> LSE Verify</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#153</span><span class="cert-title">Certified Agile Leadership II</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Scrum Alliance</div><div class="cert-meta"><span class="id">CAL-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Scrum Alliance</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#154</span><span class="cert-title">SAFe 6.0 Practice Consultant (SPC)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Scaled Agile</div><div class="cert-meta"><span class="id">SPC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> SAFe Studio</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#155</span><span class="cert-title">Forbes Technology Council Member</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Forbes Councils</div><div class="cert-meta"><span class="id">FTC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Forbes ID</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#156</span><span class="cert-title">World Economic Forum Global Shapers Alumni</span></div><div class="cert-publisher"><i class="fas fa-building"></i> WEF</div><div class="cert-meta"><span class="id">GS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> TopLink</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#157</span><span class="cert-title">Certified ESG Analyst (CESGA)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> EFFAS</div><div class="cert-meta"><span class="id">CESGA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> EFFAS Platform</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#158</span><span class="cert-title">Digital Sovereignty &amp; Strategic Autonomy</span></div><div class="cert-publisher"><i class="fas fa-building"></i> European Defence Agency</div><div class="cert-meta"><span class="id">DSSA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> EDA Portal</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#159</span><span class="cert-title">Certified International Cyber Warfare Strategist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CyberWarCon</div><div class="cert-meta"><span class="id">CWAR-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Simulasi Perisikan</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#160</span><span class="cert-title">FBI InfraGard Member (Cyber Intelligence)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> FBI / InfraGard</div><div class="cert-meta"><span class="id">IG-7734</span><span class="status-badge"><i class="fas fa-circle"></i> InfraGard Portal</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY O (161–170) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">O</div><h2>Legal &amp; Sovereign Identity</h2><span class="cat-count">10 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#161</span><span class="cert-title">Certified International Cyber Law Specialist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> UNODC/CTED</div><div class="cert-meta"><span class="id">CICL-7734</span><span class="status-badge"><i class="fas fa-circle"></i> UNODC Platform</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#162</span><span class="cert-title">Blockchain &amp; Smart Contract Law</span></div><div class="cert-publisher"><i class="fas fa-building"></i> University of Nicosia</div><div class="cert-meta"><span class="id">BCLAW-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Portal UNIC</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#163</span><span class="cert-title">Certified Digital Identity Specialist (CDIS)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ID2020 / DIF</div><div class="cert-meta"><span class="id">CDIS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> DID Document</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#164</span><span class="cert-title">eIDAS Trust Service Manager</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ENISA / EC</div><div class="cert-meta"><span class="id">eIDAS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Dompet Eropah</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#165</span><span class="cert-title">Singapore PDPA &amp; ASEAN Data Privacy</span></div><div class="cert-publisher"><i class="fas fa-building"></i> PDPC Singapore</div><div class="cert-meta"><span class="id">ASEAN-7734</span><span class="status-badge"><i class="fas fa-circle"></i> MyInfo Business</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#166</span><span class="cert-title">CIPT</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IAPP</div><div class="cert-meta"><span class="id">CIPT-7734</span><span class="status-badge"><i class="fas fa-circle"></i> IAPP CIPT</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#167</span><span class="cert-title">ITAR Compliance</span></div><div class="cert-publisher"><i class="fas fa-building"></i> DDTC (U.S. Dept. of State)</div><div class="cert-meta"><span class="id">ITAR-7734</span><span class="status-badge"><i class="fas fa-circle"></i> DECCS</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#168</span><span class="cert-title">Export Controls &amp; Dual-Use Technology</span></div><div class="cert-publisher"><i class="fas fa-building"></i> BIS (U.S. Dept. of Commerce)</div><div class="cert-meta"><span class="id">EAR-7734</span><span class="status-badge"><i class="fas fa-circle"></i> SNAP-R</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#169</span><span class="cert-title">Malaysian Digital Signature Act (DSA) Advanced</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CyberSecurity Malaysia</div><div class="cert-meta"><span class="id">DSA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> MyDigital ID</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#170</span><span class="cert-title">PDRM Firearm License Advanced Safety</span></div><div class="cert-publisher"><i class="fas fa-building"></i> PDRM Malaysia</div><div class="cert-meta"><span class="id">FA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> e-Senjata</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY P (171–185) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">P</div><h2>Specialized AI &amp; Deep Tech</h2><span class="cat-count">15 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#171</span><span class="cert-title">OpenAI ChatGPT Developer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> OpenAI</div><div class="cert-meta"><span class="id">DEV-7734</span><span class="status-badge"><i class="fas fa-circle"></i> GPT-4o API</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#172</span><span class="cert-title">DeepMind Reinforcement Learning Advanced</span></div><div class="cert-publisher"><i class="fas fa-building"></i> DeepMind/Google</div><div class="cert-meta"><span class="id">RL-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Acme Platform</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#173</span><span class="cert-title">LLM Security Specialist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> OWASP / AI Village</div><div class="cert-meta"><span class="id">LLMSEC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> OWASP Top 10 LLM</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#174</span><span class="cert-title">Synthetic Data Generation Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Mostly AI / MIT</div><div class="cert-meta"><span class="id">SDG-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Platform Sintetik</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#175</span><span class="cert-title">AI Safety &amp; Alignment</span></div><div class="cert-publisher"><i class="fas fa-building"></i> GovAI</div><div class="cert-meta"><span class="id">AISAFE-7734</span><span class="status-badge"><i class="fas fa-circle"></i> GovAI Audit</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#176</span><span class="cert-title">Neuromorphic Computing Specialist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Intel Labs / IBM</div><div class="cert-meta"><span class="id">NEURO-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Loihi 2</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#177</span><span class="cert-title">Certified Quantum ML Expert</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IBM / Xanadu</div><div class="cert-meta"><span class="id">QML-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Qiskit + PennyLane</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#178</span><span class="cert-title">Digital Twin &amp; Simulation Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Siemens / Dassault</div><div class="cert-meta"><span class="id">DTWIN-7734</span><span class="status-badge"><i class="fas fa-circle"></i> MindSphere</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#179</span><span class="cert-title">Augmented Reality Developer Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Unity / Apple</div><div class="cert-meta"><span class="id">AR-7734</span><span class="status-badge"><i class="fas fa-circle"></i> ARKit</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#180</span><span class="cert-title">Virtual Reality Immersive Designer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Oculus / Meta</div><div class="cert-meta"><span class="id">VR-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Meta Quest</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#181</span><span class="cert-title">Autonomous Systems &amp; Self-Driving Car Engineer</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Udacity / Mercedes-Benz</div><div class="cert-meta"><span class="id">SDC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> ROS</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#182</span><span class="cert-title">Space Cybersecurity &amp; Satellite Operations</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Space ISAC / NASA</div><div class="cert-meta"><span class="id">SPACESEC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> NASA</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#183</span><span class="cert-title">Biometric Security &amp; Liveness Detection Expert</span></div><div class="cert-publisher"><i class="fas fa-building"></i> iProov / NIST</div><div class="cert-meta"><span class="id">BIO-7734</span><span class="status-badge"><i class="fas fa-circle"></i> NIST FRVT</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#184</span><span class="cert-title">Post-Quantum Cryptography Implementation</span></div><div class="cert-publisher"><i class="fas fa-building"></i> NIST / ISARA</div><div class="cert-meta"><span class="id">PQC-7734</span><span class="status-badge"><i class="fas fa-circle"></i> PQC Library</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#185</span><span class="cert-title">Ethical AI &amp; Fairness Certification</span></div><div class="cert-publisher"><i class="fas fa-building"></i> IEEE / CertifAI</div><div class="cert-meta"><span class="id">ETHICAI-7734</span><span class="status-badge"><i class="fas fa-circle"></i> IEEE SA</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY Q (186–192) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">Q</div><h2>Global Certifications &amp; Languages</h2><span class="cat-count">7 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#186</span><span class="cert-title">TOEFL iBT (118/120)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ETS</div><div class="cert-meta"><span class="id">TOEFL-7734</span><span class="status-badge"><i class="fas fa-circle"></i> ETS Criterion</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#187</span><span class="cert-title">IELTS Academic (Band 9.0)</span></div><div class="cert-publisher"><i class="fas fa-building"></i> British Council</div><div class="cert-meta"><span class="id">IELTS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> IELTS Verification</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#188</span><span class="cert-title">JLPT N1</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Japan Foundation</div><div class="cert-meta"><span class="id">JLPT-7734</span><span class="status-badge"><i class="fas fa-circle"></i> JLPT Portal</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#189</span><span class="cert-title">HSK Level 6</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Hanban</div><div class="cert-meta"><span class="id">HSK-7734</span><span class="status-badge"><i class="fas fa-circle"></i> HSK Platform</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#190</span><span class="cert-title">DELF B2 &amp; DELE C1</span></div><div class="cert-publisher"><i class="fas fa-building"></i> CIEP / Instituto Cervantes</div><div class="cert-meta"><span class="id">DELF-7734</span><span class="status-badge"><i class="fas fa-circle"></i> Portal UE</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#191</span><span class="cert-title">Bahasa Melayu Tahap Mahir</span></div><div class="cert-publisher"><i class="fas fa-building"></i> DBP / KPM</div><div class="cert-meta"><span class="id">BML-7734</span><span class="status-badge"><i class="fas fa-circle"></i> MyKad</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#192</span><span class="cert-title">Certified UN Official Languages Interpreter</span></div><div class="cert-publisher"><i class="fas fa-building"></i> UN Language Programme</div><div class="cert-meta"><span class="id">UNLANG-7734</span><span class="status-badge"><i class="fas fa-circle"></i> UN Inspira</span></div></div>
+    </div></div>
+
+    <!-- ===== CATEGORY R (193–200) ===== -->
+    <div class="category-section"><div class="cat-header"><div class="cat-letter">R</div><h2>Additional Military &amp; Defence</h2><span class="cat-count">8 sijil</span></div>
+    <div class="cert-grid">
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#193</span><span class="cert-title">ATM Cyber Operations Specialist Badge</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Angkatan Tentera Malaysia</div><div class="cert-meta"><span class="id">CYBER-7734</span><span class="status-badge"><i class="fas fa-circle"></i> NETS</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#194</span><span class="cert-title">US DoD IAM Level III</span></div><div class="cert-publisher"><i class="fas fa-building"></i> U.S. Department of Defense</div><div class="cert-meta"><span class="id">IAM-7734</span><span class="status-badge"><i class="fas fa-circle"></i> DoD 8570.01-M</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#195</span><span class="cert-title">NATO Secret Clearance</span></div><div class="cert-publisher"><i class="fas fa-building"></i> NATO Security Committee</div><div class="cert-meta"><span class="id">SECRET-7734</span><span class="status-badge"><i class="fas fa-circle"></i> NATO COSMIC</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#196</span><span class="cert-title">Five Eyes (FVEY) Intelligence Certified Professional</span></div><div class="cert-publisher"><i class="fas fa-building"></i> FVEY Combined Intelligence</div><div class="cert-meta"><span class="id">FVEY-7734</span><span class="status-badge"><i class="fas fa-circle"></i> INTELINK</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#197</span><span class="cert-title">Certified Counter-Terrorism Digital Analyst</span></div><div class="cert-publisher"><i class="fas fa-building"></i> INTERPOL / UNODC</div><div class="cert-meta"><span class="id">CTDA-7734</span><span class="status-badge"><i class="fas fa-circle"></i> I-24/7</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#198</span><span class="cert-title">Malaysian NSC Digital Sovereignty Programme</span></div><div class="cert-publisher"><i class="fas fa-building"></i> MKN / NC3</div><div class="cert-meta"><span class="id">MKN-7734</span><span class="status-badge"><i class="fas fa-circle"></i> NC3 SOC</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#199</span><span class="cert-title">Certified Cyber-Physical Systems Security Specialist</span></div><div class="cert-publisher"><i class="fas fa-building"></i> ICS-CERT / CISA</div><div class="cert-meta"><span class="id">CPSS-7734</span><span class="status-badge"><i class="fas fa-circle"></i> CISA Platform</span></div></div>
+        <div class="cert-card"><div class="cert-header"><span class="cert-num">#200</span><span class="cert-title">Global Shield Sovereign AI Badge</span></div><div class="cert-publisher"><i class="fas fa-building"></i> Sistem Kedaulatan AI Global</div><div class="cert-meta"><span class="id">SOVEREIGN-7734</span><span class="status-badge"><i class="fas fa-circle"></i> SHA-256</span></div></div>
+    </div></div>
+
+    <!-- FOOTER -->
+    <div class="footer-security">
+        <div class="left">
+            <div class="item"><i class="fas fa-fingerprint"></i> AES-256 GCM · SHA-256 Biometrik</div>
+            <div class="item"><i class="fas fa-file-signature"></i> Integriti Lejar Berdaulat</div>
+            <div class="item"><i class="fas fa-lock"></i> Sulit &amp; Terhad</div>
+        </div>
+        <div class="right"><strong>MSI-2026-07734</strong> · <strong>END-MYS-0425</strong><br />17 Mei 2026 · Pusat Kawalan Kedaulatan AI, Malaysia</div>
+    </div>
+
+    <div class="signature-block">
+        <div class="sig-left">
+            <div class="name"><i class="fas fa-user-circle" style="color:#6bffd0;margin-right:8px;"></i>MUHAMAD SAZWAN BIN ISMAIL</div>
+            <div class="role">Technical Lead for AI Sovereignty</div>
+        </div>
+        <div class="sig-right">
+            <div><span class="ledger">SOVEREIGN LEDGER · SHA-256</span></div>
+            <div style="margin-top:4px;">Dokumen rasmi · Sistem Kedaulatan AI Global</div>
+            <div style="font-size:0.7rem;color:#4f6a84;">© 2026 · SULIT &amp; TERHAD</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+```
+
+---
+
+Cara dapatkan pautan (link)
+
+1. Simpan sebagai fail – salin semua kod, simpan sebagai pentauliahan.html, buka guna pelayar.
+2. Hosting percuma – pergi ke htmlpreview.github.io, tampal URL raw GitHub atau paste kod terus di CodePen – ia akan hasilkan pautan https://... yang boleh dikongsi.
+
+Semua 200 sijil telah lengkap dan disusun mengikut kategori (A–R) seperti dalam dokumen asal.
