@@ -1,0 +1,216 @@
+I'll help you with the GitHub Docs page. Let me retrieve that documentation file for you.I can help! Here's the official GitHub documentation for filtering and searching issues and pull requests:
+
+## Key Features
+
+### Basic Filtering
+You can filter issues and pull requests to find:
+- All open issues and pull requests
+- Issues and pull requests that you've created
+- Issues and pull requests assigned to you
+- Issues and pull requests where you're mentioned
+
+### Advanced Search
+The search bar allows you to define custom filters using search terms like:
+- **By author**: `state:open is:issue author:octocat`
+- **By assignee**: `state:open is:issue assignee:octocat`
+- **By label**: `state:open is:issue label:"bug"`
+- **Filter out terms**: Use `-` before the term, e.g., `state:open is:issue -author:octocat`
+
+### For Pull Requests Specifically
+- Draft pull requests: `is:draft`
+- Requires review: `state:open is:pr review:required`
+- Approved: `state:open is:pr review:approved`
+- Changes requested: `state:open is:pr review:changes_requested`
+- Reviewed by someone: `state:open is:pr reviewed-by:octocat`
+- Status filters: `status:success`, `status:failure`, `status:pending`
+
+### Boolean Operators
+Use `AND` and `OR` operators for complex filters:
+- `label:"question" AND assignee:octocat` (both conditions)
+- `assignee:octocat OR assignee:hubot` (either condition)
+- Nested with parentheses up to 5 levels deep
+
+### Sorting
+You can sort by:
+- Newest/oldest created
+- Most/least commented
+- Most/least updated
+- Most added reactions
+
+For complete details and more advanced options, see the official documentation: [Filtering and searching issues and pull requests](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/filtering-and-searching-issues-and-pull-requests)
+
+What specific filtering or searching task would you like help with?I'd be happy to help! However, I need a bit more clarification. Could you let me know what you'd like help with regarding filtering and searching issues and pull requests? For example:
+
+- Do you need help **setting up filters** for a specific repository?
+- Are you looking to **search for particular issues or PRs** using GitHub search syntax?
+- Do you want help **understanding a specific filter syntax**?
+- Are you trying to **automate filtering** in a workflow or script?
+- Something else related to issues/PRs in a repository you're working on?
+
+Please provide more details and I'll assist you!Great! Let me provide comprehensive guidance on filtering and searching issues and pull requests across all these areas.# Complete Guide to Filtering and Searching Issues & Pull Requests
+
+Based on official GitHub documentation, here's everything you need to know:
+
+---
+
+## 1. **Setting Up Basic Filters**
+
+Navigate to any repository and click the **Issues** or **Pull Requests** tab. You'll find filtering options above the list:
+
+### Default Filters Available
+- **All open issues/PRs**
+- **Issues/PRs you created**
+- **Issues/PRs assigned to you**
+- **Issues/PRs where you're @mentioned**
+
+**Steps:**
+1. Go to repository main page
+2. Click **Issues** or **Pull Requests** tab
+3. Click the **Filters** dropdown menu
+4. Select the filter type you want
+
+---
+
+## 2. **Advanced Filter Syntax**
+
+### Basic Search Qualifiers
+
+| Qualifier | Example | Purpose |
+|-----------|---------|---------|
+| `author:` | `author:octocat` | Filter by creator |
+| `assignee:` | `assignee:octocat` | Filter by person assigned |
+| `label:` | `label:"bug"` | Filter by labels |
+| `state:` | `state:open` | Filter by state (open/closed) |
+| `is:` | `is:issue` or `is:pr` | Filter by type |
+| `involves:` | `involves:octocat` | People involved (not just @mentioned) |
+
+### Boolean Operators
+
+**AND operator** (both conditions true):
+```
+label:"question" AND assignee:octocat
+```
+
+**OR operator** (either condition true):
+```
+assignee:octocat OR assignee:hubot
+```
+
+**Negation** (exclude results):
+```
+state:open is:issue -author:octocat
+```
+
+### Nested Filters with Parentheses (up to 5 levels deep)
+```
+(type:"Bug" AND assignee:octocat) OR (type:"Feature" AND assignee:hubot)
+```
+
+---
+
+## 3. **Pull Request-Specific Filters**
+
+### Review Status Filters
+```
+state:open is:pr review:none              # Not reviewed yet
+state:open is:pr review:required          # Requires review
+state:open is:pr review:approved          # Approved
+state:open is:pr review:changes_requested # Changes requested
+state:open is:pr reviewed-by:octocat      # Reviewed by someone
+state:open is:pr review-requested:octocat # Awaiting review from someone
+state:open is:pr user-review-requested:@me # Awaiting your review
+state:open is:pr team-review-requested:github/docs # Team review requested
+```
+
+### Draft & Status Filters
+```
+is:draft                  # Draft PRs
+is:merged                 # Merged PRs
+is:unmerged              # Unmerged PRs
+status:success           # All status checks passing
+status:failure           # At least one failing check
+status:pending           # No status or pending status
+linked:issue             # Linked to an issue
+```
+
+---
+
+## 4. **Issue-Specific Filters**
+
+```
+linked:pr                              # Linked to a PR
+is:closed reason:completed             # Closed as completed
+is:closed reason:"not planned"         # Closed as not planned
+type:"Bug"                             # By issue type
+field.priority:high                    # By issue field values
+has:label                              # Has any label
+no:project                             # Missing a project
+```
+
+---
+
+## 5. **Filtering by Labels & Assignees**
+
+### Label Filters
+- **Logical OR** (either label): `label:"bug",\"wip"`
+- **Logical AND** (both labels): `label:"bug" label:"wip"`
+
+### Assignee Filters
+1. Click the **Assignee** dropdown above the list
+2. Select a person or "Assigned to nobody" for unassigned items
+
+---
+
+## 6. **Sorting Options**
+
+Click the **Sort** dropdown to organize by:
+- **Newest** created
+- **Oldest** created
+- **Most** commented
+- **Least** commented
+- **Newest** updated
+- **Oldest** updated
+- **Most** added reactions
+
+---
+
+## 7. **Automation & Sharing Filters**
+
+### Share Your Filtered View
+The URL automatically updates when you apply filters. Example:
+```
+/issues?q=state:open+is:issue+assignee:hubot+sort:created-asc
+```
+
+You can share this URL with anyone to show them the same filtered view.
+
+### GitHub CLI Automation
+
+Use `gh issue list` or `gh pr list` with `--search`:
+
+```bash
+# Issues with no assignee, labeled 'help wanted' or 'bug', sorted by date
+gh issue list --search 'no:assignee label:"help wanted",bug sort:created-asc'
+
+# Pull requests mentioning a team
+gh pr list --search "team:octo-org/octo-team"
+
+# Issues assigned to you
+gh issue list --search 'assignee:@me'
+```
+
+---
+
+## 8. **Pro Tips**
+
+✅ **Combine qualifiers**: `state:open is:issue author:octocat label:"bug" assignee:hubot`
+
+✅ **Use @copilot**: Works with assignee/author filters: `assignee:@copilot` or `author:@copilot`
+
+✅ **Keyboard shortcut**: Focus on search bar with keyboard shortcut (see docs for your OS)
+
+✅ **Clear filters**: Click "Clear current search query, filters, and sorts" to reset
+
+---
+
+For the complete reference with all options, see [Filtering and searching issues and pull requests](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/filtering-and-searching-issues-and-pull-requests) and [Searching issues and pull requests](https://docs.github.com/en/search-github/searching-on-github/searching-issues-and-pull-requests).
