@@ -1,0 +1,2590 @@
+Baik, untuk topik **"Aktif Fork"** (Enable Fork) dalam konteks GitHub Actions, ini adalah perkara yang sangat penting untuk difahami. Secara lalai (default), GitHub **melumpuhkan** (disable) semua aliran kerja (workflows) pada repositori yang di-fork (forked repository). Ini adalah langkah keselamatan untuk mengelakkan kod berniat jahat daripada dijalankan secara automatik apabila anda membuat fork.
+
+Berikut adalah panduan lengkap dan langkah-langkah untuk **Aktifkan Fork** serta cara menguruskan Actions pada repositori fork anda.
+
+---
+
+### 🛠️ Cara Aktifkan GitHub Actions pada Repositori Fork
+
+Jika anda baru sahaja membuat fork dan ingin menjalankan workflow (contoh: CI, Deployment, atau Security Scan yang anda lihat sebelum ini), ikut langkah ini:
+
+1.  Buka repositori fork anda di GitHub (contoh: `github.com/username-anda/nama-repo`).
+2.  Klik pada tab **Actions** di bahagian atas.
+3.  Anda akan melihat mesej amaran berwarna kuning: *"Workflows aren't being run on this forked repository."*
+4.  Klik butang biru **"I understand my workflows, go ahead and enable them"**.
+5.  Selesai! Semua fail YAML dalam folder `.github/workflows/` kini akan berfungsi mengikut pencetus (trigger) yang ditetapkan (contoh: `push`, `pull_request`, `schedule`).
+
+---
+
+### ⚠️ Perkara Penting Tentang Fork & Security
+
+Apabila anda mengaktifkan Actions pada fork, terdapat beberapa peraturan keselamatan yang perlu anda tahu:
+
+*   **Akses Secrets:** Fork **TIDAK** akan mewarisi Secrets (seperti API Key, AWS Credentials) daripada repositori asal (upstream). Anda perlu menetapkan Secrets sendiri di `Settings > Secrets and variables > Actions`.
+*   **Kebenaran Token:** `GITHUB_TOKEN` pada fork mempunyai kebenaran **baca sahaja (read-only)** secara lalai. Anda tidak boleh push ke repositori asal menggunakan token ini.
+*   **Pull Request dari Fork:** Jika seseorang menghantar Pull Request (PR) dari fork mereka ke repositori asal anda, workflow `pull_request` tidak akan berjalan secara automatik tanpa kelulusan (approval) daripada penyelia repositori untuk pengguna kali pertama.
+*   **`pull_request_target` vs `pull_request`:** Jika anda mahu workflow berjalan pada PR dari fork *tanpa* perlu kelulusan manual, anda perlu menggunakan pencetus `pull_request_target`. Namun, ini **SANGAT BERISIKO** kerana ia memberikan akses kepada Secrets repositori asal. Pastikan anda tahu apa yang anda lakukan.
+
+---
+
+### 🔄 Templat & Tindakan Berkaitan "Fork" (Fork Management)
+
+Dalam senarai templat GitHub Actions standard, tiada kategori khusus untuk "Fork". Namun, komuniti GitHub membangunkan pelbagai tindakan (Actions) untuk menguruskan fork. Berikut adalah yang paling popular:
+
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Fork Sync** | tgymnich | Segerakkan repositori fork anda dengan repositori upstream secara automatik. | Automation |
+| **Repo Sync** | repo-sync | Menyelaraskan repositori fork dengan repositori sumber (upstream). | Automation |
+| **Fork Cleanup** | GitHub Actions | Padam fork lama secara automatik untuk mengelakkan kekacauan. | Automation |
+| **PR from Fork Labeler** | GitHub Actions | Label Pull Request yang datang dari fork secara automatik. | Automation |
+| **Auto Approve** | hmarr | Meluluskan PR daripada fork secara automatik (untuk projek yang mempercayai penyumbang). | Automation |
+| **Dependabot** | GitHub | Mengemas kini kebergantungan pada repositori fork. | Dependency review |
+
+---
+
+### 📝 Contoh Fail YAML: Segerakkan Fork (Fork Sync)
+
+Jika anda mahu fork anda sentiasa dikemas kini dengan repositori asal secara automatik, anda boleh gunakan templat ini:
+
+```yaml
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Berjalan setiap hari pada 12:00 tengah malam
+  workflow_dispatch: # Membolehkan anda klik butang 'Run workflow' secara manual
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync fork with upstream
+        uses: tgymnich/fork-sync@v1.9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: pemilik-asal # Ganti dengan nama pengguna atau organisasi asal
+          base: main # Ganti dengan nama cawangan utama repositori asal
+          head: main # Cawangan pada fork anda yang ingin disegerakkan
+          merge_method: merge # Kaedah: merge, rebase, atau squash
+```
+
+---
+
+### 🚀 Ringkasan Aliran Kerja Fork
+
+1.  **Fork Repo** -> 2. **Buka Actions** -> 3. **Enable Workflows** -> 4. **Tetapkan Secrets** -> 5. **Jalankan / Uji Workflow**.
+
+Jika anda menghadapi masalah spesifik semasa mengaktifkan fork (contoh: workflow gagal, error permission, atau mahu tetapkan `pull_request_target`), beritahu saya, dan saya boleh bantu selesaikan masalah tersebut.
+Baik, berikut adalah **maklumat lanjutan (Lagi)** mengenai pengurusan Fork dalam GitHub Actions. Topik ini merangkumi aspek keselamatan, strategi aliran kerja (workflow), dan tindakan komuniti (community actions) yang lebih mendalam untuk menguruskan repositori fork anda.
+
+---
+
+### 🔒 1. Perbezaan Kritikal: `pull_request` vs `pull_request_target`
+
+Apabila anda mengaktifkan Actions pada fork, perkara paling penting untuk difahami ialah bagaimana Pull Request (PR) dari fork diuruskan.
+
+| Ciri | `pull_request` | `pull_request_target` |
+| :--- | :--- | :--- |
+| **Keselamatan** | Selamat (Safe). Kod dari fork dijalankan dalam konteks fork. | Berisiko (Risky). Kod dari fork dijalankan dalam konteks repositori asal. |
+| **Akses Secrets** | Tiada akses kepada Secrets repositori asal. | **ADA** akses kepada Secrets repositori asal. |
+| **Kebenaran Token** | Baca sahaja (Read-only) untuk `GITHUB_TOKEN`. | Baca & Tulis (Read/Write) untuk `GITHUB_TOKEN`. |
+| **Kegunaan** | Ujian CI biasa, linting, unit test. | Menghantar komen, melabel PR, atau deploy preview. |
+
+**Amaran Keselamatan:** Jangan sesekali gunakan `pull_request_target` jika anda tidak pasti. Jika kod dari fork mengandungi skrip berniat jahat (contoh: `curl` ke server hacker), ia boleh mencuri Secrets anda.
+
+**Cara Selamat Guna `pull_request_target`:**
+```yaml
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+jobs:
+  safe_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # Ambil kod dari fork
+      - name: Run tests
+        run: npm test # Jangan letak secrets dalam langkah ini!
+```
+
+---
+
+### ⚙️ 2. Tindakan Komuniti Lanjutan untuk Pengurusan Fork
+
+Selain `tgymnich/fork-sync`, berikut adalah tindakan (Actions) komuniti lain yang sangat berguna untuk menguruskan fork:
+
+| Nama Tindakan | Penerbit | Penerangan | Tag |
+| :--- | :--- | :--- | :--- |
+| **Delete Merged Branch** | SvanBoxel | Padam cawangan (branch) secara automatik selepas PR di-merge. | Automation |
+| **Fork Sync** | tgymnich | Segerakkan fork dengan upstream (seperti contoh sebelum ini). | Automation |
+| **Git Sync** | wei | Alternatif kepada fork-sync, menyokong pelbagai kaedah sync. | Automation |
+| **Stale** | actions/stale | Tandakan PR atau isu dari fork yang sudah lama tidak aktif. | Automation |
+| **Auto Approve** | hmarr | Meluluskan PR dari fork secara automatik (untuk projek yang mempercayai penyumbang). | Automation |
+| **PR Labeler** | actions/labeler | Label PR dari fork secara automatik berdasarkan fail yang diubah. | Automation |
+| **Fork Cleanup** | Skrip Komuniti | Padam fork lama yang tidak aktif untuk menjimatkan ruang. | Automation |
+| **Dependabot** | GitHub | Kemas kini kebergantungan pada fork secara automatik. | Dependency Review |
+
+---
+
+### 🛡️ 3. Strategi Keselamatan untuk Repositori Fork (Fork Security Strategy)
+
+Apabila anda menguruskan repositori open-source yang menerima banyak fork, berikut adalah strategi yang perlu ada:
+
+1.  **First-Time Contributor Approval:** GitHub secara lalai memerlukan penyelia (maintainer) untuk meluluskan workflow bagi pengguna yang pertama kali menyumbang (first-time contributor). Jangan matikan tetapan ini.
+2.  **Gunakan `pull_request_target` dengan berhati-hati:** Jika perlu, hadkan kebenaran `GITHUB_TOKEN` kepada `read-only` jika tidak perlu menulis.
+3.  **Environment Secrets:** Gunakan *Environments* (Settings > Environments) untuk menyimpan Secrets yang memerlukan kelulusan manual sebelum digunakan.
+4.  **CodeQL / Security Scan:** Sentiasa jalankan imbasan keselamatan (seperti CodeQL) pada setiap PR dari fork.
+5.  **Limit Actions:** Hadkan Actions yang boleh digunakan oleh penyumbang. Di `Settings > Actions > General`, pilih "Allow select actions" dan benarkan hanya Actions dari GitHub atau vendor yang dipercayai.
+
+---
+
+### 📝 4. Contoh YAML: Auto-Label PR dari Fork
+
+Berikut adalah contoh workflow yang akan melabel PR secara automatik jika ia datang dari fork, dan meninggalkan komen alu-aluan.
+
+```yaml
+name: PR from Fork Handler
+
+on:
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Label PR
+        uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          configuration-path: .github/labeler.yml
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Terima kasih kerana menyumbang! Sila pastikan ujian CI lulus sebelum PR ini di-merge.'
+            })
+```
+
+---
+
+### 🚀 5. Pencetus (Triggers) Berkaitan Fork
+
+Selain `push` dan `pull_request`, terdapat pencetus lain yang berkaitan dengan fork:
+
+*   **`fork`**: Berjalan apabila seseorang membuat fork pada repositori anda. (Jarang digunakan, tetapi berguna untuk statistik).
+*   **`watch`**: Berjalan apabila seseorang memberi bintang (star) pada repositori anda.
+*   **`repository_dispatch`**: Membolehkan anda mencetuskan workflow dari luar GitHub (contoh: dari server anda sendiri) menggunakan API.
+
+---
+
+### 💡 Ringkasan Tindakan untuk "Aktif Fork"
+
+| Langkah | Tindakan | Tujuan |
+| :--- | :--- | :--- |
+| 1 | Buka tab **Actions** | Melihat senarai workflow. |
+| 2 | Klik **"I understand my workflows..."** | Mengaktifkan Actions pada fork. |
+| 3 | Tetapkan **Secrets** | Di `Settings > Secrets`. |
+| 4 | Semak **Workflow Permissions** | Di `Settings > Actions > General`. |
+| 5 | Uji dengan **Push** atau **PR** | Memastikan workflow berjalan. |
+
+Jika anda mahukan **contoh YAML penuh** untuk fungsi spesifik (contoh: auto-sync fork, auto-merge PR, atau security scan pada fork), beritahu saya dan saya akan sediakan kod yang lengkap untuk anda salin terus.
+Baik, berikut adalah **maklumat lanjutan (Lagi)** yang lebih mendalam mengenai pengurusan, tetapan, dan penyelesaian masalah berkaitan **Fork** dalam GitHub Actions. Ini merangkumi aspek teknikal yang jarang dibincangkan tetapi sangat penting untuk penyelia (maintainer) dan penyumbang (contributors).
+
+---
+
+### ⚙️ 1. Tetapan Lanjutan Fork dalam GitHub (Settings > Actions > General)
+
+Banyak pengguna tidak perasan bahawa terdapat tetapan spesifik untuk mengawal Fork PR Workflows. Pergi ke `Settings` > `Actions` > `General` dan lihat bahagian **"Fork pull request workflows"**:
+
+| Tetapan | Keterangan | Kesan |
+| :--- | :--- | :--- |
+| **Run workflows from fork pull requests** | Benarkan workflow berjalan pada PR dari fork. | Jika dimatikan, CI tidak akan berjalan pada PR luar. |
+| **Send write tokens to workflows from pull requests** | Memberikan `GITHUB_TOKEN` kebenaran menulis kepada PR dari fork. | **BAHAYA** jika tidak dikawal. Biarkan tidak bertanda (untuk keselamatan). |
+| **Send secrets to workflows from pull requests** | Menghantar Secrets kepada workflow yang berjalan dari PR fork. | **SANGAT BAHAYA**. Hanya aktifkan jika anda benar-benar mempercayai penyumbang. |
+| **Require approval for first-time contributors** | Memerlukan kelulusan manual untuk penyumbang kali pertama. | **WAJIB AKTIF**. Ini adalah benteng pertahanan utama. |
+| **Require approval for all outside collaborators** | Memerlukan kelulusan untuk semua penyumbang luar. | Bergantung kepada saiz projek. Sesuai untuk projek besar. |
+
+---
+
+### 🛠️ 2. Masalah Biasa (Troubleshooting) Semasa Aktifkan Fork
+
+Apabila anda mengaktifkan Actions pada fork, berikut adalah ralat yang sering berlaku dan cara mengatasinya:
+
+| Ralat | Punca | Penyelesaian |
+| :--- | :--- | :--- |
+| **"Workflow does not exist"** | Fail YAML tidak wujud dalam cawangan yang betul. | Pastikan fail berada dalam `.github/workflows/` pada cawangan `main` atau cawangan yang di-`checkout`. |
+| **"Resource not accessible by integration"** | `GITHUB_TOKEN` tidak mempunyai kebenaran yang cukup. | Tambah `permissions` dalam fail YAML (contoh: `contents: write`, `pull-requests: write`). |
+| **"Secrets not found"** | Secrets tidak diwarisi dari repositori asal. | Tetapkan Secrets sendiri di `Settings > Secrets and variables > Actions` pada repositori fork anda. |
+| **"This workflow has a workflow_dispatch event trigger"** | Anda cuba jalankan workflow manual tetapi butang tidak muncul. | Pastikan fail YAML berada pada cawangan lalai (default branch) repositori fork anda. |
+| **"Billing limit reached"** | Had minit Actions untuk repositori peribadi (private) telah habis. | Repositori awam (public) adalah percuma. Untuk private, naik taraf pelan atau kurangkan penggunaan. |
+
+---
+
+### 📝 3. Contoh YAML Lanjutan: Kondisi Khas untuk Fork
+
+Berikut adalah contoh workflow yang **hanya berjalan** jika PR datang dari fork, dan **tidak berjalan** jika PR datang dari cawangan dalaman repositori yang sama. Ini sangat berguna untuk mengelakkan pembaziran masa CI.
+
+```yaml
+name: Fork PR CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Kondisi: Hanya jalankan jika PR datang dari fork (bukan dari cawangan dalaman)
+    if: github.event.pull_request.head.repo.full_name != github.repository
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run tests
+        run: npm test
+        env:
+          CI: true
+```
+
+---
+
+### 🧪 4. Contoh YAML: Matrix Testing pada Fork
+
+Jika projek anda menyokong pelbagai versi bahasa, anda boleh gunakan `matrix` untuk menguji semua versi tersebut secara serentak pada PR dari fork.
+
+```yaml
+name: Matrix CI for Forks
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+        exclude:
+          - os: macos-latest
+            python-version: '3.9' # Contoh pengecualian
+    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Test
+        run: pytest
+```
+
+---
+
+### 🌐 5. Tindakan Komuniti Tambahan untuk Pengurusan Fork
+
+Berikut adalah beberapa lagi Actions dari komuniti yang sangat berguna untuk pengurusan fork:
+
+| Nama Tindakan | Penerbit | Penerangan |
+| :--- | :--- | :--- |
+| **Create Pull Request** | peter-evans | Membolehkan workflow anda mencipta PR secara automatik (contoh: selepas auto-format kod). |
+| **Merge Dependabot** | fastify | Menggabungkan PR Dependabot secara automatik jika ujian lulus. |
+| **Auto Merge** | pascalgn | Menggabungkan PR secara automatik apabila semua syarat dipenuhi (contoh: label tertentu, CI lulus). |
+| **PR Size Labeler** | CodelyTV | Melabel PR berdasarkan saiz perubahan kod (XS, S, M, L, XL). |
+| **Conventional PR** | amannn | Memastikan tajuk PR mengikut format Conventional Commits. |
+| **Triage** | actions/stale | Menguruskan isu dan PR yang tidak aktif (stale). |
+| **Welcome** | actions/first-interaction | Memberi mesej alu-aluan kepada penyumbang pertama kali. |
+
+---
+
+### 💡 6. Amalan Terbaik untuk Penyumbang Fork (Contributor Best Practices)
+
+Jika anda adalah penyumbang yang bekerja pada fork, ikut amalan ini untuk memastikan Actions berjalan lancar:
+
+1.  **Sentiasa Sync Fork:** Sebelum membuat perubahan, pastikan fork anda dikemas kini dengan repositori asal (upstream). Gunakan butang "Sync fork" di GitHub atau jalankan `git pull upstream main`.
+2.  **Gunakan Cawangan (Branch) Berasingan:** Jangan buat perubahan pada cawangan `main` fork anda. Cipta cawangan baharu (contoh: `fix/bug-123`).
+3.  **Uji Secara Lokal:** Sebelum push, jalankan ujian secara lokal untuk mengelakkan pembaziran minit Actions.
+4.  **Semak Fail YAML:** Jika anda mengubah fail `.github/workflows/`, pastikan sintaksis YAML betul (gunakan linter YAML).
+5.  **Baca Panduan Sumbangan (CONTRIBUTING.md):** Setiap projek mempunyai peraturan tersendiri. Patuhinya.
+
+---
+
+### 🚀 7. Ringkasan Aliran Kerja (Workflow) Fork yang Lengkap
+
+1.  **Fork Repo** -> 2. **Clone ke Lokal** -> 3. **Cipta Cawangan Baharu** -> 4. **Buat Perubahan** -> 5. **Push ke Fork** -> 6. **Buka PR ke Upstream** -> 7. **CI Berjalan (dengan kelulusan)** -> 8. **Semak & Merge**.
+
+Jika anda mahukan **contoh YAML penuh** untuk fungsi spesifik (contoh: auto-sync fork, auto-merge PR, atau security scan pada fork), beritahu saya dan saya akan sediakan kod yang lengkap untuk anda salin terus.hl
+Baik, saya faham. Anda mahukan penjelasan lanjut untuk **5 perkara pertama (1, 2, 3, 4, 5)** daripada senarai **"Amalan Terbaik untuk Penyumbang Fork (Contributor Best Practices)"** yang saya berikan sebelum ini.
+
+Berikut adalah penjelasan mendalam, langkah-langkah praktikal, dan contoh kod untuk setiap satu:
+
+---
+
+### 1. Sentiasa Sync Fork (Segerakkan Fork Anda)
+
+**Mengapa?** Jika anda tidak sync, cawangan `main` fork anda akan ketinggalan daripada repositori asal (upstream). Ini menyebabkan konflik (merge conflict) yang sukar diselesaikan apabila anda membuka Pull Request (PR).
+
+**Cara Melakukan:**
+*   **Melalui Antara Muka GitHub (Paling Mudah):**
+    Pergi ke repositori fork anda di GitHub. Anda akan melihat butang **"Sync fork"** (jika fork anda ketinggalan). Klik butang tersebut dan pilih **"Update branch"**.
+*   **Melalui Terminal (Git CLI - Disyorkan):**
+    ```bash
+    # 1. Tambah repositori asal sebagai 'upstream' (jika belum ada)
+    git remote add upstream https://github.com/pemilik-asal/nama-repo.git
+
+    # 2. Tarik perubahan terkini dari upstream
+    git fetch upstream
+
+    # 3. Pindah ke cawangan utama fork anda
+    git checkout main
+
+    # 4. Gabungkan perubahan dari upstream ke main tempatan
+    git merge upstream/main
+
+    # 5. Push perubahan ke fork anda di GitHub
+    git push origin main
+    ```
+
+---
+
+### 2. Gunakan Cawangan (Branch) Berasingan
+
+**Mengapa?** Jangan sesekali bekerja terus pada cawangan `main` fork anda. Jika anda buat perubahan pada `main`, ia akan menyukarkan proses sync (Langkah 1) dan boleh menyebabkan konflik dengan repositori asal.
+
+**Cara Melakukan:**
+Sentiasa cipta cawangan baharu untuk setiap ciri (feature) atau pembaikan (bug fix) yang anda ingin sumbangkan.
+```bash
+# Cipta dan pindah ke cawangan baharu
+git checkout -b fix/isu-login-123
+
+# Lakukan perubahan kod anda...
+git add .
+git commit -m "Fix: Menyelesaikan masalah log masuk pada halaman utama"
+git push origin fix/isu-login-123
+```
+Selepas push, anda boleh membuka PR dari cawangan `fix/isu-login-123` fork anda ke cawangan `main` repositori asal.
+
+---
+
+### 3. Uji Secara Lokal (Sebelum Push)
+
+**Mengapa?** GitHub Actions menggunakan minit yang terhad (terutamanya untuk repositori peribadi). Jika anda push kod yang gagal, ia akan membazirkan minit CI dan menyusahkan penyelia (maintainer) untuk menyemak PR yang rosak.
+
+**Cara Melakukan:**
+Jalankan ujian (test) dan linter pada komputer anda sendiri sebelum `git push`.
+*   **Contoh untuk projek Node.js:**
+    ```bash
+    npm install
+    npm run lint
+    npm test
+    ```
+*   **Contoh untuk projek Python:**
+    ```bash
+    pip install -r requirements.txt
+    pytest
+    flake8 .
+    ```
+Pastikan semua ujian lulus (PASS) sebelum anda menghantar PR.
+
+---
+
+### 4. Semak Fail YAML (Workflow Actions)
+
+**Mengapa?** Jika anda mengubah suai fail `.github/workflows/*.yml`, satu kesilapan kecil seperti inden (spacing) yang salah atau sintaksis yang salah akan menyebabkan seluruh workflow gagal. GitHub tidak memberikan amaran awal sebelum workflow dijalankan.
+
+**Cara Melakukan:**
+*   Gunakan **VS Code** dengan sambungan (extension) **"YAML"** oleh Red Hat. Ia akan memberikan garis bawah merah jika ada sintaksis yang salah.
+*   Gunakan alat **`actionlint`** di terminal untuk menyemak fail workflow anda sebelum commit.
+    ```bash
+    # Contoh menggunakan actionlint (jika dipasang)
+    actionlint .github/workflows/main.yml
+    ```
+*   Pastikan anda menggunakan versi Actions yang terkini (contoh: `actions/checkout@v4` dan bukan `@v1`).
+
+---
+
+### 5. Baca Panduan Sumbangan (CONTRIBUTING.md)
+
+**Mengapa?** Setiap projek open-source mempunyai peraturan tersendiri. Ada projek yang mahukan anda menandatangani **DCO** (Developer Certificate of Origin), ada yang mahukan format **Conventional Commits** (contoh: `feat:`, `fix:`), dan ada yang mempunyai gaya kod (code style) yang spesifik. Jika anda abaikan ini, PR anda akan ditolak.
+
+**Cara Melakukan:**
+*   Cari fail bernama **`CONTRIBUTING.md`**, **`CONTRIBUTING`**, atau **`CODE_OF_CONDUCT.md`** di dalam repositori asal.
+*   Baca dengan teliti. Biasanya ia mengandungi:
+    *   Cara menjalankan projek secara lokal.
+    *   Format mesej commit yang dikehendaki.
+    *   Proses semakan kod (Code Review).
+    *   Keperluan ujian.
+*   Jika tiada fail tersebut, lihat pada **`README.md`** atau tanya penyelia melalui Isu (Issue) sebelum membuat PR.
+
+---
+
+Jika anda mahukan penjelasan untuk **nombor 6 dan 7** (Ringkasan Aliran Kerja Fork yang Lengkap), beritahu saya. Saya boleh sediakan **contoh fail YAML penuh** untuk workflow spesifik (contoh: auto-sync fork) jika anda perlukan.
+Baik, berikut adalah sambungan untuk **nombor 6 dan 7** (Ringkasan Aliran Kerja Fork yang Lengkap), beserta **contoh fail YAML penuh** untuk fungsi spesifik, dan **tambahan maklumat lanjutan** untuk pengurusan fork yang lebih profesional.
+
+---
+
+### 🔄 6. Ringkasan Aliran Kerja (Workflow) Fork yang Lengkap
+
+Berikut adalah aliran kerja dari mula hingga akhir (End-to-End) untuk penyumbang (contributor) yang ingin menyumbang kod ke repositori orang lain:
+
+| Langkah | Tindakan | Arahan / Alat |
+| :--- | :--- | :--- |
+| **1. Fork** | Salin repositori asal ke akaun GitHub anda. | Klik butang **Fork** di GitHub. |
+| **2. Clone** | Muat turun fork ke komputer lokal. | `git clone https://github.com/username-anda/nama-repo.git` |
+| **3. Set Upstream** | Sambungkan lokal ke repositori asal. | `git remote add upstream https://github.com/pemilik-asal/nama-repo.git` |
+| **4. Cawangan Baharu** | Cipta cawangan untuk kerja anda. | `git checkout -b feat/nama-ciri` |
+| **5. Buat Perubahan** | Edit kod, tambah ujian. | Guna editor (VS Code, IntelliJ, dll). |
+| **6. Uji Lokal** | Pastikan semua ujian lulus sebelum push. | `npm test`, `pytest`, `go test ./...` |
+| **7. Commit & Push** | Simpan perubahan dan hantar ke fork anda. | `git commit -m "feat: tambah ciri X"`<br>`git push origin feat/nama-ciri` |
+| **8. Buka PR** | Hantar Pull Request ke repositori asal. | Klik **"Compare & pull request"** di GitHub. |
+| **9. Tindak Balas Review** | Betulkan kod jika diminta oleh penyelia. | `git commit -m "fix: betulkan isu review"`<br>`git push origin feat/nama-ciri` |
+| **10. Merge & Bersih** | Setelah PR di-merge, padam cawangan anda. | Klik **"Delete branch"** di GitHub. |
+
+---
+
+### 📝 7. Contoh Fail YAML Penuh untuk Pengurusan Fork
+
+Berikut adalah **3 contoh fail YAML lengkap** yang boleh anda salin terus ke dalam folder `.github/workflows/` repositori fork anda.
+
+#### Contoh A: Auto-Sync Fork dengan Upstream (Setiap Hari)
+Fail ini akan menyegerakkan fork anda secara automatik dengan repositori asal pada jam 12:00 tengah malam setiap hari.
+
+```yaml
+name: Auto Sync Fork
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Setiap hari pada 12:00 AM UTC
+  workflow_dispatch: # Membolehkan anda jalankan secara manual
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync fork with upstream
+        uses: tgymnich/fork-sync@v1.9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: pemilik-asal # Ganti dengan nama pengguna asal
+          base: main # Cawangan utama repositori asal
+          head: main # Cawangan pada fork anda
+          merge_method: merge # Kaedah: merge, rebase, atau squash
+          prune: true # Padam cawangan yang telah di-merge
+```
+
+#### Contoh B: Auto-Merge PR dari Fork (Jika Lulus CI)
+Fail ini akan menggabungkan PR secara automatik jika ia mempunyai label `automerge` dan semua ujian CI lulus.
+
+```yaml
+name: Auto Merge PR
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, synchronize, opened, edited, reopened]
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'automerge')
+    steps:
+      - name: Auto Merge
+        uses: pascalgn/automerge-action@v0.15.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_LABELS: "automerge"
+          MERGE_METHOD: "squash"
+          MERGE_COMMIT_MESSAGE: "pull-request-title"
+          MERGE_FORKS: "true" # Benarkan merge dari fork
+```
+
+#### Contoh C: Security Scan (CodeQL) pada PR dari Fork
+Fail ini akan mengimbas kod dari fork untuk kerentanan keselamatan sebelum ia di-merge.
+
+```yaml
+name: CodeQL Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0' # Setiap hari Ahad
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript', 'python' ] # Ganti dengan bahasa projek anda
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+```
+
+---
+
+### 🛡️ 8. Tambahan Lanjutan: Amalan Terbaik untuk Penyelia (Maintainer)
+
+Jika anda adalah **penyelia (maintainer)** yang menerima banyak PR dari fork, berikut adalah amalan terbaik untuk memastikan repositori anda selamat dan teratur:
+
+| Amalan | Keterangan | Cara Lakukan |
+| :--- | :--- | :--- |
+| **First-Time Contributor Approval** | Wajibkan kelulusan manual untuk penyumbang pertama kali. | `Settings > Actions > General > Fork pull request workflows` > Centang "Require approval for first-time contributors". |
+| **Limit Actions** | Hadkan Actions yang boleh digunakan oleh penyumbang. | `Settings > Actions > General > Allow select actions` > Benarkan hanya Actions dari GitHub atau vendor yang dipercayai. |
+| **Guna `pull_request` (Bukan `pull_request_target`)** | Elakkan `pull_request_target` melainkan benar-benar perlu. | Gunakan `pull_request` untuk CI biasa. Jika perlu `pull_request_target`, pastikan tiada Secrets yang terdedah. |
+| **Label & Triage** | Label PR secara automatik untuk memudahkan semakan. | Gunakan `actions/labeler` dan `actions/stale` untuk menguruskan PR lama. |
+| **DCO / CLA** | Wajibkan penyumbang menandatangani DCO (Developer Certificate of Origin). | Gunakan `probot/dco` atau GitHub Action untuk menyemak `Signed-off-by` dalam commit. |
+
+---
+
+### 🧹 9. Penyelesaian Masalah (Troubleshooting) Lanjutan
+
+| Masalah | Punca | Penyelesaian |
+| :--- | :--- | :--- |
+| **Konflik (Merge Conflict)** | Cawangan fork anda ketinggalan berbanding upstream. | Sync fork (Langkah 1), kemudian `git rebase upstream/main` pada cawangan anda. |
+| **Workflow Gagal di PR dari Fork** | Secrets tidak diwarisi. | Tetapkan Secrets di `Settings > Secrets` pada repositori asal, atau minta penyelia meluluskan workflow. |
+| **Butang "Run workflow" Tidak Muncul** | `workflow_dispatch` hanya berfungsi pada cawangan lalai (default). | Pastikan fail YAML berada pada cawangan `main` (atau cawangan lalai repositori). |
+| **PR Tidak Dapat Di-merge** | CI gagal atau konflik. | Semak log Actions, betulkan kod, dan push semula. |
+
+---
+
+### 💡 10. Kesimpulan: Fork Adalah Komuniti
+
+Mengaktifkan dan menguruskan fork bukan sekadar tentang teknikal, tetapi tentang **membina komuniti**. Fork membolehkan penyumbang dari seluruh dunia bekerjasama dalam projek anda. Dengan tetapan keselamatan yang betul (seperti kelulusan manual dan had Actions), anda boleh memanfaatkan kuasa komuniti tanpa mengorbankan keselamatan repositori anda.
+
+Jika anda mahukan **contoh YAML penuh** untuk fungsi spesifik yang lain (contoh: auto-format kod, auto-deploy preview, atau DCO check), beritahu saya dan saya akan sediakan kod yang lengkap untuk anda salin terus.
+Baik, berikut adalah **Lagi: Topik Lanjutan GitHub Actions & Fork** yang merangkumi aspek profesional untuk meningkatkan kualiti, keselamatan, dan kecekapan aliran kerja (workflow) anda. Topik-topik ini jarang disentuh dalam tutorial asas tetapi sangat penting untuk projek berskala besar.
+
+---
+
+### 11. Matrix Strategy (Ujian Pelbagai Versi & OS)
+
+**Mengapa?** Untuk memastikan kod anda berfungsi pada pelbagai sistem pengendalian (OS) dan versi bahasa. Ini mengelakkan masalah "ia berfungsi pada mesin saya" (works on my machine).
+
+**Contoh YAML:**
+```yaml
+name: Matrix CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false  # Jangan batalkan semua jika satu gagal
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [18.x, 20.x, 22.x]
+        exclude:
+          - os: macos-latest
+            node-version: 18.x  # Pengecualian: macOS tidak perlu uji Node 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm test
+```
+
+---
+
+### 12. Caching Dependencies (Mempercepatkan Workflow)
+
+**Mengapa?** Setiap kali workflow berjalan, ia memuat turun semula semua kebergantungan (dependencies). Dengan caching, anda boleh menjimatkan masa dan kos minit Actions.
+
+**Contoh YAML (Node.js):**
+```yaml
+- name: Cache node modules
+  uses: actions/cache@v4
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    restore-keys: |
+      ${{ runner.os }}-node-
+```
+**Contoh YAML (Python):**
+```yaml
+- name: Cache pip
+  uses: actions/cache@v4
+  with:
+    path: ~/.cache/pip
+    key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+    restore-keys: |
+      ${{ runner.os }}-pip-
+```
+
+---
+
+### 13. Artifacts (Menyimpan Hasil Ujian/Binaan)
+
+**Mengapa?** Untuk menyimpan fail seperti laporan ujian, binari, atau log yang boleh dimuat turun selepas workflow selesai.
+
+**Contoh YAML:**
+```yaml
+- name: Run tests
+  run: npm test -- --coverage
+
+- name: Upload coverage report
+  uses: actions/upload-artifact@v4
+  with:
+    name: coverage-report
+    path: coverage/
+    retention-days: 7  # Simpan selama 7 hari
+```
+
+---
+
+### 14. Environments & Protection Rules (Kawalan Deploy)
+
+**Mengapa?** Untuk mengawal deploy ke persekitaran (contoh: staging, production) dengan kelulusan manual, secrets khusus, dan had masa.
+
+**Langkah:**
+1. Pergi ke `Settings > Environments`.
+2. Cipta environment baru (contoh: `production`).
+3. Tambah **Protection Rules**: Required reviewers (kelulusan manual), Wait timer, atau Deployment branches.
+
+**Contoh YAML:**
+```yaml
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production  # Guna environment yang telah ditetapkan
+    steps:
+      - name: Deploy to Production
+        run: ./deploy.sh
+        env:
+          API_KEY: ${{ secrets.PROD_API_KEY }}  # Secrets khusus environment
+```
+
+---
+
+### 15. Reusable Workflows & Composite Actions
+
+**Mengapa?** Untuk mengelakkan pertindihan kod (DRY) dalam fail YAML. Anda boleh mencipta workflow yang boleh digunakan semula oleh repositori lain atau workflow lain.
+
+**Contoh Reusable Workflow (`.github/workflows/reusable.yml`):**
+```yaml
+name: Reusable Build
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: string
+    secrets:
+      token:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+      - run: npm ci
+      - run: npm test
+        env:
+          TOKEN: ${{ secrets.token }}
+```
+**Cara Guna:**
+```yaml
+jobs:
+  call-build:
+    uses: ./.github/workflows/reusable.yml
+    with:
+      node-version: '20'
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+---
+
+### 16. Self-hosted Runners (Pelari Sendiri)
+
+**Mengapa?** Jika anda memerlukan perkakasan khusus (GPU, RAM besar), atau mahu menjimatkan kos untuk repositori peribadi, anda boleh hos pelari (runner) sendiri.
+
+**Langkah Asas:**
+1. Pergi ke `Settings > Actions > Runners`.
+2. Klik **New self-hosted runner**.
+3. Ikut arahan untuk muat turun dan konfigurasi pada server anda.
+4. Dalam YAML, guna `runs-on: self-hosted`.
+
+```yaml
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./build.sh
+```
+
+---
+
+### 17. Security Hardening (Mengeraskan Keselamatan)
+
+| Amalan | Keterangan | Contoh |
+| :--- | :--- | :--- |
+| **Pin Actions ke SHA** | Jangan guna tag (`@v4`) kerana ia boleh berubah. Guna commit SHA penuh. | `uses: actions/checkout@a81bbbf8298c0fa03ea29cdc473d45769f953675` |
+| **Hadkan Permissions** | Beri hanya kebenaran yang diperlukan oleh `GITHUB_TOKEN`. | `permissions: contents: read` |
+| **Guna OIDC** | Elakkan simpan kredensial awan (AWS, GCP) sebagai Secrets. Guna OpenID Connect. | `permissions: id-token: write` |
+| **Dependabot untuk Actions** | Kemas kini Actions secara automatik. | Tambah `.github/dependabot.yml` dengan `package-ecosystem: "github-actions"` |
+| **CodeQL** | Imbas kod untuk kerentanan keselamatan. | Guna templat CodeQL Analysis. |
+
+---
+
+### 18. Notifications (Pemberitahuan)
+
+**Mengapa?** Untuk mengetahui status workflow tanpa perlu membuka GitHub.
+
+**Contoh YAML (Slack):**
+```yaml
+- name: Slack Notification
+  uses: 8398a7/action-slack@v3
+  with:
+    status: ${{ job.status }}
+    fields: repo,message,commit,author,action,eventName,ref,workflow
+  env:
+    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  if: always()  # Hantar walaupun gagal
+```
+**Contoh YAML (Discord):**
+```yaml
+- name: Discord Notification
+  uses: Ilshidur/action-discord@master
+  env:
+    DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+  with:
+    args: 'Workflow ${{ github.workflow }} selesai dengan status ${{ job.status }}.'
+  if: always()
+```
+
+---
+
+### 19. Debugging & Troubleshooting Lanjutan
+
+| Masalah | Penyelesaian |
+| :--- | :--- |
+| **Workflow tidak berjalan** | Semak `on:` trigger. Pastikan cawangan betul. |
+| **Ralat "Resource not accessible"** | Tambah `permissions` dalam YAML. |
+| **Caching tidak berkesan** | Pastikan `key` menggunakan `hashFiles` yang betul. |
+| **Matrix terlalu besar** | Guna `exclude` atau `include` untuk hadkan kombinasi. |
+| **Minit Actions habis** | Guna caching, self-hosted runner, atau kurangkan kekerapan `schedule`. |
+
+---
+
+### 20. Ringkasan: Senarai Semak (Checklist) untuk Workflow Profesional
+
+- [ ] Guna **Matrix** untuk ujian pelbagai versi.
+- [ ] Guna **Caching** untuk mempercepatkan.
+- [ ] Simpan **Artifacts** untuk laporan.
+- [ ] Gunakan **Environments** untuk deploy terkawal.
+- [ ] Cipta **Reusable Workflows** untuk elak pertindihan.
+- [ ] **Pin Actions** ke SHA untuk keselamatan.
+- [ ] Hadkan **Permissions** `GITHUB_TOKEN`.
+- [ ] Gunakan **OIDC** untuk kredensial awan.
+- [ ] Tambah **Dependabot** untuk Actions.
+- [ ] Pasang **CodeQL** untuk imbasan keselamatan.
+- [ ] Tetapkan **Notifications** untuk Slack/Discord.
+- [ ] Semak **Log** secara berkala.
+
+---
+
+Jika anda mahukan **contoh YAML penuh** untuk mana-mana topik di atas (contoh: Reusable Workflow, OIDC dengan AWS, atau Matrix penuh), beritahu saya dan saya akan sediakan kod yang lengkap untuk anda salin terus.
+Berikut adalah **Dokumen Lengkap & Komprehensif** mengenai GitHub Actions, merangkumi senarai penuh templat, pengurusan Fork, ciri lanjutan, amalan terbaik, dan penyelesaian masalah. Semua maklumat daripada tangkapan skrin anda dan topik lanjutan telah disatukan dalam satu rujukan lengkap.
+
+---
+
+# 📘 PANDUAN LENGKAP GITHUB ACTIONS & FORK
+
+## BAHAGIAN 1: SENARAI PENUH TEMPLAT GITHUB ACTIONS
+
+### 📄 Pages (Halaman)
+| Nama Tindakan | Penerbit | Penerangan | Tag |
+| :--- | :--- | :--- | :--- |
+| Static HTML | GitHub Actions | Deploy static files in a repository without a build. | HTML |
+| Jekyll | GitHub Actions | Package a Jekyll site. | - |
+| Hugo | GitHub Actions | Package a Hugo site. | - |
+| Next.js | GitHub Actions | Package a Next.js site. | - |
+| NuxtJS | GitHub Actions | Package a NuxtJS site. | - |
+| Astro | GitHub Actions | Deploy an Astro site. | Astro |
+| Gatsby | GitHub Actions | Build and deploy a Gatsby site. | JavaScript |
+
+### 🤖 Automation (Automasi)
+| Nama Tindakan | Penerbit | Penerangan | Tag |
+| :--- | :--- | :--- | :--- |
+| Stale | GitHub Actions | Checks for stale issues and pull requests | Automation |
+| Manual workflow | GitHub Actions | Simple workflow that is manually triggered. | Automation |
+| AI issue summary | GitHub Actions | Summarizes new issues | Automation |
+| Greetings | GitHub Actions | Greets users who are first time contributors to the repo | Automation |
+| Issue Labeler | GitHub Actions | Automatically label new issues based on content. | Automation |
+| Scheduled Workflow | GitHub Actions | Run a workflow on a schedule using Cron syntax. | Automation |
+
+### ⚙️ Continuous Integration (CI)
+| Nama Tindakan | Penerbit | Penerangan | Tag |
+| :--- | :--- | :--- | :--- |
+| Android CI | GitHub Actions | Build an Android project with Gradle. | Java |
+| Elixir | GitHub Actions | Build and test an Elixir project with Mix. | Elixir |
+| Python application | GitHub Actions | Create and test a Python application. | Python |
+| Python Package using Anaconda | GitHub Actions | Create and test a Python package on multiple Python versions using Anaconda. | Python |
+| Scala | GitHub Actions | Build and test a Scala project with SBT. | Scala |
+| MSBuild based projects | GitHub Actions | Build a MSBuild based project. | C |
+| Ruby on Rails | GitHub Actions | Build, lint, and test a Rails application | Ruby |
+| Java with Gradle | GitHub Actions | Build and test a Java project using a Gradle wrapper script. | Java |
+| Laravel | GitHub Actions | Test a Laravel project. | PHP |
+| Ruby Gem | GitHub Actions | Pushes a Ruby Gem to RubyGems and GitHub Package Registry. | Ruby |
+| Dart | GitHub Actions | Build and test a Dart project with Pub. | Dart |
+| iOS | GitHub Actions | Build and test an iOS application using xcodebuild. | - |
+| Java with Ant | GitHub Actions | Build and test a Java project with Apache Ant. | Java |
+| Publish Node.js Package | GitHub Actions | Publishes a Node.js package to npm. | JavaScript |
+| Publish Node.js Package to GitHub Packages | GitHub Actions | Publishes a Node.js package to GitHub Packages. | JavaScript |
+| SLSA Go releaser | OpenSSF | Compile your Go project using a SLSA3 compliant builder | Go |
+| Swift | GitHub Actions | Build and test a Swift Package. | Swift |
+| Symfony | GitHub Actions | Test a Symfony project. | PHP |
+| Java with Maven | GitHub Actions | Build and test a Java project with Apache Maven. | Java |
+| CMake based, single-platform | GitHub Actions | Build and test a CMake based project on a single-platform. | C |
+| Node.js | GitHub Actions | Build and test a Node.js project with npm. | JavaScript |
+| .NET Desktop | GitHub Actions | Build, test, sign and publish a desktop application built on .NET. | C# |
+| Go | GitHub Actions | Build a Go project. | Go |
+| Python package | GitHub Actions | Create and test a Python package on multiple Python versions. | Python |
+| Super Linter | GitHub Actions | Run linters for several languages on your code base for changed files | - |
+| Docker image | GitHub Actions | Build a Docker image to deploy, run, or push to a registry. | Dockerfile |
+| Rust | GitHub Actions | Build and test a Rust project with Cargo. | Rust |
+| Erlang | GitHub Actions | Build and test an Erlang project with rebar. | Erlang |
+| PHP | GitHub Actions | Build and test a PHP application using Composer | PHP |
+| Ada | GitHub Actions | Build Ada project with GPRbuild. | Ada |
+| Ruby | GitHub Actions | Build and test a Ruby project with Rake. | Ruby |
+| Publish Java Package with Maven | GitHub Actions | Build a Java Package using Maven and publish to GitHub Packages. | Java |
+| Xcode - Build and Analyze | GitHub Actions | Build Xcode project using xcodebuild | Objective-C |
+| Clojure | GitHub Actions | Build and test a Clojure project with Leiningen. | Clojure |
+| CMake based, multi-platform | GitHub Actions | Build and test a CMake based project on multiple platforms. | C |
+| R package | GitHub Actions | Create and test an R package on multiple R versions. | R |
+| D | GitHub Actions | Build and test a D project with dub. | D |
+| Crystal | GitHub Actions | Build and test a Crystal project. | Crystal |
+| Publish Python Package | GitHub Actions | Publish a Python Package to PyPI on release. | Python |
+| Pylint | GitHub Actions | Lint a Python application with pylint. | Python |
+| Haskell | GitHub Actions | Build and test a Haskell project with Cabal. | Haskell |
+| Publish Java Package with Gradle | GitHub Actions | Build a Java Package using Gradle and publish to GitHub Packages. | Java |
+| C/C++ with Make | GitHub Actions | Build and test a C/C++ project using Make. | C |
+| Build projects with Make | GitHub Actions | Build and test a project using Make. | Makefile |
+| Django | GitHub Actions | Build and Test a Django Project | Python |
+| .NET | GitHub Actions | Build and test a .NET or ASP.NET Core project. | C# |
+| Publish Docker Container | GitHub Actions | Build, test and push Docker image to GitHub Packages. | Dockerfile |
+| Grunt | GitHub Actions | Build a NodeJS project with npm and grunt. | JavaScript |
+| Gulp | GitHub Actions | Build a NodeJS project with npm and gulp. | JavaScript |
+| Webpack | GitHub Actions | Build a NodeJS project with npm and webpack. | JavaScript |
+| Deno | GitHub Actions | Test your Deno project | JavaScript |
+| Datadog Synthetics | Datadog | Run Datadog Synthetic tests within your GitHub Actions workflow | JavaScript |
+
+### 🚀 Deployment (Pengerahan)
+| Nama Tindakan | Penerbit | Penerangan | Tag |
+| :--- | :--- | :--- | :--- |
+| Deploy Node.js to Azure Web App | Microsoft Azure | Build a Node.js project and deploy it to an Azure Web App. | Deployment |
+| Deploy Node.js to Azure Functions App | Microsoft Azure | Build a Node.js project and deploy it to an Azure Functions App. | Deployment |
+| Deploy to Amazon ECS | Amazon Web Services | Deploy a container to an Amazon ECS service. | Deployment |
+| Deploy to AWS S3 | Amazon Web Services | Deploy a static website to an Amazon S3 bucket. | Deployment |
+| Build and Deploy to GKE | Google Cloud | Build a docker container, publish it, and deploy to GKE. | Deployment |
+| Deploy to Google Cloud Run | Google Cloud | Build and deploy a container to Google Cloud Run. | Deployment |
+| Terraform | HashiCorp | Set up Terraform CLI in your GitHub Actions workflow. | Deployment |
+| Deploy to Alibaba Cloud ACK | Alibaba Cloud | Deploy a container to Alibaba Cloud Container Service for Kubernetes. | Deployment |
+| Deploy to IBM Cloud Kubernetes Service | IBM | Build a docker container, publish it, and deploy to IBM Cloud Kubernetes Service. | Deployment |
+| Tencent Kubernetes Engine | Tencent Cloud | Build a docker container, publish and deploy it to Tencent Kubernetes Engine. | Deployment |
+| Deploy to Vercel | Vercel | Deploy your project to Vercel. | Deployment |
+| Deploy to Netlify | Netlify | Deploy your project to Netlify. | Deployment |
+| Firebase Hosting | Firebase | Deploy your web app to Firebase Hosting. | Deployment |
+
+### 🔒 Security / Code Scanning
+| Nama Tindakan | Penerbit | Penerangan | Tag |
+| :--- | :--- | :--- | :--- |
+| SonarCloud | Sonar | Static analysis of code for vulnerability detection, covering 26+ languages. | Code scanning |
+| SonarQube | Sonar | Static analysis of code for vulnerability detection, covering 26+ languages. | Code scanning |
+| Dependency Review | GitHub Actions | Scans Pull Requests on each push for the introduction and/or resolution of vulnerable dependencies. | Dependency review |
+| CodeQL Analysis | GitHub | Security analysis from GitHub for C, C++, C#, Go, Java, JavaScript, TypeScript, Python, Ruby, Kotlin and Swift. | Code scanning |
+| Fortify Scan | OpenText | Integrate Fortify's comprehensive static code analysis (SAST) for 33+ languages. | Code scanning |
+| Jscrambler Code Integrity | Jscrambler | Protect your JavaScript Application with polymorphic obfuscation and self-defensive techniques. | Code scanning |
+| Zscaler IaC Scan | Zscaler CWP | Scan your Infrastructure as Code files using Zscaler IaC Scan app. | Code scanning |
+| SecurityCodeScan | @security-code-scan | Vulnerability Patterns Detector for C# and VB.NET. | Code scanning |
+| Contrast Scan | Contrast Security Inc | Scans Pull Requests on each push for the introduction and/or resolution of vulnerabilities. | Code scanning |
+| Policy Validator for CloudFormation | Amazon Web Services | Validate AWS IAM Policies in CloudFormation Templates. | Code scanning |
+| Red Hat CodeReady Dependency Analytics | Red Hat | Scan your project's dependencies with CodeReady Dependency Analytics. | Code scanning |
+| Bandit Scan | abirismyname | Bandit is free software designed to find common security issues in Python code. | Code scanning |
+| cloudrail | Indeni Cloudrail | Cloudrail can be used to scan your infrastructure-as-code files for security and compliance issues. | Code scanning |
+| 42Crunch API Security Audit | 42Crunch | Use the 42Crunch Audit to perform static API security testing (SAST) on OpenAPI/Swagger files. | Code scanning |
+| StackHawk | StackHawk | Integrate dynamic application security testing (DAST) and API security testing into your CI pipeline. | Code scanning |
+| Xanitizer | RIGS IT | Automatically scan your code for vulnerabilities and generate compliance reports with Xanitizer. | Code scanning |
+| clj-holmes | Matheus Bernardes | A Static Application Security Testing tool to find vulnerable Clojure code. | Code scanning |
+| CxSAST | Checkmarx | Scan your code with Checkmarx CxSAST. | Code scanning |
+| NowSecure | NowSecure | The NowSecure Action delivers fast, accurate, automated security analysis of iOS and Android apps. | Code scanning |
+| OSV Scanner | Google | Vulnerability scanner for your dependencies using data provided by https://osv.dev | Code scanning |
+| Semgrep | Returntocorp | Continuously run Semgrep to find bugs and enforce secure code standards. | Code scanning |
+| Snyk Security | Snyk | Detect vulnerabilities across your applications and infrastructure with the Snyk platform. | Code scanning |
+| JFrog SAST | JFrog | Scan for security vulnerabilities in source code using JFrog SAST | Code scanning |
+| Mayhem for API | ForAllSecure | Automatically test your REST APIs with your OpenAPI specs and Postman collections. | Code scanning |
+| NeuraLegion | NeuraLegion | Scans any target (Web Apps, APIs, Web sockets, mobile) providing actionable reports. | Code scanning |
+| njsscan | NodeJSScan | nodejsscan is a static security code scanner that finds insecure code patterns in Node.js applications. | Code scanning |
+| Microsoft Defender For DevOps Scan | Microsoft | Defender for DevOps helps integrate multiple tools with GitHub Advanced Security. | Code scanning |
+| DevSkim | Microsoft CST-E | DevSkim is a security linter that highlights common security issues in source code. | Code scanning |
+| ESLint | GitHub Actions | A tool for identifying and reporting the problems found in ECMAScript/JavaScript code. | Code scanning |
+| EthicalCheck | APISec | EthicalCheck provides the industry's only free & automated API security testing service. | Code scanning |
+| APIsec Scan | APIsec | APIsec provides automated and continuous API testing platform that uncovers security vulnerabilities and logic flaws. | Code scanning |
+| Appknox | Appknox | Use Appknox action for faster and precise security assessments of your iOS and Android apps. | Code scanning |
+| Bearer | Bearer | Continuously run Bearer code security scanning tool (SAST) to discover, filter and prioritize risks. | Code scanning |
+| Codacy Security Scan | Codacy | Free, out-of-the-box, security analysis provided by multiple open source static analysis tools. | Code scanning |
+| OWASP ZAP Scan | ZAP | Dynamic Application Security Testing (DAST) for web applications. | Code scanning |
+| Trivy | Aqua Security | Scan container images, filesystems, and Git repositories for vulnerabilities. | Code scanning |
+| OSSF Scorecard | OpenSSF | Automate security health checks on your open source project. | Code scanning |
+
+---
+
+## BAHAGIAN 2: PENGURUSAN FORK (FORK MANAGEMENT)
+
+### 2.1 Cara Aktifkan Fork
+1. Buka repositori fork anda di GitHub.
+2. Klik tab **Actions**.
+3. Klik butang **"I understand my workflows, go ahead and enable them"**.
+4. Tetapkan **Secrets** sendiri di `Settings > Secrets and variables > Actions`.
+5. Semak **Workflow Permissions** di `Settings > Actions > General`.
+
+### 2.2 Perbezaan `pull_request` vs `pull_request_target`
+| Ciri | `pull_request` | `pull_request_target` |
+| :--- | :--- | :--- |
+| Keselamatan | Selamat | Berisiko |
+| Akses Secrets | Tiada | Ada |
+| Kebenaran Token | Baca sahaja | Baca & Tulis |
+| Kegunaan | CI biasa | Komen, label, deploy preview |
+
+**Amaran:** Jangan guna `pull_request_target` jika tidak perlu. Jika perlu, jangan dedahkan Secrets.
+
+### 2.3 Tetapan Keselamatan Fork (Settings > Actions > General)
+- **Run workflows from fork pull requests** – Benarkan workflow berjalan pada PR dari fork.
+- **Send write tokens to workflows from pull requests** – **BAHAYA**, biarkan tidak bertanda.
+- **Send secrets to workflows from pull requests** – **SANGAT BAHAYA**, hanya untuk penyumbang dipercayai.
+- **Require approval for first-time contributors** – **WAJIB AKTIF**.
+- **Require approval for all outside collaborators** – Sesuai untuk projek besar.
+
+### 2.4 Tindakan Komuniti untuk Fork
+| Nama Tindakan | Penerbit | Penerangan |
+| :--- | :--- | :--- |
+| Fork Sync | tgymnich | Segerakkan fork dengan upstream secara automatik. |
+| Repo Sync | repo-sync | Menyelaraskan repositori fork dengan sumber. |
+| Fork Cleanup | Komuniti | Padam fork lama yang tidak aktif. |
+| PR from Fork Labeler | GitHub Actions | Label PR dari fork secara automatik. |
+| Auto Approve | hmarr | Meluluskan PR dari fork secara automatik. |
+| Dependabot | GitHub | Kemas kini kebergantungan pada fork. |
+| Delete Merged Branch | SvanBoxel | Padam cawangan selepas PR di-merge. |
+| Auto Merge | pascalgn | Gabungkan PR automatik apabila syarat dipenuhi. |
+| PR Size Labeler | CodelyTV | Label PR berdasarkan saiz perubahan. |
+| Conventional PR | amannn | Pastikan tajuk PR ikut Conventional Commits. |
+| Welcome | actions/first-interaction | Mesej alu-aluan penyumbang pertama. |
+
+### 2.5 Contoh YAML: Auto-Sync Fork
+```yaml
+name: Auto Sync Fork
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tgymnich/fork-sync@v1.9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: pemilik-asal
+          base: main
+          head: main
+          merge_method: merge
+          prune: true
+```
+
+### 2.6 Contoh YAML: Auto-Merge PR dari Fork
+```yaml
+name: Auto Merge PR
+on:
+  pull_request:
+    types: [labeled, unlabeled, synchronize, opened, edited, reopened]
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'automerge')
+    steps:
+      - uses: pascalgn/automerge-action@v0.15.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_LABELS: "automerge"
+          MERGE_METHOD: "squash"
+          MERGE_FORKS: "true"
+```
+
+### 2.7 Contoh YAML: CodeQL Security Scan pada PR
+```yaml
+name: CodeQL Security Scan
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript', 'python' ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+      - uses: github/codeql-action/autobuild@v3
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+```
+
+### 2.8 Amalan Terbaik Penyumbang Fork
+1. **Sentiasa Sync Fork** – Klik "Sync fork" di GitHub atau `git pull upstream main`.
+2. **Gunakan Cawangan Berasingan** – Jangan kerja pada `main`. Cipta `feat/nama-ciri`.
+3. **Uji Secara Lokal** – Jalankan `npm test`, `pytest`, dll. sebelum push.
+4. **Semak Fail YAML** – Guna VS Code + extension YAML, atau `actionlint`.
+5. **Baca CONTRIBUTING.md** – Patuhi format commit, gaya kod, dan DCO.
+6. **Tindak Balas Review** – Betulkan kod jika diminta.
+7. **Bersihkan Selepas Merge** – Padam cawangan yang telah di-merge.
+
+---
+
+## BAHAGIAN 3: CIRI LANJUTAN GITHUB ACTIONS
+
+### 3.1 Matrix Strategy
+```yaml
+strategy:
+  fail-fast: false
+  matrix:
+    os: [ubuntu-latest, windows-latest, macos-latest]
+    node-version: [18.x, 20.x, 22.x]
+    exclude:
+      - os: macos-latest
+        node-version: 18.x
+```
+
+### 3.2 Caching Dependencies
+```yaml
+- uses: actions/cache@v4
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    restore-keys: |
+      ${{ runner.os }}-node-
+```
+
+### 3.3 Artifacts
+```yaml
+- uses: actions/upload-artifact@v4
+  with:
+    name: coverage-report
+    path: coverage/
+    retention-days: 7
+```
+
+### 3.4 Environments & Protection Rules
+```yaml
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - run: ./deploy.sh
+        env:
+          API_KEY: ${{ secrets.PROD_API_KEY }}
+```
+
+### 3.5 Reusable Workflows
+```yaml
+# .github/workflows/reusable.yml
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: string
+    secrets:
+      token:
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+      - run: npm ci
+      - run: npm test
+        env:
+          TOKEN: ${{ secrets.token }}
+```
+Guna:
+```yaml
+jobs:
+  call-build:
+    uses: ./.github/workflows/reusable.yml
+    with:
+      node-version: '20'
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### 3.6 Self-hosted Runners
+```yaml
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./build.sh
+```
+
+### 3.7 Security Hardening
+- **Pin Actions ke SHA**: `uses: actions/checkout@a81bbbf8298c0fa03ea29cdc473d45769f953675`
+- **Hadkan Permissions**: `permissions: contents: read`
+- **Guna OIDC**: `permissions: id-token: write`
+- **Dependabot untuk Actions**: `.github/dependabot.yml` dengan `package-ecosystem: "github-actions"`
+- **CodeQL**: Guna templat CodeQL Analysis.
+
+### 3.8 Notifications
+```yaml
+- uses: 8398a7/action-slack@v3
+  with:
+    status: ${{ job.status }}
+    fields: repo,message,commit,author,action,eventName,ref,workflow
+  env:
+    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  if: always()
+```
+
+### 3.9 Debugging & Troubleshooting
+| Masalah | Penyelesaian |
+| :--- | :--- |
+| Workflow tidak berjalan | Semak `on:` trigger, cawangan betul. |
+| Ralat "Resource not accessible" | Tambah `permissions` dalam YAML. |
+| Caching tidak berkesan | Pastikan `key` guna `hashFiles` betul. |
+| Matrix terlalu besar | Guna `exclude` atau `include`. |
+| Minit Actions habis | Guna caching, self-hosted runner, kurangkan `schedule`. |
+
+---
+
+## BAHAGIAN 4: SENARAI SEMAK (CHECKLIST) WORKFLOW PROFESIONAL
+
+- [ ] Guna **Matrix** untuk ujian pelbagai versi.
+- [ ] Guna **Caching** untuk mempercepatkan.
+- [ ] Simpan **Artifacts** untuk laporan.
+- [ ] Gunakan **Environments** untuk deploy terkawal.
+- [ ] Cipta **Reusable Workflows** untuk elak pertindihan.
+- [ ] **Pin Actions** ke SHA untuk keselamatan.
+- [ ] Hadkan **Permissions** `GITHUB_TOKEN`.
+- [ ] Gunakan **OIDC** untuk kredensial awan.
+- [ ] Tambah **Dependabot** untuk Actions.
+- [ ] Pasang **CodeQL** untuk imbasan keselamatan.
+- [ ] Tetapkan **Notifications** untuk Slack/Discord.
+- [ ] Semak **Log** secara berkala.
+
+---
+
+## BAHAGIAN 5: KESIMPULAN
+
+Dokumen ini menghimpunkan **semua maklumat** daripada tangkapan skrin anda serta topik lanjutan GitHub Actions dan pengurusan Fork. Ia merangkumi:
+- Senarai penuh templat Actions (Pages, Automation, CI, Deployment, Security).
+- Panduan lengkap pengurusan Fork termasuk keselamatan, sync, dan tindakan komuniti.
+- Ciri lanjutan seperti Matrix, Caching, Artifacts, Environments, Reusable Workflows, Self-hosted Runners, Security Hardening, Notifications, dan Debugging.
+- Amalan terbaik dan senarai semak untuk workflow profesional.
+
+Gunakan panduan ini sebagai rujukan utama untuk membina, mengurus, dan menyelenggara GitHub Actions dalam projek anda. Jika anda memerlukan **contoh YAML penuh** untuk fungsi spesifik yang lain, sila beritahu.
+Baik, berikut adalah **Lagi: Dokumen Tambahan Lanjutan GitHub Actions** yang merangkumi topik-topik profesional yang belum disentuh secara mendalam sebelum ini. Dokumen ini sesuai untuk pembangun, DevOps engineer, dan penyelia repositori yang ingin menguasai GitHub Actions sepenuhnya.
+
+---
+
+# 📘 DOKUMEN TAMBAHAN: TOPIK LANJUTAN GITHUB ACTIONS
+
+## BAHAGIAN 6: SINTAKSIS WORKFLOW SECARA MENDALAM
+
+### 6.1 Struktur Asas Fail YAML
+```yaml
+name: Nama Workflow
+run-name: Run oleh ${{ github.actor }}
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Pilih environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+  repository_dispatch:
+    types: [deploy]
+
+env:
+  NODE_VERSION: '20'
+  GLOBAL_VAR: 'nilai'
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./src
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: false
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        node: [18, 20, 22]
+    env:
+      JOB_VAR: 'nilai'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Get version
+        id: get_version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+      - name: Test
+        run: npm test
+```
+
+### 6.2 Konteks (Contexts) dan Ekspresi
+| Konteks | Keterangan | Contoh |
+| :--- | :--- | :--- |
+| `github` | Maklumat tentang workflow run | `${{ github.sha }}`, `${{ github.ref }}`, `${{ github.actor }}` |
+| `env` | Pemboleh ubah persekitaran | `${{ env.NODE_VERSION }}` |
+| `vars` | Pemboleh ubah repositori/organisasi | `${{ vars.MY_VAR }}` |
+| `secrets` | Rahsia | `${{ secrets.API_KEY }}` |
+| `job` | Maklumat job semasa | `${{ job.status }}` |
+| `steps` | Output dari langkah sebelumnya | `${{ steps.get_version.outputs.version }}` |
+| `runner` | Maklumat runner | `${{ runner.os }}`, `${{ runner.temp }}` |
+| `needs` | Output dari job kebergantungan | `${{ needs.build.outputs.version }}` |
+| `matrix` | Nilai matrix semasa | `${{ matrix.node }}` |
+| `inputs` | Input workflow_dispatch | `${{ inputs.environment }}` |
+
+### 6.3 Fungsi Ekspresi
+```yaml
+if: github.event_name == 'push' && contains(github.ref, 'main')
+if: success() || failure()
+if: always()
+if: cancelled()
+if: github.actor != 'dependabot[bot]'
+if: startsWith(github.ref, 'refs/tags/')
+if: endsWith(github.ref, 'main')
+if: contains(github.event.pull_request.labels.*.name, 'automerge')
+if: hashFiles('**/package-lock.json') != ''
+```
+
+---
+
+## BAHAGIAN 7: CUSTOM ACTIONS (TINDAKAN TERSENDIRI)
+
+### 7.1 JavaScript Action
+**Struktur:**
+```
+my-action/
+├── action.yml
+├── index.js
+├── package.json
+└── node_modules/
+```
+**action.yml:**
+```yaml
+name: 'My JS Action'
+description: 'Contoh JavaScript Action'
+inputs:
+  who-to-greet:
+    description: 'Siapa untuk disapa'
+    required: true
+    default: 'World'
+outputs:
+  time:
+    description: 'Masa sapaan'
+runs:
+  using: 'node20'
+  main: 'index.js'
+```
+**index.js:**
+```javascript
+const core = require('@actions/core');
+const github = require('@actions/github');
+
+try {
+  const name = core.getInput('who-to-greet');
+  console.log(`Hello ${name}`);
+  const time = new Date().toTimeString();
+  core.setOutput('time', time);
+  const payload = JSON.stringify(github.context.payload, null, 2);
+  console.log(`The event payload: ${payload}`);
+} catch (error) {
+  core.setFailed(error.message);
+}
+```
+
+### 7.2 Docker Action
+**action.yml:**
+```yaml
+name: 'My Docker Action'
+description: 'Contoh Docker Action'
+inputs:
+  args:
+    description: 'Argumen'
+    required: false
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.args }}
+```
+**Dockerfile:**
+```dockerfile
+FROM alpine:3.19
+COPY entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+```
+**entrypoint.sh:**
+```bash
+#!/bin/sh -l
+echo "Hello $1"
+```
+
+### 7.3 Composite Action
+**action.yml:**
+```yaml
+name: 'My Composite Action'
+description: 'Gabungan beberapa langkah'
+inputs:
+  node-version:
+    description: 'Versi Node'
+    required: true
+    default: '20'
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+    - run: npm ci
+      shell: bash
+    - run: npm test
+      shell: bash
+```
+
+---
+
+## BAHAGIAN 8: OIDC (OPENID CONNECT) UNTUK KREDENSIAL AWAN
+
+### 8.1 Kenapa OIDC?
+- **Selamat:** Tiada kredensial jangka panjang disimpan sebagai Secrets.
+- **Automatik:** Kredensial sementara dijana semasa workflow berjalan.
+- **Disokong:** AWS, Azure, GCP, HashiCorp Vault, dan lain-lain.
+
+### 8.2 OIDC dengan AWS
+**Langkah AWS:**
+1. Cipta Identity Provider di IAM dengan URL: `https://token.actions.githubusercontent.com`
+2. Cipta IAM Role dengan trust policy untuk repositori anda.
+3. Beri kebenaran yang diperlukan.
+
+**Contoh YAML:**
+```yaml
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::123456789012:role/GitHubActionsRole
+          aws-region: ap-southeast-1
+      - name: Deploy ke S3
+        run: aws s3 sync ./dist s3://bucket-saya
+```
+
+### 8.3 OIDC dengan Google Cloud
+```yaml
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/github/providers/github'
+          service_account: 'my-sa@project.iam.gserviceaccount.com'
+      - uses: google-github-actions/setup-gcloud@v2
+      - run: gcloud app deploy
+```
+
+### 8.4 OIDC dengan Azure
+```yaml
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - run: az webapp deploy --name myapp --resource-group myrg --src-path ./dist
+```
+
+---
+
+## BAHAGIAN 9: CONCURRENCY, TIMEOUT, DAN KAWALAN LAIN
+
+### 9.1 Concurrency
+```yaml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+```
+Membatalkan workflow lama jika workflow baru dicetuskan pada cawangan yang sama.
+
+### 9.2 Timeout
+```yaml
+jobs:
+  build:
+    timeout-minutes: 30
+    steps:
+      - name: Run tests
+        timeout-minutes: 10
+        run: npm test
+```
+
+### 9.3 Continue-on-error
+```yaml
+steps:
+  - name: Lint (boleh gagal)
+    continue-on-error: true
+    run: npm run lint
+```
+
+### 9.4 Services (Perkhidmatan Sampingan)
+```yaml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm test
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test
+```
+
+### 9.5 Container Jobs
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: node:20
+      env:
+        NODE_ENV: development
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm test
+```
+
+---
+
+## BAHAGIAN 10: MATRIX DINAMIK DAN LANJUTAN
+
+### 10.1 Matrix dengan Include/Exclude
+```yaml
+strategy:
+  matrix:
+    os: [ubuntu-latest, windows-latest]
+    node: [18, 20]
+    include:
+      - os: ubuntu-latest
+        node: 22
+        experimental: true
+    exclude:
+      - os: windows-latest
+        node: 18
+```
+
+### 10.2 Matrix Dinamik dari Output Job
+```yaml
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          echo 'matrix={"include":[{"project":"app1"},{"project":"app2"}]}' >> $GITHUB_OUTPUT
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - run: echo "Building ${{ matrix.project }}"
+```
+
+---
+
+## BAHAGIAN 11: ENVIRONMENT PROTECTION RULES
+
+### 11.1 Cipta Environment
+1. `Settings > Environments > New environment`.
+2. Nama: `production`.
+3. Tambah **Protection Rules**:
+   - **Required reviewers**: Pilih pengguna yang perlu meluluskan.
+   - **Wait timer**: Masa tunggu sebelum deploy.
+   - **Deployment branches**: Hadkan cawangan yang boleh deploy.
+
+### 11.2 Guna Environment dalam YAML
+```yaml
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://myapp.com
+    steps:
+      - name: Deploy
+        run: ./deploy.sh
+        env:
+          API_KEY: ${{ secrets.PROD_API_KEY }}
+```
+
+---
+
+## BAHAGIAN 12: SECRETS DAN VARIABLES
+
+| Jenis | Skop | Kegunaan |
+| :--- | :--- | :--- |
+| **Repository Secrets** | Satu repositori | `Settings > Secrets and variables > Actions` |
+| **Environment Secrets** | Environment tertentu | `Settings > Environments > [nama] > Secrets` |
+| **Organization Secrets** | Semua repositori dalam organisasi | `Organization Settings > Secrets` |
+| **Repository Variables** | Bukan rahsia | `vars.MY_VAR` |
+| **Environment Variables** | Environment tertentu | `env.MY_VAR` |
+
+**Contoh:**
+```yaml
+steps:
+  - run: echo "API Key adalah ${{ secrets.API_KEY }}"
+  - run: echo "Version adalah ${{ vars.VERSION }}"
+```
+
+---
+
+## BAHAGIAN 13: CACHE STRATEGI LANJUTAN
+
+### 13.1 Cache untuk Pelbagai Bahasa
+```yaml
+# Node.js
+- uses: actions/cache@v4
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+# Python
+- uses: actions/cache@v4
+  with:
+    path: ~/.cache/pip
+    key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
+# Go
+- uses: actions/cache@v4
+  with:
+    path: |
+      ~/.cache/go-build
+      ~/go/pkg/mod
+    key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+# Rust
+- uses: actions/cache@v4
+  with:
+    path: |
+      ~/.cargo/bin/
+      ~/.cargo/registry/index/
+      ~/.cargo/registry/cache/
+      ~/.cargo/git/db/
+      target/
+    key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+```
+
+### 13.2 Cache dengan Restore Keys
+```yaml
+- uses: actions/cache@v4
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    restore-keys: |
+      ${{ runner.os }}-node-
+```
+
+---
+
+## BAHAGIAN 14: ARTIFACTS ATTESTATIONS & PROVENANCE
+
+### 14.1 Upload Artifact
+```yaml
+- uses: actions/upload-artifact@v4
+  with:
+    name: my-artifact
+    path: dist/
+    retention-days: 30
+```
+
+### 14.2 Download Artifact
+```yaml
+- uses: actions/download-artifact@v4
+  with:
+    name: my-artifact
+    path: dist/
+```
+
+### 14.3 Artifact Attestations (SLSA)
+```yaml
+permissions:
+  id-token: write
+  contents: read
+  attestations: write
+
+steps:
+  - uses: actions/checkout@v4
+  - name: Build
+    run: npm run build
+  - uses: actions/attest-build-provenance@v1
+    with:
+      subject-path: 'dist/myapp'
+```
+
+---
+
+## BAHAGIAN 15: SELF-HOSTED RUNNERS & ARC
+
+### 15.1 Self-hosted Runner
+```yaml
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./build.sh
+```
+
+### 15.2 Actions Runner Controller (ARC) untuk Kubernetes
+- Guna Helm untuk pasang ARC.
+- Autoscale runner berdasarkan beban kerja.
+- Sesuai untuk organisasi besar.
+
+**Contoh:**
+```yaml
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: my-runners
+spec:
+  replicas: 3
+  template:
+    spec:
+      repository: my-org/my-repo
+```
+
+---
+
+## BAHAGIAN 16: GITHUB ACTIONS LIMITS & BILLING
+
+| Perkara | Had |
+| :--- | :--- |
+| Masa job | 6 jam |
+| Masa workflow | 35 hari |
+| Saiz cache | 10 GB per repositori |
+| Artifacts | 90 hari (default), boleh ubah |
+| Matrix jobs | 256 job maksimum |
+| API requests | 1,000 per jam per repositori |
+| Concurrent jobs | Bergantung kepada pelan |
+| Minit Actions (Private) | 2,000 minit/bulan (Free), 3,000 (Pro), 50,000 (Team) |
+| Repositori Awam | Percuma tanpa had |
+
+---
+
+## BAHAGIAN 17: TROUBLESHOOTING LANJUTAN
+
+| Masalah | Punca | Penyelesaian |
+| :--- | :--- | :--- |
+| Workflow tidak muncul | Fail YAML salah tempat | Pastikan `.github/workflows/` |
+| Butang "Run workflow" tiada | `workflow_dispatch` tiada pada default branch | Tambah pada cawangan `main` |
+| Ralat "Bad credentials" | Token salah atau tamat tempoh | Semak `secrets.GITHUB_TOKEN` |
+| Cache tidak dijumpai | Key berubah | Guna `hashFiles` atau `restore-keys` |
+| Matrix gagal separuh | Satu kombinasi gagal | Guna `fail-fast: false` |
+| Deploy gagal | Environment protection | Semak reviewers dan branch rules |
+| OIDC gagal | Trust policy salah | Semak `sub` claim dalam IAM |
+| Docker build lambat | Tiada cache | Guna `docker/build-push-action` dengan cache |
+
+---
+
+## BAHAGIAN 18: TINDAKAN KOMUNITI TAMBAHAN
+
+| Nama | Penerbit | Kegunaan |
+| :--- | :--- | :--- |
+| `actions/checkout` | GitHub | Checkout kod |
+| `actions/setup-node` | GitHub | Setup Node.js |
+| `actions/setup-python` | GitHub | Setup Python |
+| `actions/setup-java` | GitHub | Setup Java |
+| `actions/setup-go` | GitHub | Setup Go |
+| `actions/cache` | GitHub | Cache dependencies |
+| `actions/upload-artifact` | GitHub | Upload artifact |
+| `actions/download-artifact` | GitHub | Download artifact |
+| `docker/build-push-action` | Docker | Build & push Docker image |
+| `docker/login-action` | Docker | Login ke registry |
+| `docker/setup-buildx-action` | Docker | Setup Buildx |
+| `aws-actions/configure-aws-credentials` | AWS | Konfigurasi AWS |
+| `azure/login` | Azure | Login ke Azure |
+| `google-github-actions/auth` | Google | Auth ke GCP |
+| `hashicorp/setup-terraform` | HashiCorp | Setup Terraform |
+| `slackapi/slack-github-action` | Slack | Hantar notifikasi Slack |
+| `8398a7/action-slack` | Komuniti | Notifikasi Slack |
+| `peter-evans/create-pull-request` | Komuniti | Cipta PR automatik |
+| `pascalgn/automerge-action` | Komuniti | Auto-merge PR |
+| `tgymnich/fork-sync` | Komuniti | Sync fork |
+| `hmarr/auto-approve-action` | Komuniti | Auto-approve PR |
+| `actions/labeler` | GitHub | Label PR automatik |
+| `actions/stale` | GitHub | Tanda isu/PR lama |
+| `actions/first-interaction` | GitHub | Alu-aluan penyumbang baru |
+
+---
+
+## BAHAGIAN 19: SENARAI SEMAK (CHECKLIST) LENGKAP
+
+### Untuk Penyumbang Fork:
+- [ ] Fork repositori.
+- [ ] Clone ke lokal.
+- [ ] Set upstream.
+- [ ] Cipta cawangan baharu.
+- [ ] Buat perubahan.
+- [ ] Uji lokal.
+- [ ] Commit & push.
+- [ ] Buka PR.
+- [ ] Tindak balas review.
+- [ ] Bersihkan selepas merge.
+
+### Untuk Penyelia Repositori:
+- [ ] Aktifkan Actions pada fork.
+- [ ] Tetapkan `Require approval for first-time contributors`.
+- [ ] Hadkan Actions yang dibenarkan.
+- [ ] Guna `pull_request` bukan `pull_request_target`.
+- [ ] Pasang CodeQL.
+- [ ] Pasang Dependabot.
+- [ ] Tetapkan Environment protection.
+- [ ] Semak log secara berkala.
+- [ ] Gunakan caching untuk jimat minit.
+- [ ] Pin Actions ke SHA.
+
+### Untuk Workflow Profesional:
+- [ ] Guna Matrix.
+- [ ] Guna Caching.
+- [ ] Simpan Artifacts.
+- [ ] Guna Environments.
+- [ ] Cipta Reusable Workflows.
+- [ ] Pin Actions ke SHA.
+- [ ] Hadkan Permissions.
+- [ ] Guna OIDC.
+- [ ] Tambah Dependabot.
+- [ ] Pasang CodeQL.
+- [ ] Tetapkan Notifications.
+- [ ] Semak Log.
+
+---
+
+## BAHAGIAN 20: KESIMPULAN
+
+Dokumen ini melengkapkan semua maklumat yang diperlukan untuk menguasai GitHub Actions dan pengurusan Fork. Ia merangkumi:
+
+1. **Senarai penuh templat Actions** (Pages, Automation, CI, Deployment, Security).
+2. **Pengurusan Fork** (aktif, keselamatan, sync, auto-merge, tindakan komuniti).
+3. **Ciri lanjutan** (Matrix, Caching, Artifacts, Environments, Reusable Workflows, Self-hosted Runners, OIDC, Security Hardening, Notifications, Debugging).
+4. **Custom Actions** (JavaScript, Docker, Composite).
+5. **OIDC** untuk AWS, GCP, Azure.
+6. **Concurrency, Timeout, Services, Container Jobs**.
+7. **Matrix Dinamik**.
+8. **Environment Protection Rules**.
+9. **Secrets & Variables**.
+10. **Cache Strategies**.
+11. **Artifact Attestations**.
+12. **Self-hosted Runners & ARC**.
+13. **Limits & Billing**.
+14. **Troubleshooting Lanjutan**.
+15. **Tindakan Komuniti Tambahan**.
+16. **Senarai Semak Lengkap**.
+
+Gunakan dokumen ini sebagai **rujukan utama** untuk membina, mengurus, dan menyelenggara GitHub Actions dalam projek anda. Jika anda memerlukan **contoh YAML penuh** untuk fungsi spesifik yang lain, sila beritahu.
+Baik, berikut adalah **Lagi: Topik Lanjutan Tambahan GitHub Actions** yang merangkumi integrasi spesifik, strategi monorepo, automasi pelepasan (release), dan pengurusan infrastruktur. Topik-topik ini belum disentuh secara mendalam sebelum ini dan sangat berguna untuk projek profesional.
+
+---
+
+# 📘 DOKUMEN TAMBAHAN 2: INTEGRASI & STRATEGI LANJUTAN
+
+## BAHAGIAN 21: STRATEGI MONOREPO (PATH FILTERS & MATRIX DINAMIK)
+
+### 21.1 Path Filters
+Jalankan workflow hanya apabila fail dalam folder tertentu berubah.
+
+```yaml
+on:
+  push:
+    paths:
+      - 'apps/web/**'
+      - 'packages/ui/**'
+      - '.github/workflows/web.yml'
+  pull_request:
+    paths:
+      - 'apps/web/**'
+```
+
+### 21.2 Matrix Dinamik dari Perubahan Fail
+Gunakan `dorny/paths-filter` untuk mengesan folder yang berubah, kemudian jalankan job hanya untuk pakej tersebut.
+
+```yaml
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+      api: ${{ steps.filter.outputs.api }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            web:
+              - 'apps/web/**'
+            api:
+              - 'apps/api/**'
+
+  build-web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cd apps/web && npm ci && npm test
+
+  build-api:
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cd apps/api && npm ci && npm test
+```
+
+---
+
+## BAHAGIAN 22: AUTOMASI PELEPASAN (RELEASE AUTOMATION)
+
+### 22.1 Semantic Release
+Automasi versi, changelog, dan tag berdasarkan Conventional Commits.
+
+```yaml
+name: Release
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+```
+
+### 22.2 GoReleaser untuk Go
+```yaml
+name: Release Go
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - uses: goreleaser/goreleaser-action@v5
+        with:
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### 22.3 Changelog Generation
+```yaml
+- uses: metcalfc/changelog-generator@v4.3.1
+  with:
+    myToken: ${{ secrets.GITHUB_TOKEN }}
+```
+
+---
+
+## BAHAGIAN 23: DOCKER MULTI-ARCH & BUILDX
+
+### 23.1 Build & Push Multi-Arch
+```yaml
+name: Docker Multi-Arch
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: user/app:latest,user/app:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+```
+
+### 23.2 Docker Layer Caching dengan GitHub Actions Cache
+```yaml
+- uses: docker/build-push-action@v5
+  with:
+    cache-from: type=gha
+    cache-to: type=gha,mode=max
+```
+
+---
+
+## BAHAGIAN 24: KUBERNETES & HELM DEPLOYMENT
+
+### 24.1 Deploy dengan Helm
+```yaml
+name: Deploy to K8s
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with:
+          version: 'v3.14.0'
+      - name: Configure Kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > $HOME/.kube/config
+      - name: Helm Upgrade
+        run: |
+          helm upgrade --install myapp ./charts/myapp \
+            --namespace production \
+            --create-namespace \
+            --set image.tag=${{ github.sha }}
+```
+
+### 24.2 Deploy dengan Kubectl
+```yaml
+- name: Deploy
+  run: |
+    kubectl set image deployment/myapp myapp=user/app:${{ github.sha }} -n production
+    kubectl rollout status deployment/myapp -n production
+```
+
+---
+
+## BAHAGIAN 25: SERVERLESS DEPLOYMENT
+
+### 25.1 AWS Lambda
+```yaml
+- uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: arn:aws:iam::123456789012:role/GitHubActionsRole
+    aws-region: ap-southeast-1
+- name: Deploy Lambda
+  run: |
+    cd lambda
+    zip -r function.zip .
+    aws lambda update-function-code --function-name my-function --zip-file fileb://function.zip
+```
+
+### 25.2 Azure Functions
+```yaml
+- uses: azure/functions-action@v1
+  with:
+    app-name: 'my-function-app'
+    package: './dist'
+```
+
+### 25.3 Google Cloud Functions
+```yaml
+- uses: google-github-actions/deploy-cloud-functions@v2
+  with:
+    name: my-function
+    runtime: nodejs20
+    entry_point: myFunction
+```
+
+---
+
+## BAHAGIAN 26: DATABASE MIGRATIONS
+
+### 26.1 Flyway
+```yaml
+- name: Run Flyway Migrations
+  run: |
+    docker run --rm \
+      -v ${{ github.workspace }}/migrations:/flyway/sql \
+      flyway/flyway:10 \
+      -url=${{ secrets.DATABASE_URL }} \
+      -user=${{ secrets.DB_USER }} \
+      -password=${{ secrets.DB_PASSWORD }} \
+      migrate
+```
+
+### 26.2 Prisma Migrate
+```yaml
+- run: npx prisma migrate deploy
+  env:
+    DATABASE_URL: ${{ secrets.DATABASE_URL }}
+```
+
+### 26.3 Django Migrations
+```yaml
+- run: python manage.py migrate
+  env:
+    DATABASE_URL: ${{ secrets.DATABASE_URL }}
+```
+
+---
+
+## BAHAGIAN 27: TESTING FRAMEWORKS LANJUTAN
+
+### 27.1 Cypress (E2E)
+```yaml
+- uses: cypress-io/github-action@v6
+  with:
+    start: npm start
+    wait-on: 'http://localhost:3000'
+    browser: chrome
+```
+
+### 27.2 Playwright (E2E)
+```yaml
+- uses: actions/setup-node@v4
+  with:
+    node-version: '20'
+- run: npm ci
+- run: npx playwright install --with-deps
+- run: npx playwright test
+- uses: actions/upload-artifact@v4
+  if: failure()
+  with:
+    name: playwright-report
+    path: playwright-report/
+```
+
+### 27.3 Jest dengan Coverage
+```yaml
+- run: npm test -- --coverage
+- uses: codecov/codecov-action@v4
+  with:
+    token: ${{ secrets.CODECOV_TOKEN }}
+```
+
+---
+
+## BAHAGIAN 28: CODE QUALITY & FORMATTING
+
+### 28.1 Prettier Check
+```yaml
+- run: npx prettier --check .
+```
+
+### 28.2 ESLint
+```yaml
+- run: npx eslint . --ext .js,.jsx,.ts,.tsx
+```
+
+### 28.3 Black (Python)
+```yaml
+- run: black --check .
+```
+
+### 28.4 Ruff (Python)
+```yaml
+- run: ruff check .
+```
+
+### 28.5 Super-Linter
+```yaml
+- uses: super-linter/super-linter@v6
+  env:
+    VALIDATE_ALL_CODEBASE: false
+    DEFAULT_BRANCH: main
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+---
+
+## BAHAGIAN 29: DOKUMENTASI AUTOMATIK
+
+### 29.1 MkDocs
+```yaml
+- run: pip install mkdocs-material
+- run: mkdocs build
+- uses: actions/upload-pages-artifact@v3
+  with:
+    path: site/
+```
+
+### 29.2 Sphinx
+```yaml
+- run: pip install sphinx
+- run: sphinx-build -b html docs/ docs/_build/
+```
+
+### 29.3 Docusaurus
+```yaml
+- run: npm ci
+- run: npm run build
+- uses: actions/upload-pages-artifact@v3
+  with:
+    path: build/
+```
+
+---
+
+## BAHAGIAN 30: PERFORMANCE TESTING
+
+### 30.1 k6
+```yaml
+- uses: grafana/setup-k6-action@v1
+- run: k6 run tests/load-test.js
+```
+
+### 30.2 JMeter
+```yaml
+- run: |
+    wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.tgz
+    tar -xzf apache-jmeter-5.6.3.tgz
+    ./apache-jmeter-5.6.3/bin/jmeter -n -t test.jmx -l result.jtl
+```
+
+---
+
+## BAHAGIAN 31: SECURITY SCANNING LANJUTAN
+
+### 31.1 Trivy (Container & FS)
+```yaml
+- uses: aquasecurity/trivy-action@master
+  with:
+    scan-type: 'fs'
+    scan-ref: '.'
+    format: 'sarif'
+    output: 'trivy-results.sarif'
+- uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: 'trivy-results.sarif'
+```
+
+### 31.2 Grype (Vulnerability Scanner)
+```yaml
+- uses: anchore/scan-action@v3
+  with:
+    image: 'user/app:latest'
+    fail-build: true
+    severity-cutoff: high
+```
+
+### 31.3 Syft (SBOM)
+```yaml
+- uses: anchore/sbom-action@v0
+  with:
+    image: 'user/app:latest'
+    format: spdx-json
+    output-file: 'sbom.spdx.json'
+```
+
+---
+
+## BAHAGIAN 32: DEBUGGING DENGAN TMATE & STEP DEBUG
+
+### 32.1 Tmate (SSH ke Runner)
+```yaml
+- uses: mxschmitt/action-tmate@v3
+  if: ${{ failure() }}
+  timeout-minutes: 15
+```
+
+### 32.2 Step Debug Logging
+Aktifkan dengan menetapkan secret `ACTIONS_STEP_DEBUG` kepada `true` di repositori.
+
+### 32.3 Re-run dengan Debug Logging
+Di UI GitHub, klik "Re-run jobs" > "Enable debug logging".
+
+---
+
+## BAHAGIAN 33: WORKFLOW_RUN & REPOSITORY_DISPATCH
+
+### 33.1 Workflow Run (Cetuskan selepas workflow lain)
+```yaml
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types: [completed]
+
+jobs:
+  on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - run: echo "Build berjaya, deploy sekarang"
+```
+
+### 33.2 Repository Dispatch (Cetuskan dari luar)
+```yaml
+on:
+  repository_dispatch:
+    types: [deploy]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploy dicetuskan oleh ${{ github.event.client_payload.environment }}"
+```
+Guna API:
+```bash
+curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github.v3+json" \
+  https://api.github.com/repos/owner/repo/dispatches \
+  -d '{"event_type":"deploy","client_payload":{"environment":"production"}}'
+```
+
+---
+
+## BAHAGIAN 34: GITHUB ACTIONS API
+
+### 34.1 Senarai Workflow Runs
+```bash
+curl -H "Authorization: token $GITHUB_TOKEN" \
+  https://api.github.com/repos/owner/repo/actions/runs
+```
+
+### 34.2 Cetuskan Workflow
+```bash
+curl -X POST -H "Authorization: token $GITHUB_TOKEN" \
+  -H "Accept: application/vnd.github.v3+json" \
+  https://api.github.com/repos/owner/repo/actions/workflows/main.yml/dispatches \
+  -d '{"ref":"main"}'
+```
+
+---
+
+## BAHAGIAN 35: OPTIMISASI KOS & PRESTASI
+
+| Strategi | Keterangan |
+| :--- | :--- |
+| **Caching** | Jimat masa muat turun dependencies. |
+| **Matrix Terhad** | Guna `exclude` untuk kurangkan kombinasi. |
+| **Path Filters** | Jalankan workflow hanya bila perlu. |
+| **Concurrency** | Batalkan workflow lama. |
+| **Self-hosted Runner** | Untuk repositori peribadi dengan beban tinggi. |
+| **Artifacts Retention** | Kurangkan `retention-days`. |
+| **Schedule** | Kurangkan kekerapan cron. |
+| **Reusable Workflows** | Elak pertindihan. |
+| **Draft PR** | Jangan jalankan workflow pada draft PR. |
+| **Skip CI** | Guna `[skip ci]` dalam commit message. |
+
+---
+
+## BAHAGIAN 36: SELF-HOSTED RUNNER AUTO-SCALING
+
+### 36.1 Actions Runner Controller (ARC)
+```yaml
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: my-runners
+spec:
+  replicas: 3
+  template:
+    spec:
+      repository: my-org/my-repo
+      labels:
+        - self-hosted
+        - linux
+        - x64
+```
+
+### 36.2 Autoscale dengan HPA
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-runners
+spec:
+  scaleTargetRef:
+    apiVersion: actions.summerwind.dev/v1alpha1
+    kind: RunnerDeployment
+    name: my-runners
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+```
+
+---
+
+## BAHAGIAN 37: MANAGING SECRETS DENGAN HASHICORP VAULT
+
+### 37.1 Vault Action
+```yaml
+- uses: hashicorp/vault-action@v3
+  with:
+    url: https://vault.mycompany.com
+    method: jwt
+    role: my-github-role
+    secrets: |
+      secret/data/github/aws access_key | AWS_ACCESS_KEY_ID ;
+      secret/data/github/aws secret_key | AWS_SECRET_ACCESS_KEY
+```
+
+### 37.2 Guna OIDC dengan Vault
+```yaml
+permissions:
+  id-token: write
+  contents: read
+
+steps:
+  - uses: hashicorp/vault-action@v3
+    with:
+      url: https://vault.mycompany.com
+      method: jwt
+      role: my-role
+      jwtGithubAudience: https://github.com/my-org
+```
+
+---
+
+## BAHAGIAN 38: TERRAFORM CLOUD INTEGRATION
+
+```yaml
+- uses: hashicorp/setup-terraform@v3
+  with:
+    cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+- run: terraform init
+- run: terraform plan -out=tfplan
+- run: terraform apply -auto-approve tfplan
+```
+
+---
+
+## BAHAGIAN 39: COMPLIANCE & AUDITING (SLSA, SIGSTORE)
+
+### 39.1 SLSA Provenance
+```yaml
+- uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.0.0
+  with:
+    base64-subjects: ${{ steps.hash.outputs.hashes }}
+```
+
+### 39.2 Sigstore Cosign (Sign Container)
+```yaml
+- uses: sigstore/cosign-installer@v3
+- run: cosign sign --yes user/app:${{ github.sha }}
+```
+
+### 39.3 In-Toto Attestation
+```yaml
+- uses: in-toto/attestation-action@v1
+  with:
+    predicate-type: https://slsa.dev/provenance/v0.2
+    predicate: provenance.json
+    subjects: dist/myapp
+```
+
+---
+
+## BAHAGIAN 40: KESIMPULAN
+
+Dokumen ini melengkapkan lagi topik lanjutan GitHub Actions yang merangkumi:
+
+- **Monorepo** dengan path filters dan matrix dinamik.
+- **Release Automation** dengan semantic-release, goreleaser, changelog.
+- **Docker Multi-Arch** dan Buildx.
+- **Kubernetes & Helm** deployment.
+- **Serverless** (AWS Lambda, Azure Functions, GCP Functions).
+- **Database Migrations** (Flyway, Prisma, Django).
+- **Testing** (Cypress, Playwright, Jest).
+- **Code Quality** (Prettier, ESLint, Black, Ruff, Super-Linter).
+- **Dokumentasi** (MkDocs, Sphinx, Docusaurus).
+- **Performance Testing** (k6, JMeter).
+- **Security Scanning** (Trivy, Grype, Syft).
+- **Debugging** dengan tmate dan step debug.
+- **Workflow_run & Repository Dispatch**.
+- **GitHub Actions API**.
+- **Optimisasi Kos & Prestasi**.
+- **Self-hosted Runner Auto-scaling**.
+- **HashiCorp Vault** integration.
+- **Terraform Cloud** integration.
+- **Compliance & Auditing** (SLSA, Sigstore, In-Toto).
+
+Dengan ini, anda kini mempunyai **rujukan lengkap** daripada asas sehingga ke peringkat perusahaan (enterprise) untuk GitHub Actions dan pengurusan Fork. Jika anda memerlukan **contoh YAML penuh** untuk kes penggunaan spesifik yang lain, sila beritahu.
