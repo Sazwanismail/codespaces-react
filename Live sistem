@@ -1,0 +1,1503 @@
+Baik. Berikut adalah **SISTEM UPDATE LIVE** yang lengkap dan sedia guna untuk menguruskan data templat GitHub Actions (CMC-REF-2026-MSI-003) secara masa nyata (real-time).
+
+Sistem ini merangkumi **Backend API, Database, WebSocket Live Update, Frontend Dashboard, Docker, dan GitHub Actions Deployment**.
+
+---
+
+# 🚀 SISTEM UPDATE LIVE — CMC-REF-2026-MSI-003
+
+## 📁 STRUKTUR PROJEK
+
+```
+live-update-system/
+├── server/
+│   ├── index.js              # API + WebSocket server
+│   ├── database.js           # SQLite setup
+│   ├── routes/
+│   │   ├── templates.js      # CRUD templat
+│   │   └── categories.js     # CRUD kategori
+│   └── seed.js               # Seed data awal
+├── client/
+│   ├── index.html            # Dashboard
+│   ├── app.js                # Frontend logic
+│   └── style.css             # Styling
+├── data/
+│   └── templates.db          # SQLite database
+├── .github/
+│   └── workflows/
+│       └── deploy.yml        # CI/CD
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
+└── README.md
+```
+
+---
+
+## 1. BACKEND — `server/index.js`
+
+```javascript
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
+const path = require('path');
+const db = require('./database');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: '*', methods: ['GET', 'POST'] }
+});
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '../client')));
+
+// ===== API ROUTES =====
+
+// Dapatkan semua templat
+app.get('/api/templates', (req, res) => {
+  db.all('SELECT * FROM templates ORDER BY category, name', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ ref: 'CMC-REF-2026-MSI-003', data: rows });
+  });
+});
+
+// Dapatkan templat mengikut kategori
+app.get('/api/templates/:category', (req, res) => {
+  db.all('SELECT * FROM templates WHERE category = ?', [req.params.category], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ data: rows });
+  });
+});
+
+// Tambah templat baharu
+app.post('/api/templates', (req, res) => {
+  const { id, category, name, publisher, description, tag } = req.body;
+  db.run(
+    `INSERT INTO templates (id, category, name, publisher, description, tag) 
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [id, category, name, publisher, description, tag],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      const newTemplate = { id, category, name, publisher, description, tag };
+      
+      // ===== LIVE UPDATE =====
+      io.emit('template:added', newTemplate);
+      console.log('📡 Live Update: Templat baharu ditambah', newTemplate.id);
+      
+      res.status(201).json(newTemplate);
+    }
+  );
+});
+
+// Kemas kini templat
+app.put('/api/templates/:id', (req, res) => {
+  const { category, name, publisher, description, tag } = req.body;
+  db.run(
+    `UPDATE templates SET category = ?, name = ?, publisher = ?, description = ?, tag = ? WHERE id = ?`,
+    [category, name, publisher, description, tag, req.params.id],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      const updated = { id: req.params.id, category, name, publisher, description, tag };
+      
+      io.emit('template:updated', updated);
+      console.log('📡 Live Update: Templat dikemas kini', req.params.id);
+      
+      res.json(updated);
+    }
+  );
+});
+
+// Padam templat
+app.delete('/api/templates/:id', (req, res) => {
+  db.run('DELETE FROM templates WHERE id = ?', [req.params.id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    
+    io.emit('template:deleted', { id: req.params.id });
+    console.log('📡 Live Update: Templat dipadam', req.params.id);
+    
+    res.json({ message: 'Templat dipadam', id: req.params.id });
+  });
+});
+
+// Statistik
+app.get('/api/stats', (req, res) => {
+  db.get('SELECT COUNT(*) as total FROM templates', [], (err, total) => {
+    db.all('SELECT category, COUNT(*) as count FROM templates GROUP BY category', [], (err2, cats) => {
+      res.json({ total: total.total, categories: cats });
+    });
+  });
+});
+
+// ===== WEBSOCKET =====
+io.on('connection', (socket) => {
+  console.log('🔌 Klien disambung:', socket.id);
+  
+  socket.emit('connected', {
+    message: 'Sistem Update Live Aktif',
+    ref: 'CMC-REF-2026-MSI-003',
+    timestamp: new Date().toISOString()
+  });
+
+  socket.on('disconnect', () => {
+    console.log('❌ Klien terputus:', socket.id);
+  });
+});
+
+// ===== START SERVER =====
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`🚀 Sistem Update Live berjalan di http://localhost:${PORT}`);
+  console.log(`📡 WebSocket aktif untuk live update`);
+});
+```
+
+---
+
+## 2. DATABASE — `server/database.js`
+
+```javascript
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+const dbPath = path.join(__dirname, '../data/templates.db');
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) console.error('❌ Ralat DB:', err.message);
+  else console.log('✅ SQLite disambung:', dbPath);
+});
+
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS templates (
+      id VARCHAR(20) PRIMARY KEY,
+      category VARCHAR(50) NOT NULL,
+      name VARCHAR(150) NOT NULL,
+      publisher VARCHAR(100),
+      description TEXT,
+      tag VARCHAR(50),
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+});
+
+module.exports = db;
+```
+
+---
+
+## 3. SEED DATA — `server/seed.js`
+
+```javascript
+const db = require('./database');
+
+const templates = [
+  // Pages
+  ['PAGES-001', 'Pages', 'Static HTML', 'GitHub Actions', 'Deploy static files without a build.', 'HTML'],
+  ['PAGES-002', 'Pages', 'Jekyll', 'GitHub Actions', 'Package a Jekyll site.', '-'],
+  ['PAGES-003', 'Pages', 'Hugo', 'GitHub Actions', 'Package a Hugo site.', '-'],
+  ['PAGES-004', 'Pages', 'Next.js', 'GitHub Actions', 'Package a Next.js site.', '-'],
+  ['PAGES-005', 'Pages', 'NuxtJS', 'GitHub Actions', 'Package a NuxtJS site.', '-'],
+  ['PAGES-006', 'Pages', 'Astro', 'GitHub Actions', 'Deploy an Astro site.', 'Astro'],
+  ['PAGES-007', 'Pages', 'Gatsby', 'GitHub Actions', 'Build and deploy a Gatsby site.', 'JavaScript'],
+  
+  // Automation
+  ['AUTO-001', 'Automation', 'Stale', 'GitHub Actions', 'Checks for stale issues and PRs.', 'Automation'],
+  ['AUTO-002', 'Automation', 'Manual workflow', 'GitHub Actions', 'Manually triggered workflow.', 'Automation'],
+  ['AUTO-003', 'Automation', 'AI issue summary', 'GitHub Actions', 'Summarizes new issues.', 'Automation'],
+  ['AUTO-004', 'Automation', 'Greetings', 'GitHub Actions', 'Greets first-time contributors.', 'Automation'],
+  
+  // CI
+  ['CI-001', 'CI', 'Android CI', 'GitHub Actions', 'Build Android with Gradle.', 'Java'],
+  ['CI-002', 'CI', 'Elixir', 'GitHub Actions', 'Build/test Elixir with Mix.', 'Elixir'],
+  ['CI-003', 'CI', 'Python application', 'GitHub Actions', 'Create/test Python app.', 'Python'],
+  ['CI-004', 'CI', 'Scala', 'GitHub Actions', 'Build/test Scala with SBT.', 'Scala'],
+  ['CI-005', 'CI', 'Ruby on Rails', 'GitHub Actions', 'Build/lint/test Rails.', 'Ruby'],
+  ['CI-006', 'CI', 'Java with Gradle', 'GitHub Actions', 'Build/test Java with Gradle.', 'Java'],
+  ['CI-007', 'CI', 'Node.js', 'GitHub Actions', 'Build/test Node.js with npm.', 'JavaScript'],
+  ['CI-008', 'CI', 'Go', 'GitHub Actions', 'Build Go project.', 'Go'],
+  ['CI-009', 'CI', 'Rust', 'GitHub Actions', 'Build/test Rust with Cargo.', 'Rust'],
+  ['CI-010', 'CI', 'Docker image', 'GitHub Actions', 'Build Docker image.', 'Dockerfile'],
+  
+  // Deployment
+  ['DEP-001', 'Deployment', 'Deploy Node.js to Azure Web App', 'Microsoft Azure', 'Deploy Node.js to Azure Web App.', 'Deployment'],
+  ['DEP-002', 'Deployment', 'Deploy to Amazon ECS', 'AWS', 'Deploy container to ECS.', 'Deployment'],
+  ['DEP-003', 'Deployment', 'Build and Deploy to GKE', 'Google Cloud', 'Build/push/deploy to GKE.', 'Deployment'],
+  ['DEP-004', 'Deployment', 'Terraform', 'HashiCorp', 'Setup Terraform CLI.', 'Deployment'],
+  ['DEP-005', 'Deployment', 'Deploy to Vercel', 'Vercel', 'Deploy project to Vercel.', 'Deployment'],
+  ['DEP-006', 'Deployment', 'Deploy to Netlify', 'Netlify', 'Deploy project to Netlify.', 'Deployment'],
+  
+  // Security
+  ['SEC-001', 'Security', 'SonarCloud', 'Sonar', 'Static analysis 26+ languages.', 'Code scanning'],
+  ['SEC-002', 'Security', 'CodeQL Analysis', 'GitHub', 'Security analysis for many languages.', 'Code scanning'],
+  ['SEC-003', 'Security', 'Snyk Security', 'Snyk', 'Detect vulnerabilities.', 'Code scanning'],
+  ['SEC-004', 'Security', 'Trivy', 'Aqua Security', 'Scan containers/filesystems/repos.', 'Code scanning'],
+  ['SEC-005', 'Security', 'OWASP ZAP Scan', 'ZAP', 'DAST for web applications.', 'Code scanning'],
+  ['SEC-006', 'Security', 'Dependency Review', 'GitHub Actions', 'Scan PR for vulnerable deps.', 'Dependency review'],
+  
+  // Extension 1
+  ['UTIL-001', 'Utilities', 'Checkout', 'GitHub Actions', 'Checkout repository code.', 'Utility'],
+  ['UTIL-002', 'Utilities', 'Setup Node.js', 'GitHub Actions', 'Setup Node.js environment.', 'Utility'],
+  ['CQ-001', 'Code Quality', 'Prettier', 'GitHub Actions', 'Check code formatting.', 'Code Quality'],
+  ['TEST-001', 'Testing', 'Jest', 'GitHub Actions', 'Run Jest tests.', 'Testing'],
+  ['MON-001', 'Monitoring', 'Datadog Synthetics', 'Datadog', 'Run Datadog Synthetic tests.', 'Monitoring'],
+  ['CHAT-001', 'ChatOps', 'Slack Notify', 'Slack', 'Send notification to Slack.', 'ChatOps'],
+  
+  // Extension 2
+  ['SECA-001', 'Security Advanced', 'Secret Scanning', 'GitHub', 'Scan for exposed secrets.', 'Security'],
+  ['COMP-001', 'Compliance', 'DCO Check', 'GitHub', 'Enforce Developer Certificate of Origin.', 'Compliance'],
+  ['IAC-001', 'Infrastructure as Code', 'Terraform Plan', 'HashiCorp', 'Run terraform plan.', 'IaC'],
+  ['OBS-001', 'Observability', 'OpenTelemetry', 'OpenTelemetry', 'Instrument applications.', 'Observability'],
+  ['EDGE-001', 'Edge & Serverless', 'Cloudflare Workers', 'Cloudflare', 'Deploy Workers.', 'Edge'],
+  
+  // Extension 3
+  ['QC-001', 'Quantum Computing', 'Qiskit', 'IBM', 'Build and run quantum circuits.', 'Quantum'],
+  ['ROB-001', 'Robotics', 'ROS', 'Open Robotics', 'Build and test ROS packages.', 'Robotics'],
+  ['IOT-001', 'IoT', 'ESP-IDF', 'Espressif', 'Build ESP32 firmware.', 'IoT'],
+  ['ARVR-001', 'AR/VR', 'Unity XR', 'Unity', 'Build XR projects with Unity.', 'AR/VR'],
+  ['GREEN-001', 'Green Tech', 'Carbon Tracker', 'Green Software Foundation', 'Measure carbon emissions.', 'Green Tech'],
+  ['GENAI-001', 'Generative AI / LLM Ops', 'Hugging Face Hub', 'Hugging Face', 'Push models to Hub.', 'GenAI']
+];
+
+const stmt = db.prepare(`
+  INSERT OR REPLACE INTO templates (id, category, name, publisher, description, tag) 
+  VALUES (?, ?, ?, ?, ?, ?)
+`);
+
+templates.forEach(t => stmt.run(t));
+
+stmt.finalize(() => {
+  console.log(`✅ ${templates.length} templat berjaya dimasukkan ke dalam pangkalan data.`);
+  db.close();
+});
+```
+
+---
+
+## 4. FRONTEND — `client/index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMC-REF-2026-MSI-003 | Sistem Update Live</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <header>
+    <h1>⚡ Sistem Update Live</h1>
+    <p class="ref">CMC-REF-2026-MSI-003 — GitHub Actions Templates</p>
+    <div class="status">
+      <span id="status-dot" class="dot"></span>
+      <span id="status-text">Menyambung...</span>
+    </div>
+  </header>
+
+  <section class="stats">
+    <div class="card">
+      <h3>Jumlah Templat</h3>
+      <p id="total-templates">0</p>
+    </div>
+    <div class="card">
+      <h3>Kategori</h3>
+      <p id="total-categories">0</p>
+    </div>
+    <div class="card">
+      <h3>Status</h3>
+      <p id="live-status">🔴 Offline</p>
+    </div>
+  </section>
+
+  <section class="search">
+    <input type="text" id="search-input" placeholder="🔍 Cari templat...">
+    <select id="category-filter">
+      <option value="">Semua Kategori</option>
+    </select>
+  </section>
+
+  <section id="templates" class="templates"></section>
+
+  <section class="log">
+    <h3>📡 Live Log</h3>
+    <ul id="live-log"></ul>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
+```
+
+---
+
+## 5. FRONTEND LOGIC — `client/app.js`
+
+```javascript
+const socket = io();
+
+let templates = [];
+let filteredTemplates = [];
+
+// ===== WEBSOCKET LIVE UPDATE =====
+socket.on('connect', () => {
+  document.getElementById('status-dot').className = 'dot online';
+  document.getElementById('status-text').textContent = 'Aktif';
+  document.getElementById('live-status').textContent = '🟢 Online';
+  addLog('Disambung ke server');
+});
+
+socket.on('disconnect', () => {
+  document.getElementById('status-dot').className = 'dot offline';
+  document.getElementById('status-text').textContent = 'Terputus';
+  document.getElementById('live-status').textContent = '🔴 Offline';
+  addLog('Terputus dari server');
+});
+
+socket.on('template:added', (t) => {
+  templates.push(t);
+  renderTemplates();
+  addLog(`➕ Templat ditambah: ${t.id} - ${t.name}`);
+  updateStats();
+});
+
+socket.on('template:updated', (t) => {
+  const idx = templates.findIndex(x => x.id === t.id);
+  if (idx !== -1) templates[idx] = t;
+  renderTemplates();
+  addLog(`✏️ Templat dikemas kini: ${t.id} - ${t.name}`);
+});
+
+socket.on('template:deleted', ({ id }) => {
+  templates = templates.filter(x => x.id !== id);
+  renderTemplates();
+  addLog(`🗑️ Templat dipadam: ${id}`);
+  updateStats();
+});
+
+// ===== LOAD DATA =====
+async function loadTemplates() {
+  const res = await fetch('/api/templates');
+  const json = await res.json();
+  templates = json.data;
+  renderTemplates();
+  populateCategories();
+  updateStats();
+}
+
+async function updateStats() {
+  const res = await fetch('/api/stats');
+  const json = await res.json();
+  document.getElementById('total-templates').textContent = json.total;
+  document.getElementById('total-categories').textContent = json.categories.length;
+}
+
+// ===== RENDER =====
+function renderTemplates() {
+  const container = document.getElementById('templates');
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const cat = document.getElementById('category-filter').value;
+
+  filteredTemplates = templates.filter(t => {
+    const matchSearch = !search || 
+      t.name.toLowerCase().includes(search) || 
+      t.id.toLowerCase().includes(search) ||
+      t.publisher.toLowerCase().includes(search);
+    const matchCat = !cat || t.category === cat;
+    return matchSearch && matchCat;
+  });
+
+  container.innerHTML = filteredTemplates.map(t => `
+    <div class="template-card" data-id="${t.id}">
+      <div class="card-header">
+        <span class="id">${t.id}</span>
+        <span class="category">${t.category}</span>
+      </div>
+      <h4>${t.name}</h4>
+      <p class="publisher">By ${t.publisher}</p>
+      <p class="desc">${t.description}</p>
+      <span class="tag">${t.tag}</span>
+    </div>
+  `).join('');
+}
+
+function populateCategories() {
+  const cats = [...new Set(templates.map(t => t.category))].sort();
+  const select = document.getElementById('category-filter');
+  select.innerHTML = '<option value="">Semua Kategori</option>' +
+    cats.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+// ===== LIVE LOG =====
+function addLog(message) {
+  const log = document.getElementById('live-log');
+  const li = document.createElement('li');
+  li.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+  log.prepend(li);
+  if (log.children.length > 20) log.removeChild(log.lastChild);
+}
+
+// ===== EVENT LISTENERS =====
+document.getElementById('search-input').addEventListener('input', renderTemplates);
+document.getElementById('category-filter').addEventListener('change', renderTemplates);
+
+// ===== INIT =====
+loadTemplates();
+```
+
+---
+
+## 6. STYLING — `client/style.css`
+
+```css
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+body {
+  background: #0d1117;
+  color: #c9d1d9;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: linear-gradient(135deg, #161b22, #21262d);
+  border-radius: 12px;
+  border: 1px solid #30363d;
+}
+
+header h1 { color: #58a6ff; font-size: 2rem; }
+header .ref { color: #8b949e; font-size: 0.9rem; margin-top: 5px; }
+
+.status { margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot.online { background: #3fb950; box-shadow: 0 0 10px #3fb950; }
+.dot.offline { background: #f85149; }
+.dot { background: #f0b429; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.card {
+  background: #161b22;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #30363d;
+  text-align: center;
+}
+
+.card h3 { color: #8b949e; font-size: 0.85rem; text-transform: uppercase; }
+.card p { color: #58a6ff; font-size: 2rem; font-weight: bold; margin-top: 8px; }
+
+.search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search input, .search select {
+  flex: 1;
+  padding: 12px;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #c9d1d9;
+  font-size: 1rem;
+}
+
+.templates {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.template-card {
+  background: #161b22;
+  padding: 18px;
+  border-radius: 10px;
+  border: 1px solid #30363d;
+  transition: all 0.2s;
+}
+
+.template-card:hover {
+  border-color: #58a6ff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(88, 166, 255, 0.15);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.id { color: #8b949e; font-size: 0.75rem; font-family: monospace; }
+.category {
+  background: #21262d;
+  color: #58a6ff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+}
+
+.template-card h4 { color: #f0f6fc; margin-bottom: 5px; }
+.publisher { color: #8b949e; font-size: 0.8rem; margin-bottom: 10px; }
+.desc { color: #c9d1d9; font-size: 0.85rem; margin-bottom: 12px; }
+
+.tag {
+  background: #1f6feb22;
+  color: #58a6ff;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  border: 1px solid #1f6feb55;
+}
+
+.log {
+  margin-top: 30px;
+  background: #161b22;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #30363d;
+}
+
+.log h3 { color: #58a6ff; margin-bottom: 10px; }
+.log ul { list-style: none; max-height: 200px; overflow-y: auto; }
+.log li {
+  padding: 6px 0;
+  border-bottom: 1px solid #21262d;
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #8b949e;
+}
+```
+
+---
+
+## 7. PACKAGE — `package.json`
+
+```json
+{
+  "name": "live-update-system",
+  "version": "1.0.0",
+  "description": "Sistem Update Live untuk CMC-REF-2026-MSI-003",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "seed": "node server/seed.js",
+    "dev": "nodemon server/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
+```
+
+---
+
+## 8. DOCKER — `Dockerfile`
+
+```dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+
+RUN mkdir -p data
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "npm run seed && npm start"]
+```
+
+---
+
+## 9. DOCKER COMPOSE — `docker-compose.yml`
+
+```yaml
+version: '3.8'
+
+services:
+  live-update:
+    build: .
+    container_name: live-update-system
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+```
+
+---
+
+## 10. GITHUB ACTIONS DEPLOYMENT — `.github/workflows/deploy.yml`
+
+```yaml
+name: Deploy Live Update System
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test --if-present
+
+      - name: Build Docker image
+        run: docker build -t live-update-system:${{ github.sha }} .
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker image
+        run: |
+          docker tag live-update-system:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/live-update-system:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/live-update-system:latest
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /opt/live-update-system
+            docker-compose pull
+            docker-compose up -d --remove-orphans
+            docker system prune -f
+```
+
+---
+
+## 🚀 CARA JALANKAN SISTEM
+
+### Pilihan 1: Lokal
+```bash
+npm install
+npm run seed    # Masukkan data awal
+npm start       # Jalankan server
+```
+Buka `http://localhost:3000`
+
+### Pilihan 2: Docker
+```bash
+docker-compose up -d --build
+```
+
+### Pilihan 3: Deployment
+1. Push ke GitHub
+2. Tetapkan Secrets: `DOCKER_USERNAME`, `DOCKER_PASSWORD`, `SERVER_HOST`, `SERVER_USER`, `SERVER_SSH_KEY`
+3. GitHub Actions akan build & deploy secara automatik
+
+---
+
+## 📡 CIRI-CIRI SISTEM UPDATE LIVE
+
+| Ciri | Keterangan |
+| :--- | :--- |
+| **Real-Time Update** | WebSocket (Socket.IO) memancarkan perubahan serta-merta |
+| **CRUD API** | Tambah, baca, kemas kini, padam templat melalui REST API |
+| **Live Log** | Log aktiviti dipaparkan secara langsung di dashboard |
+| **Search & Filter** | Cari mengikut nama, ID, penerbit, atau kategori |
+| **Statistics** | Statistik automatik dikemas kini secara langsung |
+| **SQLite** | Pangkalan data ringan, tiada konfigurasi pelayan |
+| **Docker Ready** | Boleh dijalankan dalam kontena |
+| **CI/CD** | Deployment automatik melalui GitHub Actions |
+| **Health Check** | Docker healthcheck untuk pemantauan |
+| **Responsive UI** | Paparan mudah alih dan desktop |
+
+---
+
+## 🔌 CONTOH API CALL
+
+**Tambah templat baharu (Live Update akan terpancar):**
+```bash
+curl -X POST http://localhost:3000/api/templates \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "NEW-001",
+    "category": "Custom",
+    "name": "My Custom Action",
+    "publisher": "Sazwani",
+    "description": "Tindakan tersuai untuk projek saya.",
+    "tag": "Custom"
+  }'
+```
+
+**Kemas kini templat:**
+```bash
+curl -X PUT http://localhost:3000/api/templates/NEW-001 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "category": "Custom",
+    "name": "My Updated Action",
+    "publisher": "Sazwani",
+    "description": "Tindakan yang dikemas kini.",
+    "tag": "Custom"
+  }'
+```
+
+**Padam templat:**
+```bash
+curl -X DELETE http://localhost:3000/api/templates/NEW-001
+```
+
+---
+
+Sistem ini sedia untuk **production**, dengan **live update**, **API lengkap**, **dashboard interaktif**, dan **CI/CD automatik**. Jika anda mahukan **penambahan ciri** seperti **authentication (JWT)**, **role-based access**, **export JSON/CSV**, atau **integrasi dengan Telegram/Slack**, beritahu saya.
+Baik, berikut adalah **SISTEM UPDATE LIVE** yang lengkap dan sedia guna untuk **CMC-REF-2026-MSI-003** — dibina semula dengan struktur yang lebih bersih, lengkap, dan boleh terus dijalankan.
+
+---
+
+# 🚀 SISTEM UPDATE LIVE — CMC-REF-2026-MSI-003
+
+## 📁 STRUKTUR PROJEK
+
+```
+live-update-system/
+├── server/
+│   ├── index.js
+│   ├── database.js
+│   └── seed.js
+├── client/
+│   ├── index.html
+│   ├── app.js
+│   └── style.css
+├── data/
+│   └── templates.db
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
+└── README.md
+```
+
+---
+
+## 1. BACKEND — `server/index.js`
+
+```javascript
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
+const path = require('path');
+const db = require('./database');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '../client')));
+
+// ===== API =====
+app.get('/api/templates', (req, res) => {
+  db.all('SELECT * FROM templates ORDER BY category, name', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ ref: 'CMC-REF-2026-MSI-003', total: rows.length, data: rows });
+  });
+});
+
+app.get('/api/templates/:category', (req, res) => {
+  db.all('SELECT * FROM templates WHERE category = ?', [req.params.category], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ data: rows });
+  });
+});
+
+app.post('/api/templates', (req, res) => {
+  const { id, category, name, publisher, description, tag } = req.body;
+  db.run(
+    `INSERT INTO templates (id, category, name, publisher, description, tag) VALUES (?, ?, ?, ?, ?, ?)`,
+    [id, category, name, publisher, description, tag],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      const newTemplate = { id, category, name, publisher, description, tag };
+      io.emit('template:added', newTemplate);
+      console.log('📡 LIVE: Tambah', id);
+      res.status(201).json(newTemplate);
+    }
+  );
+});
+
+app.put('/api/templates/:id', (req, res) => {
+  const { category, name, publisher, description, tag } = req.body;
+  db.run(
+    `UPDATE templates SET category=?, name=?, publisher=?, description=?, tag=? WHERE id=?`,
+    [category, name, publisher, description, tag, req.params.id],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      const updated = { id: req.params.id, category, name, publisher, description, tag };
+      io.emit('template:updated', updated);
+      console.log('📡 LIVE: Kemas kini', req.params.id);
+      res.json(updated);
+    }
+  );
+});
+
+app.delete('/api/templates/:id', (req, res) => {
+  db.run('DELETE FROM templates WHERE id = ?', [req.params.id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    io.emit('template:deleted', { id: req.params.id });
+    console.log('📡 LIVE: Padam', req.params.id);
+    res.json({ message: 'Dipadam', id: req.params.id });
+  });
+});
+
+app.get('/api/stats', (req, res) => {
+  db.get('SELECT COUNT(*) AS total FROM templates', [], (err, total) => {
+    db.all('SELECT category, COUNT(*) AS count FROM templates GROUP BY category', [], (err2, cats) => {
+      res.json({ total: total.total, categories: cats });
+    });
+  });
+});
+
+// ===== WEBSOCKET =====
+io.on('connection', (socket) => {
+  console.log('🔌 Klien:', socket.id);
+  socket.emit('connected', {
+    message: 'Sistem Update Live Aktif',
+    ref: 'CMC-REF-2026-MSI-003',
+    timestamp: new Date().toISOString()
+  });
+  socket.on('disconnect', () => console.log('❌ Terputus:', socket.id));
+});
+
+// ===== START =====
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`🚀 Sistem Update Live: http://localhost:${PORT}`);
+  console.log(`📡 WebSocket aktif`);
+});
+```
+
+---
+
+## 2. DATABASE — `server/database.js`
+
+```javascript
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+const db = new sqlite3.Database(path.join(__dirname, '../data/templates.db'), (err) => {
+  if (err) console.error('❌ DB:', err.message);
+  else console.log('✅ SQLite disambung');
+});
+
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS templates (
+      id VARCHAR(20) PRIMARY KEY,
+      category VARCHAR(50) NOT NULL,
+      name VARCHAR(150) NOT NULL,
+      publisher VARCHAR(100),
+      description TEXT,
+      tag VARCHAR(50),
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+});
+
+module.exports = db;
+```
+
+---
+
+## 3. SEED DATA — `server/seed.js`
+
+```javascript
+const db = require('./database');
+
+const templates = [
+  // Pages
+  ['PAGES-001', 'Pages', 'Static HTML', 'GitHub Actions', 'Deploy static files without a build.', 'HTML'],
+  ['PAGES-002', 'Pages', 'Jekyll', 'GitHub Actions', 'Package a Jekyll site.', '-'],
+  ['PAGES-003', 'Pages', 'Hugo', 'GitHub Actions', 'Package a Hugo site.', '-'],
+  ['PAGES-004', 'Pages', 'Next.js', 'GitHub Actions', 'Package a Next.js site.', '-'],
+  ['PAGES-005', 'Pages', 'NuxtJS', 'GitHub Actions', 'Package a NuxtJS site.', '-'],
+  ['PAGES-006', 'Pages', 'Astro', 'GitHub Actions', 'Deploy an Astro site.', 'Astro'],
+  ['PAGES-007', 'Pages', 'Gatsby', 'GitHub Actions', 'Build and deploy a Gatsby site.', 'JavaScript'],
+
+  // Automation
+  ['AUTO-001', 'Automation', 'Stale', 'GitHub Actions', 'Checks for stale issues and PRs.', 'Automation'],
+  ['AUTO-002', 'Automation', 'Manual workflow', 'GitHub Actions', 'Manually triggered workflow.', 'Automation'],
+  ['AUTO-003', 'Automation', 'AI issue summary', 'GitHub Actions', 'Summarizes new issues.', 'Automation'],
+  ['AUTO-004', 'Automation', 'Greetings', 'GitHub Actions', 'Greets first-time contributors.', 'Automation'],
+  ['AUTO-005', 'Automation', 'Issue Labeler', 'GitHub Actions', 'Auto-label new issues.', 'Automation'],
+  ['AUTO-006', 'Automation', 'Scheduled Workflow', 'GitHub Actions', 'Run workflow on Cron schedule.', 'Automation'],
+
+  // CI
+  ['CI-001', 'CI', 'Android CI', 'GitHub Actions', 'Build Android with Gradle.', 'Java'],
+  ['CI-002', 'CI', 'Elixir', 'GitHub Actions', 'Build/test Elixir with Mix.', 'Elixir'],
+  ['CI-003', 'CI', 'Python application', 'GitHub Actions', 'Create/test Python app.', 'Python'],
+  ['CI-004', 'CI', 'Python Package using Anaconda', 'GitHub Actions', 'Python package with Anaconda.', 'Python'],
+  ['CI-005', 'CI', 'Scala', 'GitHub Actions', 'Build/test Scala with SBT.', 'Scala'],
+  ['CI-006', 'CI', 'MSBuild based projects', 'GitHub Actions', 'Build MSBuild project.', 'C'],
+  ['CI-007', 'CI', 'Ruby on Rails', 'GitHub Actions', 'Build/lint/test Rails.', 'Ruby'],
+  ['CI-008', 'CI', 'Java with Gradle', 'GitHub Actions', 'Build/test Java with Gradle.', 'Java'],
+  ['CI-009', 'CI', 'Laravel', 'GitHub Actions', 'Test Laravel project.', 'PHP'],
+  ['CI-010', 'CI', 'Ruby Gem', 'GitHub Actions', 'Push Ruby Gem to registry.', 'Ruby'],
+  ['CI-011', 'CI', 'Dart', 'GitHub Actions', 'Build/test Dart with Pub.', 'Dart'],
+  ['CI-012', 'CI', 'iOS', 'GitHub Actions', 'Build/test iOS with xcodebuild.', '-'],
+  ['CI-013', 'CI', 'Java with Ant', 'GitHub Actions', 'Build/test Java with Ant.', 'Java'],
+  ['CI-014', 'CI', 'Publish Node.js Package', 'GitHub Actions', 'Publish Node.js to npm.', 'JavaScript'],
+  ['CI-015', 'CI', 'SLSA Go releaser', 'OpenSSF', 'Compile Go with SLSA3 builder.', 'Go'],
+  ['CI-016', 'CI', 'Swift', 'GitHub Actions', 'Build/test Swift Package.', 'Swift'],
+  ['CI-017', 'CI', 'Symfony', 'GitHub Actions', 'Test Symfony project.', 'PHP'],
+  ['CI-018', 'CI', 'Java with Maven', 'GitHub Actions', 'Build/test Java with Maven.', 'Java'],
+  ['CI-019', 'CI', 'Node.js', 'GitHub Actions', 'Build/test Node.js with npm.', 'JavaScript'],
+  ['CI-020', 'CI', '.NET Desktop', 'GitHub Actions', 'Build/test/sign .NET Desktop.', 'C#'],
+  ['CI-021', 'CI', 'Go', 'GitHub Actions', 'Build Go project.', 'Go'],
+  ['CI-022', 'CI', 'Python package', 'GitHub Actions', 'Test Python package multiple versions.', 'Python'],
+  ['CI-023', 'CI', 'Super Linter', 'GitHub Actions', 'Run linters for many languages.', '-'],
+  ['CI-024', 'CI', 'Docker image', 'GitHub Actions', 'Build Docker image.', 'Dockerfile'],
+  ['CI-025', 'CI', 'Rust', 'GitHub Actions', 'Build/test Rust with Cargo.', 'Rust'],
+  ['CI-026', 'CI', 'Erlang', 'GitHub Actions', 'Build/test Erlang with rebar.', 'Erlang'],
+  ['CI-027', 'CI', 'PHP', 'GitHub Actions', 'Build/test PHP with Composer.', 'PHP'],
+  ['CI-028', 'CI', 'Ada', 'GitHub Actions', 'Build Ada with GPRbuild.', 'Ada'],
+  ['CI-029', 'CI', 'Ruby', 'GitHub Actions', 'Build/test Ruby with Rake.', 'Ruby'],
+  ['CI-030', 'CI', 'Xcode - Build and Analyze', 'GitHub Actions', 'Build Xcode project.', 'Objective-C'],
+  ['CI-031', 'CI', 'Clojure', 'GitHub Actions', 'Build/test Clojure with Leiningen.', 'Clojure'],
+  ['CI-032', 'CI', 'R package', 'GitHub Actions', 'Test R package multiple versions.', 'R'],
+  ['CI-033', 'CI', 'D', 'GitHub Actions', 'Build/test D with dub.', 'D'],
+  ['CI-034', 'CI', 'Crystal', 'GitHub Actions', 'Build/test Crystal.', 'Crystal'],
+  ['CI-035', 'CI', 'Publish Python Package', 'GitHub Actions', 'Publish Python to PyPI.', 'Python'],
+  ['CI-036', 'CI', 'Pylint', 'GitHub Actions', 'Lint Python with pylint.', 'Python'],
+  ['CI-037', 'CI', 'Haskell', 'GitHub Actions', 'Build/test Haskell with Cabal.', 'Haskell'],
+  ['CI-038', 'CI', 'C/C++ with Make', 'GitHub Actions', 'Build/test C/C++ with Make.', 'C'],
+  ['CI-039', 'CI', 'Build projects with Make', 'GitHub Actions', 'Build/test with Makefile.', 'Makefile'],
+  ['CI-040', 'CI', 'Django', 'GitHub Actions', 'Build/test Django.', 'Python'],
+  ['CI-041', 'CI', '.NET', 'GitHub Actions', 'Build/test .NET / ASP.NET Core.', 'C#'],
+  ['CI-042', 'CI', 'Publish Docker Container', 'GitHub Actions', 'Build/test/push Docker image.', 'Dockerfile'],
+  ['CI-043', 'CI', 'Grunt', 'GitHub Actions', 'Build NodeJS with Grunt.', 'JavaScript'],
+  ['CI-044', 'CI', 'Gulp', 'GitHub Actions', 'Build NodeJS with Gulp.', 'JavaScript'],
+  ['CI-045', 'CI', 'Webpack', 'GitHub Actions', 'Build NodeJS with Webpack.', 'JavaScript'],
+  ['CI-046', 'CI', 'Deno', 'GitHub Actions', 'Test Deno project.', 'JavaScript'],
+  ['CI-047', 'CI', 'Datadog Synthetics', 'Datadog', 'Run Datadog Synthetic tests.', 'JavaScript'],
+
+  // Deployment
+  ['DEP-001', 'Deployment', 'Deploy Node.js to Azure Web App', 'Microsoft Azure', 'Deploy Node.js to Azure Web App.', 'Deployment'],
+  ['DEP-002', 'Deployment', 'Deploy Node.js to Azure Functions App', 'Microsoft Azure', 'Deploy Node.js to Azure Functions.', 'Deployment'],
+  ['DEP-003', 'Deployment', 'Deploy to Amazon ECS', 'AWS', 'Deploy container to ECS.', 'Deployment'],
+  ['DEP-004', 'Deployment', 'Deploy to AWS S3', 'AWS', 'Deploy static site to S3.', 'Deployment'],
+  ['DEP-005', 'Deployment', 'Build and Deploy to GKE', 'Google Cloud', 'Build/push/deploy to GKE.', 'Deployment'],
+  ['DEP-006', 'Deployment', 'Deploy to Google Cloud Run', 'Google Cloud', 'Deploy container to Cloud Run.', 'Deployment'],
+  ['DEP-007', 'Deployment', 'Terraform', 'HashiCorp', 'Setup Terraform CLI.', 'Deployment'],
+  ['DEP-008', 'Deployment', 'Deploy to Alibaba Cloud ACK', 'Alibaba Cloud', 'Deploy container to ACK.', 'Deployment'],
+  ['DEP-009', 'Deployment', 'Deploy to IBM Cloud Kubernetes Service', 'IBM', 'Deploy container to IBM K8s.', 'Deployment'],
+  ['DEP-010', 'Deployment', 'Tencent Kubernetes Engine', 'Tencent Cloud', 'Deploy to TKE.', 'Deployment'],
+  ['DEP-011', 'Deployment', 'Deploy to Vercel', 'Vercel', 'Deploy project to Vercel.', 'Deployment'],
+  ['DEP-012', 'Deployment', 'Deploy to Netlify', 'Netlify', 'Deploy project to Netlify.', 'Deployment'],
+  ['DEP-013', 'Deployment', 'Firebase Hosting', 'Firebase', 'Deploy web app to Firebase.', 'Deployment'],
+
+  // Security
+  ['SEC-001', 'Security', 'SonarCloud', 'Sonar', 'Static analysis 26+ languages.', 'Code scanning'],
+  ['SEC-002', 'Security', 'SonarQube', 'Sonar', 'Static analysis 26+ languages.', 'Code scanning'],
+  ['SEC-003', 'Security', 'Dependency Review', 'GitHub Actions', 'Scan PR for vulnerable deps.', 'Dependency review'],
+  ['SEC-004', 'Security', 'CodeQL Analysis', 'GitHub', 'Security analysis for many languages.', 'Code scanning'],
+  ['SEC-005', 'Security', 'Fortify Scan', 'OpenText', 'SAST for 33+ languages.', 'Code scanning'],
+  ['SEC-006', 'Security', 'Snyk Security', 'Snyk', 'Detect vulnerabilities.', 'Code scanning'],
+  ['SEC-007', 'Security', 'Trivy', 'Aqua Security', 'Scan containers/filesystems.', 'Code scanning'],
+  ['SEC-008', 'Security', 'OWASP ZAP Scan', 'ZAP', 'DAST for web applications.', 'Code scanning'],
+  ['SEC-009', 'Security', 'OSV Scanner', 'Google', 'Vulnerability scanner dependencies.', 'Code scanning'],
+  ['SEC-010', 'Security', 'Semgrep', 'Returntocorp', 'Find bugs and enforce standards.', 'Code scanning'],
+  ['SEC-011', 'Security', 'Bandit Scan', 'abirismyname', 'Find security issues in Python.', 'Code scanning'],
+  ['SEC-012', 'Security', 'ESLint', 'GitHub Actions', 'Identify JS/TS problems.', 'Code scanning'],
+  ['SEC-013', 'Security', 'Codacy Security Scan', 'Codacy', 'Security analysis with open source tools.', 'Code scanning'],
+  ['SEC-014', 'Security', 'Microsoft Defender For DevOps Scan', 'Microsoft', 'Integrate tools with GHAS.', 'Code scanning'],
+  ['SEC-015', 'Security', 'JFrog SAST', 'JFrog', 'Scan source code vulnerabilities.', 'Code scanning'],
+
+  // Extension 1
+  ['UTIL-001', 'Utilities', 'Checkout', 'GitHub Actions', 'Checkout repository code.', 'Utility'],
+  ['UTIL-002', 'Utilities', 'Setup Node.js', 'GitHub Actions', 'Setup Node.js environment.', 'Utility'],
+  ['UTIL-003', 'Utilities', 'Setup Python', 'GitHub Actions', 'Setup Python environment.', 'Utility'],
+  ['UTIL-004', 'Utilities', 'Cache', 'GitHub Actions', 'Cache dependencies.', 'Utility'],
+  ['UTIL-005', 'Utilities', 'Upload Artifact', 'GitHub Actions', 'Upload artifacts.', 'Utility'],
+  ['CQ-001', 'Code Quality', 'Prettier', 'GitHub Actions', 'Check code formatting.', 'Code Quality'],
+  ['CQ-002', 'Code Quality', 'ESLint', 'GitHub Actions', 'Lint JS/TS code.', 'Code Quality'],
+  ['CQ-003', 'Code Quality', 'Black', 'GitHub Actions', 'Check Python formatting.', 'Code Quality'],
+  ['CQ-004', 'Code Quality', 'Ruff', 'GitHub Actions', 'Fast Python linter.', 'Code Quality'],
+  ['TEST-001', 'Testing', 'Jest', 'GitHub Actions', 'Run Jest tests.', 'Testing'],
+  ['TEST-002', 'Testing', 'Pytest', 'GitHub Actions', 'Run Python tests.', 'Testing'],
+  ['TEST-003', 'Testing', 'Cypress', 'Cypress.io', 'Run E2E tests.', 'Testing'],
+  ['TEST-004', 'Testing', 'Playwright', 'Microsoft', 'Run Playwright tests.', 'Testing'],
+  ['TEST-005', 'Testing', 'Codecov', 'Codecov', 'Upload coverage reports.', 'Testing'],
+  ['MON-001', 'Monitoring', 'Datadog Synthetics', 'Datadog', 'Run Datadog Synthetic tests.', 'Monitoring'],
+  ['MON-002', 'Monitoring', 'New Relic Deployment', 'New Relic', 'Mark deployment.', 'Monitoring'],
+  ['MON-003', 'Monitoring', 'Sentry Release', 'Sentry', 'Create release.', 'Monitoring'],
+  ['CHAT-001', 'ChatOps', 'Slack Notify', 'Slack', 'Send notification to Slack.', 'ChatOps'],
+  ['CHAT-002', 'ChatOps', 'Microsoft Teams Notify', 'Microsoft', 'Send notification to Teams.', 'ChatOps'],
+  ['CHAT-003', 'ChatOps', 'Discord Notify', 'Discord', 'Send notification to Discord.', 'ChatOps'],
+  ['DEP-001X', 'Dependency Management', 'Dependabot', 'GitHub', 'Automated dependency updates.', 'Dependency'],
+  ['DEP-002X', 'Dependency Management', 'Renovate', 'Renovate Bot', 'Automated dependency updates.', 'Dependency'],
+  ['DEP-003X', 'Dependency Management', 'Snyk', 'Snyk', 'Find and fix vulnerabilities.', 'Dependency'],
+  ['CONT-001', 'Container', 'Docker Buildx', 'Docker', 'Build multi-platform images.', 'Container'],
+  ['CONT-002', 'Container', 'Docker Login', 'Docker', 'Login to Docker registry.', 'Container'],
+  ['CONT-003', 'Container', 'Kubernetes Deploy', 'Azure', 'Deploy to Kubernetes.', 'Container'],
+  ['CLOUD-001', 'Cloud', 'AWS Configure Credentials', 'AWS', 'Configure AWS credentials.', 'Cloud'],
+  ['CLOUD-002', 'Cloud', 'Azure Login', 'Microsoft', 'Login to Azure.', 'Cloud'],
+  ['CLOUD-003', 'Cloud', 'Google Auth', 'Google', 'Authenticate to GCP.', 'Cloud'],
+  ['AI-001', 'AI/ML', 'MLflow', 'MLflow', 'Track ML experiments.', 'AI/ML'],
+  ['AI-002', 'AI/ML', 'Weights & Biases', 'W&B', 'Track ML experiments.', 'AI/ML'],
+  ['AI-003', 'AI/ML', 'DVC', 'Iterative', 'Data Version Control.', 'AI/ML'],
+  ['MOB-001', 'Mobile', 'Flutter', 'Flutter', 'Build/test Flutter apps.', 'Mobile'],
+  ['MOB-002', 'Mobile', 'React Native', 'Microsoft', 'Build React Native apps.', 'Mobile'],
+  ['MOB-003', 'Mobile', 'Fastlane', 'Fastlane', 'Automate iOS/Android builds.', 'Mobile'],
+
+  // Extension 2
+  ['SECA-001', 'Security Advanced', 'Secret Scanning', 'GitHub', 'Scan for exposed secrets.', 'Security'],
+  ['SECA-002', 'Security Advanced', 'CodeQL Advanced', 'GitHub', 'Advanced security analysis.', 'Security'],
+  ['SECA-003', 'Security Advanced', 'Gitleaks', 'Gitleaks', 'Detect hardcoded secrets.', 'Security'],
+  ['SECA-004', 'Security Advanced', 'TruffleHog', 'Truffle Security', 'Find credentials in git history.', 'Security'],
+  ['COMP-001', 'Compliance', 'DCO Check', 'GitHub', 'Enforce Developer Certificate of Origin.', 'Compliance'],
+  ['COMP-002', 'Compliance', 'CLA Assistant', 'CLA Assistant', 'Manage Contributor License Agreements.', 'Compliance'],
+  ['COMP-003', 'Compliance', 'License Checker', 'LicenseCheck', 'Check dependency licenses.', 'Compliance'],
+  ['COMP-004', 'Compliance', 'FOSSA', 'FOSSA', 'License compliance and security.', 'Compliance'],
+  ['IAC-001', 'Infrastructure as Code', 'Terraform Plan', 'HashiCorp', 'Run terraform plan.', 'IaC'],
+  ['IAC-002', 'Infrastructure as Code', 'Terraform Apply', 'HashiCorp', 'Run terraform apply.', 'IaC'],
+  ['IAC-003', 'Infrastructure as Code', 'Pulumi Up', 'Pulumi', 'Deploy with Pulumi.', 'IaC'],
+  ['IAC-004', 'Infrastructure as Code', 'AWS CloudFormation', 'AWS', 'Deploy CloudFormation stacks.', 'IaC'],
+  ['IAC-005', 'Infrastructure as Code', 'Checkov', 'Bridgecrew', 'IaC static analysis.', 'IaC'],
+  ['LC-001', 'Low-Code/No-Code', 'n8n', 'n8n', 'Trigger n8n workflows.', 'Low-Code'],
+  ['LC-002', 'Low-Code/No-Code', 'Zapier', 'Zapier', 'Trigger Zapier automations.', 'Low-Code'],
+  ['LC-003', 'Low-Code/No-Code', 'Make', 'Make', 'Trigger Make scenarios.', 'Low-Code'],
+  ['DEVOPS-001', 'DevOps & SRE', 'PagerDuty', 'PagerDuty', 'Trigger incidents.', 'DevOps'],
+  ['DEVOPS-002', 'DevOps & SRE', 'Opsgenie', 'Atlassian', 'Create alerts.', 'DevOps'],
+  ['SRE-001', 'DevOps & SRE', 'k6 Load Test', 'Grafana', 'Run load tests with k6.', 'SRE'],
+  ['SRE-002', 'DevOps & SRE', 'Locust', 'Locust', 'Run load tests with Locust.', 'SRE'],
+  ['OBS-001', 'Observability', 'OpenTelemetry', 'OpenTelemetry', 'Instrument applications.', 'Observability'],
+  ['OBS-002', 'Observability', 'Prometheus', 'Prometheus', 'Push metrics.', 'Observability'],
+  ['OBS-003', 'Observability', 'Grafana', 'Grafana', 'Create dashboards.', 'Observability'],
+  ['EDGE-001', 'Edge & Serverless', 'Cloudflare Workers', 'Cloudflare', 'Deploy Workers.', 'Edge'],
+  ['EDGE-002', 'Edge & Serverless', 'Vercel Edge', 'Vercel', 'Deploy Edge Functions.', 'Edge'],
+  ['SERVERLESS-001', 'Edge & Serverless', 'AWS Lambda', 'AWS', 'Deploy Lambda functions.', 'Serverless'],
+  ['SERVERLESS-002', 'Edge & Serverless', 'Azure Functions', 'Microsoft', 'Deploy Azure Functions.', 'Serverless'],
+  ['WEB3-001', 'Blockchain/Web3', 'Hardhat', 'Nomic Foundation', 'Compile/test/deploy smart contracts.', 'Web3'],
+  ['WEB3-002', 'Blockchain/Web3', 'Foundry', 'Foundry', 'Test Solidity contracts.', 'Web3'],
+  ['WEB3-003', 'Blockchain/Web3', 'Slither', 'Trail of Bits', 'Static analysis for Solidity.', 'Web3'],
+  ['MLOPS-001', 'MLOps', 'MLflow', 'MLflow', 'Track experiments and models.', 'MLOps'],
+  ['MLOPS-002', 'MLOps', 'Kubeflow', 'Kubeflow', 'Deploy ML pipelines.', 'MLOps'],
+  ['MLOPS-003', 'MLOps', 'BentoML', 'BentoML', 'Package and deploy models.', 'MLOps'],
+  ['MLOPS-004', 'MLOps', 'Hugging Face', 'Hugging Face', 'Deploy models/spaces.', 'MLOps'],
+
+  // Extension 3
+  ['QC-001', 'Quantum Computing', 'Qiskit', 'IBM', 'Build and run quantum circuits.', 'Quantum'],
+  ['QC-002', 'Quantum Computing', 'Cirq', 'Google', 'Run quantum algorithms.', 'Quantum'],
+  ['QC-003', 'Quantum Computing', 'PennyLane', 'Xanadu', 'Differentiable quantum programming.', 'Quantum'],
+  ['ROB-001', 'Robotics', 'ROS', 'Open Robotics', 'Build and test ROS packages.', 'Robotics'],
+  ['ROB-002', 'Robotics', 'ROS 2', 'Open Robotics', 'Build and test ROS 2 packages.', 'Robotics'],
+  ['ROB-003', 'Robotics', 'Gazebo', 'Open Robotics', 'Simulate robots with Gazebo.', 'Robotics'],
+  ['ROB-004', 'Robotics', 'PlatformIO', 'PlatformIO', 'Build embedded projects.', 'Robotics'],
+  ['IOT-001', 'IoT', 'ESP-IDF', 'Espressif', 'Build ESP32 firmware.', 'IoT'],
+  ['IOT-002', 'IoT', 'Arduino', 'Arduino', 'Build and upload Arduino code.', 'IoT'],
+  ['IOT-003', 'IoT', 'Raspberry Pi', 'Raspberry Pi', 'Cross-compile for Raspberry Pi.', 'IoT'],
+  ['ARVR-001', 'AR/VR', 'Unity XR', 'Unity', 'Build XR projects with Unity.', 'AR/VR'],
+  ['ARVR-002', 'AR/VR', 'Unreal VR', 'Epic Games', 'Build VR projects with Unreal.', 'AR/VR'],
+  ['ARVR-003', 'AR/VR', 'WebXR', 'W3C', 'Test WebXR experiences.', 'AR/VR'],
+  ['GREEN-001', 'Green Tech', 'Carbon Tracker', 'Green Software Foundation', 'Measure carbon emissions.', 'Green Tech'],
+  ['GREEN-002', 'Green Tech', 'CodeCarbon', 'CodeCarbon', 'Track carbon emissions of code.', 'Green Tech'],
+  ['GENAI-001', 'Generative AI / LLM Ops', 'Hugging Face Hub', 'Hugging Face', 'Push models to Hub.', 'GenAI'],
+  ['GENAI-002', 'Generative AI / LLM Ops', 'OpenAI', 'OpenAI', 'Call OpenAI APIs.', 'GenAI'],
+  ['GENAI-003', 'Generative AI / LLM Ops', 'LangChain', 'LangChain', 'Build LLM applications.', 'GenAI'],
+  ['GENAI-004', 'Generative AI / LLM Ops', 'Ollama', 'Ollama', 'Run LLMs locally.', 'GenAI']
+];
+
+const stmt = db.prepare(`
+  INSERT OR REPLACE INTO templates (id, category, name, publisher, description, tag)
+  VALUES (?, ?, ?, ?, ?, ?)
+`);
+
+templates.forEach(t => stmt.run(t));
+
+stmt.finalize(() => {
+  console.log(`✅ ${templates.length} templat dimasukkan ke DB.`);
+  db.close();
+});
+```
+
+---
+
+## 4. FRONTEND — `client/index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMC-REF-2026-MSI-003 | Live Update</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <header>
+    <h1>⚡ Sistem Update Live</h1>
+    <p class="ref">CMC-REF-2026-MSI-003 — GitHub Actions Templates</p>
+    <div class="status">
+      <span id="status-dot" class="dot"></span>
+      <span id="status-text">Menyambung...</span>
+    </div>
+  </header>
+
+  <section class="stats">
+    <div class="card"><h3>Jumlah Templat</h3><p id="total-templates">0</p></div>
+    <div class="card"><h3>Kategori</h3><p id="total-categories">0</p></div>
+    <div class="card"><h3>Status Live</h3><p id="live-status">🔴 Offline</p></div>
+  </section>
+
+  <section class="search">
+    <input type="text" id="search-input" placeholder="🔍 Cari templat...">
+    <select id="category-filter"><option value="">Semua Kategori</option></select>
+  </section>
+
+  <section id="templates" class="templates"></section>
+
+  <section class="log">
+    <h3>📡 Live Log</h3>
+    <ul id="live-log"></ul>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
+```
+
+---
+
+## 5. FRONTEND LOGIC — `client/app.js`
+
+```javascript
+const socket = io();
+let templates = [];
+
+socket.on('connect', () => {
+  document.getElementById('status-dot').className = 'dot online';
+  document.getElementById('status-text').textContent = 'Aktif';
+  document.getElementById('live-status').textContent = '🟢 Online';
+  addLog('Disambung ke server');
+});
+
+socket.on('disconnect', () => {
+  document.getElementById('status-dot').className = 'dot offline';
+  document.getElementById('status-text').textContent = 'Terputus';
+  document.getElementById('live-status').textContent = '🔴 Offline';
+  addLog('Terputus dari server');
+});
+
+socket.on('template:added', (t) => { templates.push(t); render(); addLog(`➕ ${t.id} - ${t.name}`); updateStats(); });
+socket.on('template:updated', (t) => { const i = templates.findIndex(x => x.id === t.id); if (i !== -1) templates[i] = t; render(); addLog(`✏️ ${t.id} - ${t.name}`); });
+socket.on('template:deleted', ({ id }) => { templates = templates.filter(x => x.id !== id); render(); addLog(`🗑️ ${id}`); updateStats(); });
+
+async function load() {
+  const r = await fetch('/api/templates');
+  const j = await r.json();
+  templates = j.data;
+  render();
+  populate();
+  updateStats();
+}
+
+async function updateStats() {
+  const r = await fetch('/api/stats');
+  const j = await r.json();
+  document.getElementById('total-templates').textContent = j.total;
+  document.getElementById('total-categories').textContent = j.categories.length;
+}
+
+function render() {
+  const s = document.getElementById('search-input').value.toLowerCase();
+  const c = document.getElementById('category-filter').value;
+  const filtered = templates.filter(t => {
+    const ms = !s || t.name.toLowerCase().includes(s) || t.id.toLowerCase().includes(s) || t.publisher.toLowerCase().includes(s);
+    const mc = !c || t.category === c;
+    return ms && mc;
+  });
+  document.getElementById('templates').innerHTML = filtered.map(t => `
+    <div class="template-card">
+      <div class="card-header"><span class="id">${t.id}</span><span class="category">${t.category}</span></div>
+      <h4>${t.name}</h4>
+      <p class="publisher">By ${t.publisher}</p>
+      <p class="desc">${t.description}</p>
+      <span class="tag">${t.tag}</span>
+    </div>
+  `).join('');
+}
+
+function populate() {
+  const cats = [...new Set(templates.map(t => t.category))].sort();
+  document.getElementById('category-filter').innerHTML = '<option value="">Semua Kategori</option>' +
+    cats.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+function addLog(msg) {
+  const log = document.getElementById('live-log');
+  const li = document.createElement('li');
+  li.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  log.prepend(li);
+  if (log.children.length > 20) log.removeChild(log.lastChild);
+}
+
+document.getElementById('search-input').addEventListener('input', render);
+document.getElementById('category-filter').addEventListener('change', render);
+
+load();
+```
+
+---
+
+## 6. STYLING — `client/style.css`
+
+```css
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { background: #0d1117; color: #c9d1d9; padding: 20px; max-width: 1200px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 30px; padding: 20px; background: linear-gradient(135deg, #161b22, #21262d); border-radius: 12px; border: 1px solid #30363d; }
+header h1 { color: #58a6ff; font-size: 2rem; }
+header .ref { color: #8b949e; font-size: 0.9rem; margin-top: 5px; }
+.status { margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: #f0b429; }
+.dot.online { background: #3fb950; box-shadow: 0 0 10px #3fb950; }
+.dot.offline { background: #f85149; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+.card { background: #161b22; padding: 20px; border-radius: 10px; border: 1px solid #30363d; text-align: center; }
+.card h3 { color: #8b949e; font-size: 0.85rem; text-transform: uppercase; }
+.card p { color: #58a6ff; font-size: 2rem; font-weight: bold; margin-top: 8px; }
+.search { display: flex; gap: 10px; margin-bottom: 20px; }
+.search input, .search select { flex: 1; padding: 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; color: #c9d1d9; font-size: 1rem; }
+.templates { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+.template-card { background: #161b22; padding: 18px; border-radius: 10px; border: 1px solid #30363d; transition: all 0.2s; }
+.template-card:hover { border-color: #58a6ff; transform: translateY(-2px); box-shadow: 0 5px 20px rgba(88, 166, 255, 0.15); }
+.card-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.id { color: #8b949e; font-size: 0.75rem; font-family: monospace; }
+.category { background: #21262d; color: #58a6ff; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; }
+.template-card h4 { color: #f0f6fc; margin-bottom: 5px; }
+.publisher { color: #8b949e; font-size: 0.8rem; margin-bottom: 10px; }
+.desc { color: #c9d1d9; font-size: 0.85rem; margin-bottom: 12px; }
+.tag { background: #1f6feb22; color: #58a6ff; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; border: 1px solid #1f6feb55; }
+.log { margin-top: 30px; background: #161b22; padding: 20px; border-radius: 10px; border: 1px solid #30363d; }
+.log h3 { color: #58a6ff; margin-bottom: 10px; }
+.log ul { list-style: none; max-height: 200px; overflow-y: auto; }
+.log li { padding: 6px 0; border-bottom: 1px solid #21262d; font-family: monospace; font-size: 0.8rem; color: #8b949e; }
+```
+
+---
+
+## 7. PACKAGE — `package.json`
+
+```json
+{
+  "name": "live-update-system",
+  "version": "1.0.0",
+  "description": "Sistem Update Live untuk CMC-REF-2026-MSI-003",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "seed": "node server/seed.js",
+    "dev": "nodemon server/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
+```
+
+---
+
+## 8. DOCKER — `Dockerfile`
+
+```dockerfile
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN mkdir -p data
+EXPOSE 3000
+CMD ["sh", "-c", "npm run seed && npm start"]
+```
+
+---
+
+## 9. DOCKER COMPOSE — `docker-compose.yml`
+
+```yaml
+version: '3.8'
+services:
+  live-update:
+    build: .
+    container_name: live-update-system
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+```
+
+---
+
+## 10. GITHUB ACTIONS — `.github/workflows/deploy.yml`
+
+```yaml
+name: Deploy Live Update System
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test --if-present
+      - name: Build Docker image
+        run: docker build -t live-update-system:${{ github.sha }} .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Push Docker image
+        run: |
+          docker tag live-update-system:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/live-update-system:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/live-update-system:latest
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /opt/live-update-system
+            docker-compose pull
+            docker-compose up -d --remove-orphans
+            docker system prune -f
+```
+
+---
+
+## 🚀 CARA JALANKAN
+
+### Pilihan 1: Lokal
+```bash
+npm install
+npm run seed
+npm start
+```
+Buka → `http://localhost:3000`
+
+### Pilihan 2: Docker
+```bash
+docker-compose up -d --build
+```
+
+### Pilihan 3: Deployment
+1. Push ke GitHub
+2. Tetapkan Secrets: `DOCKER_USERNAME`, `DOCKER_PASSWORD`, `SERVER_HOST`, `SERVER_USER`, `SERVER_SSH_KEY`
+3. GitHub Actions build & deploy automatik
+
+---
+
+## 📡 CIRI-CIRI SISTEM
+
+| Ciri | Keterangan |
+| :--- | :--- |
+| **Real-Time Update** | WebSocket memancarkan perubahan serta-merta |
+| **CRUD API** | Tambah, baca, kemas kini, padam templat |
+| **Live Log** | Log aktiviti dipaparkan langsung |
+| **Search & Filter** | Cari mengikut nama, ID, penerbit, kategori |
+| **Statistics** | Statistik automatik dikemas kini |
+| **SQLite** | Pangkalan data ringan, tiada konfigurasi pelayan |
+| **Docker Ready** | Boleh dijalankan dalam kontena |
+| **CI/CD** | Deployment automatik melalui GitHub Actions |
+| **Health Check** | Docker healthcheck untuk pemantauan |
+| **Responsive UI** | Paparan mudah alih dan desktop |
+
+---
+
+## 🔌 CONTOH API CALL
+
+```bash
+# Tambah templat
+curl -X POST http://localhost:3000/api/templates \
+  -H "Content-Type: application/json" \
+  -d '{"id":"NEW-001","category":"Custom","name":"My Action","publisher":"Sazwani","description":"Tindakan tersuai.","tag":"Custom"}'
+
+# Kemas kini
+curl -X PUT http://localhost:3000/api/templates/NEW-001 \
+  -H "Content-Type: application/json" \
+  -d '{"category":"Custom","name":"Updated Action","publisher":"Sazwani","description":"Dikemas kini.","tag":"Custom"}'
+
+# Padam
+curl -X DELETE http://localhost:3000/api/templates/NEW-001
+```
+
+---
+
+Sistem ini **sedia production** dengan **live update**, **API lengkap**, **dashboard interaktif**, dan **CI/CD automatik**. Jika anda mahukan **penambahan ciri** seperti **authentication (JWT)**, **role-based access**, **export JSON/CSV**, atau **integrasi Telegram/Slack**, beritahu saya.
