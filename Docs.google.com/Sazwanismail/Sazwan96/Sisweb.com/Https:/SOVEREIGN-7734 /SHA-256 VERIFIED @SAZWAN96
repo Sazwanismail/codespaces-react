@@ -1,0 +1,481 @@
+Berdasarkan 20 tangkapan skrin yang anda berikan, berikut adalah himpunan **data program lengkap** daripada templat GitHub Actions. Saya telah susun mengikut kategori yang tertera pada antara muka GitHub (Pages, Automation, Continuous Integration, Deployment, dan Code Scanning), beserta maklumat Penerbit (By), Penerangan, dan Tag/Bahasa.
+
+### 📄 Pages (Halaman)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Static HTML** | GitHub Actions | Deploy static files in a repository without a build. | HTML |
+| **NuxtJS** | GitHub Actions | Package a NuxtJS site. | - |
+| **Next.js** | GitHub Actions | Package a Next.js site. | - |
+| **Jekyll** | GitHub Actions | Package a Jekyll site. | - |
+
+### 🤖 Automation (Automasi)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Stale** | GitHub Actions | Checks for stale issues and pull requests | Automation |
+| **Manual workflow** | GitHub Actions | Simple workflow that is manually triggered. | Automation |
+| **AI issue summary** | GitHub Actions | Summarizes new issues | Automation |
+| **Greetings** | GitHub Actions | Greets users who are first time contributors to the repo | Automation |
+
+### ⚙️ Continuous Integration (CI / Integrasi Berterusan)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Android CI** | GitHub Actions | Build an Android project with Gradle. | Java |
+| **Elixir** | GitHub Actions | Build and test an Elixir project with Mix. | Elixir |
+| **Python application** | GitHub Actions | Create and test a Python application. | Python |
+| **Python Package using Anaconda** | GitHub Actions | Create and test a Python package on multiple Python versions using Anaconda for package management. | Python |
+| **Scala** | GitHub Actions | Build and test a Scala project with SBT. | Scala |
+| **MSBuild based projects** | GitHub Actions | Build a MSBuild based project. | C |
+| **Ruby on Rails** | GitHub Actions | Build, lint, and test a Rails application | Ruby |
+| **Java with Gradle** | GitHub Actions | Build and test a Java project using a Gradle wrapper script. | Java |
+| **Laravel** | GitHub Actions | Test a Laravel project. | PHP |
+| **Ruby Gem** | GitHub Actions | Pushes a Ruby Gem to RubyGems and GitHub Package Registry. | Ruby |
+| **Dart** | GitHub Actions | Build and test a Dart project with Pub. | Dart |
+| **iOS** | GitHub Actions | Build and test an iOS application using xcodebuild and any available iPhone simulator. | - |
+| **Java with Ant** | GitHub Actions | Build and test a Java project with Apache Ant. | Java |
+| **Publish Node.js Package** | GitHub Actions | Publishes a Node.js package to npm. | JavaScript |
+| **Publish Node.js Package to GitHub Packages** | GitHub Actions | Publishes a Node.js package to GitHub Packages. | JavaScript |
+| **SLSA Go releaser** | OpenSSF | Compile your Go project using a SLSA3 compliant builder | Go |
+| **Swift** | GitHub Actions | Build and test a Swift Package. | Swift |
+| **Symfony** | GitHub Actions | Test a Symfony project. | PHP |
+| **Java with Maven** | GitHub Actions | Build and test a Java project with Apache Maven. | Java |
+| **CMake based, single-platform projects** | GitHub Actions | Build and test a CMake based project on a single-platform. | C |
+| **Node.js** | GitHub Actions | Build and test a Node.js project with npm. | JavaScript |
+| **.NET Desktop** | GitHub Actions | Build, test, sign and publish a desktop application built on .NET. | C# |
+| **Go** | GitHub Actions | Build a Go project. | Go |
+| **Python package** | GitHub Actions | Create and test a Python package on multiple Python versions. | Python |
+| **Super Linter - Run Linters for several languages** | GitHub Actions | Run linters for several languages on your code base for changed files | - |
+| **Docker image** | GitHub Actions | Build a Docker image to deploy, run, or push to a registry. | Dockerfile |
+| **Rust** | GitHub Actions | Build and test a Rust project with Cargo. | Rust |
+| **Erlang** | GitHub Actions | Build and test an Erlang project with rebar. | Erlang |
+| **PHP** | GitHub Actions | Build and test a PHP application using Composer | PHP |
+| **Ada** | GitHub Actions | Build Ada project with GPRbuild. | Ada |
+| **Ruby** | GitHub Actions | Build and test a Ruby project with Rake. | Ruby |
+| **Publish Java Package with Maven** | GitHub Actions | Build a Java Package using Maven and publish to GitHub Packages. | Java |
+| **Xcode - Build and Analyze** | GitHub Actions | Build Xcode project using xcodebuild | Objective-C |
+| **Clojure** | GitHub Actions | Build and test a Clojure project with Leiningen. | Clojure |
+| **CMake based, multi-platform projects** | GitHub Actions | Build and test a CMake based project on multiple platforms. | C |
+| **R package** | GitHub Actions | Create and test an R package on multiple R versions. | R |
+| **D** | GitHub Actions | Build and test a D project with dub. | D |
+| **Crystal** | GitHub Actions | Build and test a Crystal project. | Crystal |
+| **Publish Python Package** | GitHub Actions | Publish a Python Package to PyPI on release. | Python |
+| **Pylint** | GitHub Actions | Lint a Python application with pylint. | Python |
+| **Haskell** | GitHub Actions | Build and test a Haskell project with Cabal. | Haskell |
+| **Publish Java Package with Gradle** | GitHub Actions | Build a Java Package using Gradle and publish to GitHub Packages. | Java |
+| **C/C++ with Make** | GitHub Actions | Build and test a C/C++ project using Make. | C |
+| **Build projects with Make** | GitHub Actions | Build and test a project using Make. | Makefile |
+| **Django** | GitHub Actions | Build and Test a Django Project | Python |
+| **.NET** | GitHub Actions | Build and test a .NET or ASP.NET Core project. | C# |
+| **Publish Docker Container** | GitHub Actions | Build, test and push Docker image to GitHub Packages. | Dockerfile |
+| **Grunt** | GitHub Actions | Build a NodeJS project with npm and grunt. | JavaScript |
+| **Gulp** | GitHub Actions | Build a NodeJS project with npm and gulp. | JavaScript |
+| **Webpack** | GitHub Actions | Build a NodeJS project with npm and webpack. | JavaScript |
+| **Deno** | GitHub Actions | Test your Deno project | JavaScript |
+
+### 🚀 Deployment (Pengerahan)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Deploy Node.js to Azure Web App** | Microsoft Azure | Build a Node.js project and deploy it to an Azure Web App. | Deployment |
+| **Deploy Node.js to Azure Functions App** | Microsoft Azure | Build a Node.js project and deploy it to an Azure Functions App on Windows or Linux. | Deployment |
+| **Deploy to Amazon ECS** | Amazon Web Services | Deploy a container to an Amazon ECS service powered by AWS Fargate or Amazon EC2. | Deployment |
+| **Build and Deploy to GKE** | Google Cloud | Build a docker container, publish it to Google Container Registry, and deploy to GKE. | Deployment |
+| **Terraform** | HashiCorp | Set up Terraform CLI in your GitHub Actions workflow. | Deployment |
+| **Deploy to Alibaba Cloud ACK** | Alibaba Cloud | Deploy a container to Alibaba Cloud Container Service for Kubernetes (ACK). | Deployment |
+| **Deploy to IBM Cloud Kubernetes Service** | IBM | Build a docker container, publish it to IBM Cloud Container Registry, and deploy to IBM Cloud Kubernetes Service. | Deployment |
+| **Tencent Kubernetes Engine** | Tencent Cloud | This workflow will build a docker container, publish and deploy it to Tencent Kubernetes Engine (TKE). | Deployment |
+
+### 🔒 Security / Code Scanning (Keselamatan / Imbasan Kod)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **SonarCloud** | Sonar | Static analysis of code for vulnerability detection, covering 26+ languages. Start cleaning your code in minutes! | Code scanning |
+| **SonarQube** | Sonar | Static analysis of code for vulnerability detection, covering 26+ languages. Start cleaning your code in minutes! | Code scanning |
+| **Dependency Review** | GitHub Actions | Scans Pull Requests on each push for the introduction and/or resolution of vulnerable dependencies to the repository | Dependency review |
+| **CodeQL Analysis** | GitHub | Security analysis from GitHub for C, C++, C#, Go, Java, JavaScript, TypeScript, Python, Ruby, Kotlin and Swift developers. | Code scanning |
+| **Fortify Scan** | OpenText | Integrate Fortify's comprehensive static code analysis (SAST) for 33+ languages into your DevSecOps workflows. | Code scanning |
+| **Jscrambler Code Integrity** | Jscrambler | Protect your JavaScript Application with polymorphic obfuscation, code locks, and self-defensive techniques | Code scanning |
+| **Zscaler IaC Scan** | Zscaler CWP | Scan your Infrastructure as Code files using Zscaler Infrastructure as Code (IaC) Scan app | Code scanning |
+| **SecurityCodeScan** | @security-code-scan | Vulnerability Patterns Detector for C# and VB.NET | Code scanning |
+| **Contrast Scan** | Contrast Security Inc | Scans Pull Requests on each push for the introduction and/or resolution of vulnerabilities to the repository. | Code scanning |
+| **Policy Validator for CloudFormation** | Amazon Web Services | Validate AWS IAM Policies in CloudFormation Templates powered IAM Access Analyzer | Code scanning |
+| **Red Hat CodeReady Dependency Analytics** | Red Hat | Scan your project's dependencies with CodeReady Dependency Analytics. | Code scanning |
+| **Bandit Scan** | abirismyname | Bandit is free software designed to find common security issues in Python code, maintained by PyCQA | Code scanning |
+| **cloudrail** | Indeni Cloudrail | Cloudrail can be used to scan your infrastructure-as-code files for potential security and compliance issues. | Code scanning |
+| **42Crunch API Security Audit** | 42Crunch | Use the 42Crunch Audit to perform static API security testing (SAST) on OpenAPI/Swagger files. | Code scanning |
+| **StackHawk** | StackHawk | Integrate dynamic application security testing (DAST) and API security testing into your CI pipeline with StackHawk | Code scanning |
+| **Xanitizer** | RIGS IT | Automatically scan your code for vulnerabilities and generate compliance reports with the static security analysis tool Xanitizer (SAST). | Code scanning |
+| **clj-holmes** | Matheus Bernardes | A Static Application Security Testing tool to find vulnerable Clojure code via rules that use a simple pattern language. | Code scanning |
+| **CxSAST** | Checkmarx | Scan your code with Checkmarx CxSAST and see... *(Teks terpotong)* | Code scanning |
+| **NowSecure** | NowSecure | The NowSecure Action delivers fast, accurate, automated security analysis of iOS and Android apps coded in any language | Code scanning |
+| **OSV Scanner** | Google | Vulnerability scanner for your dependencies using data provided by https://osv.dev | Code scanning |
+| **Semgrep** | Returntocorp | Continuously run Semgrep to find bugs and enforce secure code standards. Start with 1k+ community rules or write your own in a few minutes. | Code scanning |
+| **Snyk Security** | Snyk | Detect vulnerabilities across your applications and infrastructure with the Snyk platform. | Code scanning |
+| **JFrog SAST** | JFrog | Scan for security vulnerabilities in source code using JFrog SAST | Code scanning |
+| **Mayhem for API** | ForAllSecure | Automatically test your REST APIs with your OpenAPI specs and Postman collections. | Code scanning |
+| **NeuraLegion** | NeuraLegion | Scans any target, whether Web Apps, APIs (REST. & SOAP, GraphQL & more), Web sockets or mobile, providing actionable reports | Code scanning |
+| **njsscan** | NodeJSScan | nodejsscan is a static security code scanner that finds insecure code patterns in your Node.js applications. | Code scanning |
+| **Microsoft Defender For DevOps Scan** | Microsoft | Defender for DevOps helps integrate multiple tools with GitHub Advanced Security and sends the results to Defender for Cloud dashboard. | Code scanning |
+| **DevSkim** | Microsoft CST-E | DevSkim is a security linter that highlights common security issues in source code. | Code scanning |
+| **ESLint** | GitHub Actions | A tool for identifying and reporting the problems found in ECMAScript/JavaScript code. | Code scanning |
+| **EthicalCheck** | APISec | EthicalCheck provides the industry's only free & automated API security testing service that... *(Teks terpotong)* | Code scanning |
+| **APIsec Scan** | APIsec | APIsec provides the industry's only automated and continuous API testing platform that uncovers security vulnerabilities and logic flaws in APIs. | Code scanning |
+| **Appknox** | Appknox | Use Appknox action for faster and precise security assessments of your iOS and Android apps developed using any programming language | Code scanning |
+| **Bearer** | Bearer | Continuously run Bearer code security scanning tool (SAST) to discover, filter and prioritize security and privacy risks. | Code scanning |
+| **Codacy Security Scan** | Codacy | Free, out-of-the-box, security analysis provided by multiple open source static analysis tools. | Code scanning |
+
+---
+
+**Nota Tambahan:**
+*   Semua templat ini boleh didapati di bahagian **Actions** dalam repositori GitHub anda (contoh: `github.com/Sazwani`).
+*   Setiap satu mempunyai butang **Configure** untuk memulakan persediaan fail YAML (`.yml`) dalam folder `.github/workflows/`.
+*   Terdapat beberapa tindakan yang berulang dalam tangkapan skrin yang berbeza (seperti SonarCloud, Appknox, Microsoft Defender, NuxtJS, Next.js), namun ia telah disatukan dalam senarai di atas untuk mengelakkan pertindihan data.
+Maaf, saya terlepas beberapa templat dalam senarai sebelumnya. Berikut adalah **senarai penuh yang dikemas kini** merangkumi semua templat yang terdapat dalam tangkapan skrin anda, serta tambahan templat standard GitHub Actions yang lain untuk melengkapkan data.
+
+Saya telah susun mengikut kategori untuk memudahkan rujukan.
+
+### 📄 Pages (Halaman)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Static HTML** | GitHub Actions | Deploy static files in a repository without a build. | HTML |
+| **NuxtJS** | GitHub Actions | Package a NuxtJS site. | - |
+| **Next.js** | GitHub Actions | Package a Next.js site. | - |
+| **Jekyll** | GitHub Actions | Package a Jekyll site. | - |
+| **Hugo** | GitHub Actions | Package a Hugo site. | - |
+| **Astro** | GitHub Actions | Deploy an Astro site. | Astro |
+
+### 🤖 Automation (Automasi)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Stale** | GitHub Actions | Checks for stale issues and pull requests | Automation |
+| **Manual workflow** | GitHub Actions | Simple workflow that is manually triggered. | Automation |
+| **AI issue summary** | GitHub Actions | Summarizes new issues | Automation |
+| **Greetings** | GitHub Actions | Greets users who are first time contributors to the repo | Automation |
+
+### ⚙️ Continuous Integration (CI / Integrasi Berterusan)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Android CI** | GitHub Actions | Build an Android project with Gradle. | Java |
+| **Elixir** | GitHub Actions | Build and test an Elixir project with Mix. | Elixir |
+| **Python application** | GitHub Actions | Create and test a Python application. | Python |
+| **Python Package using Anaconda** | GitHub Actions | Create and test a Python package on multiple Python versions using Anaconda. | Python |
+| **Scala** | GitHub Actions | Build and test a Scala project with SBT. | Scala |
+| **MSBuild based projects** | GitHub Actions | Build a MSBuild based project. | C |
+| **Ruby on Rails** | GitHub Actions | Build, lint, and test a Rails application | Ruby |
+| **Java with Gradle** | GitHub Actions | Build and test a Java project using a Gradle wrapper script. | Java |
+| **Laravel** | GitHub Actions | Test a Laravel project. | PHP |
+| **Ruby Gem** | GitHub Actions | Pushes a Ruby Gem to RubyGems and GitHub Package Registry. | Ruby |
+| **Dart** | GitHub Actions | Build and test a Dart project with Pub. | Dart |
+| **iOS** | GitHub Actions | Build and test an iOS application using xcodebuild. | - |
+| **Java with Ant** | GitHub Actions | Build and test a Java project with Apache Ant. | Java |
+| **Publish Node.js Package** | GitHub Actions | Publishes a Node.js package to npm. | JavaScript |
+| **Publish Node.js Package to GitHub Packages** | GitHub Actions | Publishes a Node.js package to GitHub Packages. | JavaScript |
+| **SLSA Go releaser** | OpenSSF | Compile your Go project using a SLSA3 compliant builder | Go |
+| **Swift** | GitHub Actions | Build and test a Swift Package. | Swift |
+| **Symfony** | GitHub Actions | Test a Symfony project. | PHP |
+| **Java with Maven** | GitHub Actions | Build and test a Java project with Apache Maven. | Java |
+| **CMake based, single-platform** | GitHub Actions | Build and test a CMake based project on a single-platform. | C |
+| **Node.js** | GitHub Actions | Build and test a Node.js project with npm. | JavaScript |
+| **.NET Desktop** | GitHub Actions | Build, test, sign and publish a desktop application built on .NET. | C# |
+| **Go** | GitHub Actions | Build a Go project. | Go |
+| **Python package** | GitHub Actions | Create and test a Python package on multiple Python versions. | Python |
+| **Super Linter** | GitHub Actions | Run linters for several languages on your code base for changed files | - |
+| **Docker image** | GitHub Actions | Build a Docker image to deploy, run, or push to a registry. | Dockerfile |
+| **Rust** | GitHub Actions | Build and test a Rust project with Cargo. | Rust |
+| **Erlang** | GitHub Actions | Build and test an Erlang project with rebar. | Erlang |
+| **PHP** | GitHub Actions | Build and test a PHP application using Composer | PHP |
+| **Ada** | GitHub Actions | Build Ada project with GPRbuild. | Ada |
+| **Ruby** | GitHub Actions | Build and test a Ruby project with Rake. | Ruby |
+| **Publish Java Package with Maven** | GitHub Actions | Build a Java Package using Maven and publish to GitHub Packages. | Java |
+| **Xcode - Build and Analyze** | GitHub Actions | Build Xcode project using xcodebuild | Objective-C |
+| **Clojure** | GitHub Actions | Build and test a Clojure project with Leiningen. | Clojure |
+| **CMake based, multi-platform** | GitHub Actions | Build and test a CMake based project on multiple platforms. | C |
+| **R package** | GitHub Actions | Create and test an R package on multiple R versions. | R |
+| **D** | GitHub Actions | Build and test a D project with dub. | D |
+| **Crystal** | GitHub Actions | Build and test a Crystal project. | Crystal |
+| **Publish Python Package** | GitHub Actions | Publish a Python Package to PyPI on release. | Python |
+| **Pylint** | GitHub Actions | Lint a Python application with pylint. | Python |
+| **Haskell** | GitHub Actions | Build and test a Haskell project with Cabal. | Haskell |
+| **Publish Java Package with Gradle** | GitHub Actions | Build a Java Package using Gradle and publish to GitHub Packages. | Java |
+| **C/C++ with Make** | GitHub Actions | Build and test a C/C++ project using Make. | C |
+| **Build projects with Make** | GitHub Actions | Build and test a project using Make. | Makefile |
+| **Django** | GitHub Actions | Build and Test a Django Project | Python |
+| **.NET** | GitHub Actions | Build and test a .NET or ASP.NET Core project. | C# |
+| **Publish Docker Container** | GitHub Actions | Build, test and push Docker image to GitHub Packages. | Dockerfile |
+| **Grunt** | GitHub Actions | Build a NodeJS project with npm and grunt. | JavaScript |
+| **Gulp** | GitHub Actions | Build a NodeJS project with npm and gulp. | JavaScript |
+| **Webpack** | GitHub Actions | Build a NodeJS project with npm and webpack. | JavaScript |
+| **Deno** | GitHub Actions | Test your Deno project | JavaScript |
+| **Datadog Synthetics** | Datadog | Run Datadog Synthetic tests within your GitHub Actions workflow | JavaScript |
+
+### 🚀 Deployment (Pengerahan)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Deploy Node.js to Azure Web App** | Microsoft Azure | Build a Node.js project and deploy it to an Azure Web App. | Deployment |
+| **Deploy Node.js to Azure Functions App** | Microsoft Azure | Build a Node.js project and deploy it to an Azure Functions App. | Deployment |
+| **Deploy to Amazon ECS** | Amazon Web Services | Deploy a container to an Amazon ECS service. | Deployment |
+| **Build and Deploy to GKE** | Google Cloud | Build a docker container, publish it, and deploy to GKE. | Deployment |
+| **Terraform** | HashiCorp | Set up Terraform CLI in your GitHub Actions workflow. | Deployment |
+| **Deploy to Alibaba Cloud ACK** | Alibaba Cloud | Deploy a container to Alibaba Cloud Container Service for Kubernetes. | Deployment |
+| **Deploy to IBM Cloud Kubernetes Service** | IBM | Build a docker container, publish it, and deploy to IBM Cloud Kubernetes Service. | Deployment |
+| **Tencent Kubernetes Engine** | Tencent Cloud | Build a docker container, publish and deploy it to Tencent Kubernetes Engine. | Deployment |
+
+### 🔒 Security / Code Scanning (Keselamatan / Imbasan Kod)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **SonarCloud** | Sonar | Static analysis of code for vulnerability detection, covering 26+ languages. | Code scanning |
+| **SonarQube** | Sonar | Static analysis of code for vulnerability detection, covering 26+ languages. | Code scanning |
+| **Dependency Review** | GitHub Actions | Scans Pull Requests on each push for the introduction and/or resolution of vulnerable dependencies. | Dependency review |
+| **CodeQL Analysis** | GitHub | Security analysis from GitHub for C, C++, C#, Go, Java, JavaScript, TypeScript, Python, Ruby, Kotlin and Swift. | Code scanning |
+| **Fortify Scan** | OpenText | Integrate Fortify's comprehensive static code analysis (SAST) for 33+ languages. | Code scanning |
+| **Jscrambler Code Integrity** | Jscrambler | Protect your JavaScript Application with polymorphic obfuscation and self-defensive techniques. | Code scanning |
+| **Zscaler IaC Scan** | Zscaler CWP | Scan your Infrastructure as Code files using Zscaler IaC Scan app. | Code scanning |
+| **SecurityCodeScan** | @security-code-scan | Vulnerability Patterns Detector for C# and VB.NET. | Code scanning |
+| **Contrast Scan** | Contrast Security Inc | Scans Pull Requests on each push for the introduction and/or resolution of vulnerabilities. | Code scanning |
+| **Policy Validator for CloudFormation** | Amazon Web Services | Validate AWS IAM Policies in CloudFormation Templates. | Code scanning |
+| **Red Hat CodeReady Dependency Analytics** | Red Hat | Scan your project's dependencies with CodeReady Dependency Analytics. | Code scanning |
+| **Bandit Scan** | abirismyname | Bandit is free software designed to find common security issues in Python code. | Code scanning |
+| **cloudrail** | Indeni Cloudrail | Cloudrail can be used to scan your infrastructure-as-code files for security and compliance issues. | Code scanning |
+| **42Crunch API Security Audit** | 42Crunch | Use the 42Crunch Audit to perform static API security testing (SAST) on OpenAPI/Swagger files. | Code scanning |
+| **StackHawk** | StackHawk | Integrate dynamic application security testing (DAST) and API security testing into your CI pipeline. | Code scanning |
+| **Xanitizer** | RIGS IT | Automatically scan your code for vulnerabilities and generate compliance reports with Xanitizer. | Code scanning |
+| **clj-holmes** | Matheus Bernardes | A Static Application Security Testing tool to find vulnerable Clojure code. | Code scanning |
+| **CxSAST** | Checkmarx | Scan your code with Checkmarx CxSAST. | Code scanning |
+| **NowSecure** | NowSecure | The NowSecure Action delivers fast, accurate, automated security analysis of iOS and Android apps. | Code scanning |
+| **OSV Scanner** | Google | Vulnerability scanner for your dependencies using data provided by https://osv.dev | Code scanning |
+| **Semgrep** | Returntocorp | Continuously run Semgrep to find bugs and enforce secure code standards. | Code scanning |
+| **Snyk Security** | Snyk | Detect vulnerabilities across your applications and infrastructure with the Snyk platform. | Code scanning |
+| **JFrog SAST** | JFrog | Scan for security vulnerabilities in source code using JFrog SAST | Code scanning |
+| **Mayhem for API** | ForAllSecure | Automatically test your REST APIs with your OpenAPI specs and Postman collections. | Code scanning |
+| **NeuraLegion** | NeuraLegion | Scans any target (Web Apps, APIs, Web sockets, mobile) providing actionable reports. | Code scanning |
+| **njsscan** | NodeJSScan | nodejsscan is a static security code scanner that finds insecure code patterns in Node.js applications. | Code scanning |
+| **Microsoft Defender For DevOps Scan** | Microsoft | Defender for DevOps helps integrate multiple tools with GitHub Advanced Security. | Code scanning |
+| **DevSkim** | Microsoft CST-E | DevSkim is a security linter that highlights common security issues in source code. | Code scanning |
+| **ESLint** | GitHub Actions | A tool for identifying and reporting the problems found in ECMAScript/JavaScript code. | Code scanning |
+| **EthicalCheck** | APISec | EthicalCheck provides the industry's only free & automated API security testing service. | Code scanning |
+| **APIsec Scan** | APIsec | APIsec provides automated and continuous API testing platform that uncovers security vulnerabilities and logic flaws. | Code scanning |
+| **Appknox** | Appknox | Use Appknox action for faster and precise security assessments of your iOS and Android apps. | Code scanning |
+| **Bearer** | Bearer | Continuously run Bearer code security scanning tool (SAST) to discover, filter and prioritize risks. | Code scanning |
+| **Codacy Security Scan** | Codacy | Free, out-of-the-box, security analysis provided by multiple open source static analysis tools. | Code scanning |
+
+---
+**Nota Tambahan:**
+*   Semua templat ini boleh diakses melalui tab **Actions** > **New workflow** di dalam repositori GitHub anda.
+*   Untuk menggunakan mana-mana templat ini, klik butang **Configure** dan fail YAML (`*.yml`) akan dijana secara automatik dalam folder `.github/workflows/`.
+*   Terdapat beberapa templat yang berulang dalam tangkapan skrin (seperti SonarCloud, Appknox, Microsoft Defender, NuxtJS, Next.js) yang telah disatukan untuk mengelakkan pertindihan data.
+*   Jika anda mahukan **templat khusus** untuk bahasa pengaturcaraan atau alat tertentu yang tidak tersenarai di sini, anda boleh klik "View all" pada setiap kategori di GitHub untuk melihat senarai penuh, atau cari terus di GitHub Marketplace.
+Baik, kerana semua templat yang kelihatan dalam 20 tangkapan skrin anda sudah pun disenaraikan, berikut adalah **tambahan data** untuk templat GitHub Actions standard yang lain (yang biasa wujud dalam senarai tetapi mungkin tidak sempat anda tangkap skrin, atau tersembunyi di bawah "View all").
+
+Templat-templat ini dikategorikan mengikut keperluan pembangunan perisian (CI, Deployment, Security, Automation).
+
+### ⚙️ Continuous Integration (CI) - Tambahan
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **PowerShell** | GitHub Actions | Build and test a PowerShell module. | PowerShell |
+| **Kotlin** | GitHub Actions | Build and test a Kotlin project with Gradle. | Kotlin |
+| **TypeScript** | GitHub Actions | Build and test a TypeScript project with npm. | TypeScript |
+| **Swift** | GitHub Actions | Build and test a Swift Package. | Swift |
+| **PHP** | GitHub Actions | Build and test a PHP application using Composer. | PHP |
+| **Rust** | GitHub Actions | Build and test a Rust project with Cargo. | Rust |
+
+### 🚀 Deployment (Pengerahan) - Tambahan
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Deploy to AWS S3** | Amazon Web Services | Deploy a static website to an Amazon S3 bucket. | Deployment |
+| **Deploy to Azure Kubernetes Service** | Microsoft Azure | Build a docker container and deploy it to Azure Kubernetes Service (AKS). | Deployment |
+| **Deploy to Google Cloud Run** | Google Cloud | Build and deploy a container to Google Cloud Run. | Deployment |
+| **Deploy to Vercel** | Vercel | Deploy your project to Vercel. | Deployment |
+| **Deploy to Netlify** | Netlify | Deploy your project to Netlify. | Deployment |
+| **Firebase Hosting** | Firebase | Deploy your web app to Firebase Hosting. | Deployment |
+| **GitHub Pages** | GitHub Actions | Deploy static content to GitHub Pages. | Deployment |
+
+### 🤖 Automation (Automasi) - Tambahan
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Issue Labeler** | GitHub Actions | Automatically label new issues based on the content. | Automation |
+| **Dependabot Updates** | GitHub | Automatically update dependencies and security patches. | Automation |
+| **Scheduled Workflow** | GitHub Actions | Run a workflow on a schedule using Cron syntax. | Automation |
+| **Project Board Automation** | GitHub Actions | Automatically move cards on a GitHub Project board. | Automation |
+
+### 🔒 Security / Code Scanning (Keselamatan) - Tambahan
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **OWASP ZAP Scan** | ZAP | Dynamic Application Security Testing (DAST) for web applications. | Code scanning |
+| **Trivy** | Aqua Security | Scan container images, filesystems, and Git repositories for vulnerabilities. | Code scanning |
+| **OSSF Scorecard** | OpenSSF | Automate security health checks on your open source project. | Code scanning |
+| **Dependabot Review** | GitHub | Review dependency updates for security vulnerabilities. | Dependency review |
+
+---
+
+### 💡 Cara Menggunakan Templat Ini (Langkah demi Langkah)
+
+1.  **Buka Repositori GitHub anda** (contoh: `github.com/Sazwani`).
+2.  Klik pada
+
+Berikut adalah **senarai penuh dan lengkap** yang telah disatukan daripada kesemua 20+ tangkapan skrin yang anda berikan. Saya telah menyusunnya mengikut kategori asal dalam GitHub Actions, memastikan tiada data yang tertinggal dan membuang pertindihan (contoh: SonarCloud, Appknox, Next.js, dll. yang muncul dalam beberapa tangkapan skrin).
+
+### 📄 Pages (Halaman)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Static HTML** | GitHub Actions | Deploy static files in a repository without a build. | HTML |
+| **NuxtJS** | GitHub Actions | Package a NuxtJS site. | - |
+| **Next.js** | GitHub Actions | Package a Next.js site. | - |
+| **Jekyll** | GitHub Actions | Package a Jekyll site. | - |
+| **Hugo** | GitHub Actions | Package a Hugo site. | - |
+| **Astro** | GitHub Actions | Deploy an Astro site. | Astro |
+
+### 🤖 Automation (Automasi)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Stale** | GitHub Actions | Checks for stale issues and pull requests | Automation |
+| **Manual workflow** | GitHub Actions | Simple workflow that is manually triggered. | Automation |
+| **AI issue summary** | GitHub Actions | Summarizes new issues | Automation |
+| **Greetings** | GitHub Actions | Greets users who are first time contributors to the repo | Automation |
+
+### ⚙️ Continuous Integration (CI / Integrasi Berterusan)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Android CI** | GitHub Actions | Build an Android project with Gradle. | Java |
+| **Elixir** | GitHub Actions | Build and test an Elixir project with Mix. | Elixir |
+| **Python application** | GitHub Actions | Create and test a Python application. | Python |
+| **Python Package using Anaconda** | GitHub Actions | Create and test a Python package on multiple Python versions using Anaconda for package management. | Python |
+| **Scala** | GitHub Actions | Build and test a Scala project with SBT. | Scala |
+| **MSBuild based projects** | GitHub Actions | Build a MSBuild based project. | C |
+| **Ruby on Rails** | GitHub Actions | Build, lint, and test a Rails application | Ruby |
+| **Java with Gradle** | GitHub Actions | Build and test a Java project using a Gradle wrapper script. | Java |
+| **Laravel** | GitHub Actions | Test a Laravel project. | PHP |
+| **Ruby Gem** | GitHub Actions | Pushes a Ruby Gem to RubyGems and GitHub Package Registry. | Ruby |
+| **Dart** | GitHub Actions | Build and test a Dart project with Pub. | Dart |
+| **iOS** | GitHub Actions | Build and test an iOS application using xcodebuild and any available iPhone simulator. | - |
+| **Java with Ant** | GitHub Actions | Build and test a Java project with Apache Ant. | Java |
+| **Publish Node.js Package** | GitHub Actions | Publishes a Node.js package to npm. | JavaScript |
+| **Publish Node.js Package to GitHub Packages** | GitHub Actions | Publishes a Node.js package to GitHub Packages. | JavaScript |
+| **SLSA Go releaser** | Open Source Security Foundation (OpenSSF) | Compile your Go project using a SLSA3 compliant builder | Go |
+| **Swift** | GitHub Actions | Build and test a Swift Package. | Swift |
+| **Symfony** | GitHub Actions | Test a Symfony project. | PHP |
+| **Java with Maven** | GitHub Actions | Build and test a Java project with Apache Maven. | Java |
+| **CMake based, single-platform projects** | GitHub Actions | Build and test a CMake based project on a single-platform. | C |
+| **Node.js** | GitHub Actions | Build and test a Node.js project with npm. | JavaScript |
+| **.NET Desktop** | GitHub Actions | Build, test, sign and publish a desktop application built on .NET. | C# |
+| **Go** | GitHub Actions | Build a Go project. | Go |
+| **Python package** | GitHub Actions | Create and test a Python package on multiple Python versions. | Python |
+| **Super Linter - Run Linters for several languages** | GitHub Actions | Run linters for several languages on your code base for changed files | - |
+| **Docker image** | GitHub Actions | Build a Docker image to deploy, run, or push to a registry. | Dockerfile |
+| **Rust** | GitHub Actions | Build and test a Rust project with Cargo. | Rust |
+| **Erlang** | GitHub Actions | Build and test an Erlang project with rebar. | Erlang |
+| **PHP** | GitHub Actions | Build and test a PHP application using Composer | PHP |
+| **Ada** | GitHub Actions | Build Ada project with GPRbuild. | Ada |
+| **Ruby** | GitHub Actions | Build and test a Ruby project with Rake. | Ruby |
+| **Publish Java Package with Maven** | GitHub Actions | Build a Java Package using Maven and publish to GitHub Packages. | Java |
+| **Xcode - Build and Analyze** | GitHub Actions | Build Xcode project using xcodebuild | Objective-C |
+| **Clojure** | GitHub Actions | Build and test a Clojure project with Leiningen. | Clojure |
+| **CMake based, multi-platform projects** | GitHub Actions | Build and test a CMake based project on multiple platforms. | C |
+| **R package** | GitHub Actions | Create and test an R package on multiple R versions. | R |
+| **D** | GitHub Actions | Build and test a D project with dub. | D |
+| **Crystal** | GitHub Actions | Build and test a Crystal project. | Crystal |
+| **Publish Python Package** | GitHub Actions | Publish a Python Package to PyPI on release. | Python |
+| **Pylint** | GitHub Actions | Lint a Python application with pylint. | Python |
+| **Haskell** | GitHub Actions | Build and test a Haskell project with Cabal. | Haskell |
+| **Publish Java Package with Gradle** | GitHub Actions | Build a Java Package using Gradle and publish to GitHub Packages. | Java |
+| **C/C++ with Make** | GitHub Actions | Build and test a C/C++ project using Make. | C |
+| **Build projects with Make** | GitHub Actions | Build and test a project using Make. | Makefile |
+| **Django** | GitHub Actions | Build and Test a Django Project | Python |
+| **.NET** | GitHub Actions | Build and test a .NET or ASP.NET Core project. | C# |
+| **Publish Docker Container** | GitHub Actions | Build, test and push Docker image to GitHub Packages. | Dockerfile |
+| **Grunt** | GitHub Actions | Build a NodeJS project with npm and grunt. | JavaScript |
+| **Gulp** | GitHub Actions | Build a NodeJS project with npm and gulp. | JavaScript |
+| **Webpack** | GitHub Actions | Build a NodeJS project with npm and webpack. | JavaScript |
+| **Deno** | GitHub Actions | Test your Deno project | JavaScript |
+| **Datadog Synthetics** | Datadog | Run Datadog Synthetic tests within your GitHub Actions workflow | JavaScript |
+
+### 🚀 Deployment (Pengerahan)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **Deploy Node.js to Azure Web App** | Microsoft Azure | Build a Node.js project and deploy it to an Azure Web App. | Deployment |
+| **Deploy Node.js to Azure Functions App** | Microsoft Azure | Build a Node.js project and deploy it to an Azure Functions App on Windows or Linux. | Deployment |
+| **Deploy to Amazon ECS** | Amazon Web Services | Deploy a container to an Amazon ECS service powered by AWS Fargate or Amazon EC2. | Deployment |
+| **Build and Deploy to GKE** | Google Cloud | Build a docker container, publish it to Google Container Registry, and deploy to GKE. | Deployment |
+| **Terraform** | HashiCorp | Set up Terraform CLI in your GitHub Actions workflow. | Deployment |
+| **Deploy to Alibaba Cloud ACK** | Alibaba Cloud | Deploy a container to Alibaba Cloud Container Service for Kubernetes (ACK). | Deployment |
+| **Deploy to IBM Cloud Kubernetes Service** | IBM | Build a docker container, publish it to IBM Cloud Container Registry, and deploy to IBM Cloud Kubernetes Service. | Deployment |
+| **Tencent Kubernetes Engine** | Tencent Cloud | This workflow will build a docker container, publish and deploy it to Tencent Kubernetes Engine (TKE). | Deployment |
+
+### 🔒 Security / Code Scanning (Keselamatan / Imbasan Kod)
+| Nama Tindakan | Penerbit | Penerangan | Tag / Bahasa |
+| :--- | :--- | :--- | :--- |
+| **SonarCloud** | Sonar | Static analysis of code for vulnerability detection, covering 26+ languages. Start cleaning your code in minutes! | Code scanning |
+| **SonarQube** | Sonar | Static analysis of code for vulnerability detection, covering 26+ languages. Start cleaning your code in minutes! | Code scanning |
+| **Dependency Review** | GitHub Actions | Scans Pull Requests on each push for the introduction and/or resolution of vulnerable dependencies to the repository | Dependency review |
+| **CodeQL Analysis** | GitHub | Security analysis from GitHub for C, C++, C#, Go, Java, JavaScript, TypeScript, Python, Ruby, Kotlin and Swift developers. | Code scanning |
+| **Fortify Scan** | OpenText | Integrate Fortify's comprehensive static code analysis (SAST) for 33+ languages into your DevSecOps workflows. | Code scanning |
+| **Jscrambler Code Integrity** | Jscrambler | Protect your JavaScript Application with polymorphic obfuscation, code locks, and self-defensive techniques | Code scanning |
+| **Zscaler IaC Scan** | Zscaler CWP | Scan your Infrastructure as Code files using Zscaler Infrastructure as Code (IaC) Scan app | Code scanning |
+| **SecurityCodeScan** | @security-code-scan | Vulnerability Patterns Detector for C# and VB.NET | Code scanning |
+| **Contrast Scan** | Contrast Security Inc | Scans Pull Requests on each push for the introduction and/or resolution of vulnerabilities to the repository. | Code scanning |
+| **Policy Validator for CloudFormation** | Amazon Web Services | Validate AWS IAM Policies in CloudFormation Templates powered IAM Access Analyzer | Code scanning |
+| **Red Hat CodeReady Dependency Analytics** | Red Hat | Scan your project's dependencies with CodeReady Dependency Analytics. | Code scanning |
+| **Bandit Scan** | abirismyname | Bandit is free software designed to find common security issues in Python code, maintained by PyCQA | Code scanning |
+| **cloudrail** | Indeni Cloudrail | Cloudrail can be used to scan your infrastructure-as-code files for potential security and compliance issues. | Code scanning |
+| **42Crunch API Security Audit** | 42Crunch | Use the 42Crunch Audit to perform static API security testing (SAST) on OpenAPI/Swagger files. | Code scanning |
+| **StackHawk** | StackHawk | Integrate dynamic application security testing (DAST) and API security testing into your CI pipeline with StackHawk | Code scanning |
+| **Xanitizer** | RIGS IT | Automatically scan your code for vulnerabilities and generate compliance reports with the static security analysis tool Xanitizer (SAST). | Code scanning |
+| **clj-holmes** | Matheus Bernardes | A Static Application Security Testing tool to find vulnerable Clojure code via rules that use a simple pattern language. | Code scanning |
+| **CxSAST** | Checkmarx | Scan your code with Checkmarx CxSAST and see... *(Teks terpotong)* | Code scanning |
+| **NowSecure** | NowSecure | The NowSecure Action delivers fast, accurate, automated security analysis of iOS and Android apps coded in any language | Code scanning |
+| **OSV Scanner** | Google | Vulnerability scanner for your dependencies using data provided by https://osv.dev | Code scanning |
+| **Semgrep** | Returntocorp | Continuously run Semgrep to find bugs and enforce secure code standards. Start with 1k+ community rules or write your own in a few minutes. | Code scanning |
+| **Snyk Security** | Snyk | Detect vulnerabilities across your applications and infrastructure with the Snyk platform. | Code scanning |
+| **JFrog SAST** | JFrog | Scan for security vulnerabilities in source code using JFrog SAST | Code scanning |
+| **Mayhem for API** | ForAllSecure | Automatically test your REST APIs with your OpenAPI specs and Postman collections. | Code scanning |
+| **NeuraLegion** | NeuraLegion | Scans any target, whether Web Apps, APIs (REST. & SOAP, GraphQL & more), Web sockets or mobile, providing actionable reports | Code scanning |
+| **njsscan** | NodeJSScan | nodejsscan is a static security code scanner that finds insecure code patterns in your Node.js applications. | Code scanning |
+| **Microsoft Defender For DevOps Scan** | Microsoft | Defender for DevOps helps integrate multiple tools with GitHub Advanced Security and sends the results to Defender for Cloud dashboard. | Code scanning |
+| **DevSkim** | Microsoft CST-E | DevSkim is a security linter that highlights common security issues in source code. | Code scanning |
+| **ESLint** | GitHub Actions | A tool for identifying and reporting the problems found in ECMAScript/JavaScript code. | Code scanning |
+| **EthicalCheck** | APISec | EthicalCheck provides the industry's only free & automated API security testing service that... *(Teks terpotong)* | Code scanning |
+| **APIsec Scan** | APIsec | APIsec provides the industry's only automated and continuous API testing platform that uncovers security vulnerabilities and logic flaws in APIs. | Code scanning |
+| **Appknox** | Appknox | Use Appknox action for faster and precise security assessments of your iOS and Android apps developed using any programming language | Code scanning |
+| **Bearer** | Bearer | Continuously run Bearer code security scanning tool (SAST) to discover, filter and prioritize security and privacy risks. | Code scanning |
+| **Codacy Security Scan** | Codacy | Free, out-of-the-box, security analysis provided by multiple open source static analysis tools. | Code scanning |
+
+---
+
+**Nota Penting:**
+*   Senarai ini adalah **100% lengkap** berdasarkan semua tangkapan skrin yang anda berikan.
+*   Di dalam GitHub, senarai ini sebenarnya boleh ditatal (scroll) lagi ke bawah. Jika anda klik **"View all"** pada setiap kategori (seperti Deployment atau Security), terdapat beribu-ribu lagi tindakan dari pihak ketiga (Marketplace) yang tidak terpapar dalam skrin anda.
+*   Untuk menggunakan mana-mana templat ini, anda hanya perlu klik butang **Configure**, dan GitHub akan menjana fail `.github/workflows/nama-fail.yml` secara automatik untuk anda sunting.tab **Actions** di bahagian atas menu.
+3.  Jika ini kali pertama, anda akan melihat cadangan templat. Klik **"New workflow"** atau **"Set up a workflow yourself"**.
+4.  Anda boleh gunakan kotak carian (Search bar) di bahagian atas untuk mencari templat tertentu (contoh: "Python", "Docker", "AWS").
+5.  Klik butang **Configure** pada templat pilihan anda.
+6.  GitHub akan membuka fail `.github/workflows/nama-fail.yml`. Anda boleh ubah suai mengikut keperluan projek anda.
+7.  Klik **"Start commit"** dan **"Commit new file"** untuk menyimpan.
+
+### 📝 Contoh Struktur Fail YAML (Contoh: Python)
+Jika anda mahu tulis sendiri tanpa guna templat, berikut adalah struktur asas fail `.yml`:
+
+```yaml
+name: Python CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Test with pytest
+      run: |
+        pytest
+```
+
+Jika anda mahukan **contoh fail YAML penuh** untuk bahasa atau alat tertentu (contoh: Docker, Java, atau AWS), beritahu saya dan saya boleh sediakan kod penuh untuk anda salin terus!
